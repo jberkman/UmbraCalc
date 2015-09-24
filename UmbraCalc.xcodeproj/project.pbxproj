@@ -1,0 +1,527 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		16B7ACC61BB39066006DFA4E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACC51BB39066006DFA4E /* AppDelegate.swift */; };
+		16B7ACC91BB39066006DFA4E /* UmbraCalc.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACC71BB39066006DFA4E /* UmbraCalc.xcdatamodeld */; };
+		16B7ACCB1BB39066006DFA4E /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACCA1BB39066006DFA4E /* MasterViewController.swift */; };
+		16B7ACCD1BB39066006DFA4E /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACCC1BB39066006DFA4E /* DetailViewController.swift */; };
+		16B7ACD01BB39066006DFA4E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B7ACCE1BB39066006DFA4E /* Main.storyboard */; };
+		16B7ACD21BB39066006DFA4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16B7ACD11BB39066006DFA4E /* Assets.xcassets */; };
+		16B7ACD51BB39066006DFA4E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B7ACD31BB39066006DFA4E /* LaunchScreen.storyboard */; };
+		16B7ACE01BB39066006DFA4E /* UmbraCalcTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACDF1BB39066006DFA4E /* UmbraCalcTests.swift */; };
+		16B7ACEB1BB39066006DFA4E /* UmbraCalcUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACEA1BB39066006DFA4E /* UmbraCalcUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		16B7ACDC1BB39066006DFA4E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16B7ACBA1BB39066006DFA4E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 16B7ACC11BB39066006DFA4E;
+			remoteInfo = UmbraCalc;
+		};
+		16B7ACE71BB39066006DFA4E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16B7ACBA1BB39066006DFA4E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 16B7ACC11BB39066006DFA4E;
+			remoteInfo = UmbraCalc;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		16B7ACC21BB39066006DFA4E /* UmbraCalc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UmbraCalc.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		16B7ACC51BB39066006DFA4E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		16B7ACC81BB39066006DFA4E /* UmbraCalc.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UmbraCalc.xcdatamodel; sourceTree = "<group>"; };
+		16B7ACCA1BB39066006DFA4E /* MasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterViewController.swift; sourceTree = "<group>"; };
+		16B7ACCC1BB39066006DFA4E /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		16B7ACCF1BB39066006DFA4E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		16B7ACD11BB39066006DFA4E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		16B7ACD41BB39066006DFA4E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		16B7ACD61BB39066006DFA4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		16B7ACDB1BB39066006DFA4E /* UmbraCalcTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UmbraCalcTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		16B7ACDF1BB39066006DFA4E /* UmbraCalcTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmbraCalcTests.swift; sourceTree = "<group>"; };
+		16B7ACE11BB39066006DFA4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		16B7ACE61BB39066006DFA4E /* UmbraCalcUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UmbraCalcUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		16B7ACEA1BB39066006DFA4E /* UmbraCalcUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmbraCalcUITests.swift; sourceTree = "<group>"; };
+		16B7ACEC1BB39066006DFA4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		16B7ACBF1BB39066006DFA4E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16B7ACD81BB39066006DFA4E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16B7ACE31BB39066006DFA4E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		16B7ACB91BB39065006DFA4E = {
+			isa = PBXGroup;
+			children = (
+				16B7ACC41BB39066006DFA4E /* UmbraCalc */,
+				16B7ACDE1BB39066006DFA4E /* UmbraCalcTests */,
+				16B7ACE91BB39066006DFA4E /* UmbraCalcUITests */,
+				16B7ACC31BB39066006DFA4E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		16B7ACC31BB39066006DFA4E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				16B7ACC21BB39066006DFA4E /* UmbraCalc.app */,
+				16B7ACDB1BB39066006DFA4E /* UmbraCalcTests.xctest */,
+				16B7ACE61BB39066006DFA4E /* UmbraCalcUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		16B7ACC41BB39066006DFA4E /* UmbraCalc */ = {
+			isa = PBXGroup;
+			children = (
+				16B7ACC51BB39066006DFA4E /* AppDelegate.swift */,
+				16B7ACCA1BB39066006DFA4E /* MasterViewController.swift */,
+				16B7ACCC1BB39066006DFA4E /* DetailViewController.swift */,
+				16B7ACCE1BB39066006DFA4E /* Main.storyboard */,
+				16B7ACD11BB39066006DFA4E /* Assets.xcassets */,
+				16B7ACD31BB39066006DFA4E /* LaunchScreen.storyboard */,
+				16B7ACD61BB39066006DFA4E /* Info.plist */,
+				16B7ACC71BB39066006DFA4E /* UmbraCalc.xcdatamodeld */,
+			);
+			path = UmbraCalc;
+			sourceTree = "<group>";
+		};
+		16B7ACDE1BB39066006DFA4E /* UmbraCalcTests */ = {
+			isa = PBXGroup;
+			children = (
+				16B7ACDF1BB39066006DFA4E /* UmbraCalcTests.swift */,
+				16B7ACE11BB39066006DFA4E /* Info.plist */,
+			);
+			path = UmbraCalcTests;
+			sourceTree = "<group>";
+		};
+		16B7ACE91BB39066006DFA4E /* UmbraCalcUITests */ = {
+			isa = PBXGroup;
+			children = (
+				16B7ACEA1BB39066006DFA4E /* UmbraCalcUITests.swift */,
+				16B7ACEC1BB39066006DFA4E /* Info.plist */,
+			);
+			path = UmbraCalcUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		16B7ACC11BB39066006DFA4E /* UmbraCalc */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 16B7ACEF1BB39066006DFA4E /* Build configuration list for PBXNativeTarget "UmbraCalc" */;
+			buildPhases = (
+				16B7ACBE1BB39066006DFA4E /* Sources */,
+				16B7ACBF1BB39066006DFA4E /* Frameworks */,
+				16B7ACC01BB39066006DFA4E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UmbraCalc;
+			productName = UmbraCalc;
+			productReference = 16B7ACC21BB39066006DFA4E /* UmbraCalc.app */;
+			productType = "com.apple.product-type.application";
+		};
+		16B7ACDA1BB39066006DFA4E /* UmbraCalcTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 16B7ACF21BB39066006DFA4E /* Build configuration list for PBXNativeTarget "UmbraCalcTests" */;
+			buildPhases = (
+				16B7ACD71BB39066006DFA4E /* Sources */,
+				16B7ACD81BB39066006DFA4E /* Frameworks */,
+				16B7ACD91BB39066006DFA4E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				16B7ACDD1BB39066006DFA4E /* PBXTargetDependency */,
+			);
+			name = UmbraCalcTests;
+			productName = UmbraCalcTests;
+			productReference = 16B7ACDB1BB39066006DFA4E /* UmbraCalcTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		16B7ACE51BB39066006DFA4E /* UmbraCalcUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 16B7ACF51BB39066006DFA4E /* Build configuration list for PBXNativeTarget "UmbraCalcUITests" */;
+			buildPhases = (
+				16B7ACE21BB39066006DFA4E /* Sources */,
+				16B7ACE31BB39066006DFA4E /* Frameworks */,
+				16B7ACE41BB39066006DFA4E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				16B7ACE81BB39066006DFA4E /* PBXTargetDependency */,
+			);
+			name = UmbraCalcUITests;
+			productName = UmbraCalcUITests;
+			productReference = 16B7ACE61BB39066006DFA4E /* UmbraCalcUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		16B7ACBA1BB39066006DFA4E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = "jacob berkman";
+				TargetAttributes = {
+					16B7ACC11BB39066006DFA4E = {
+						CreatedOnToolsVersion = 7.0;
+					};
+					16B7ACDA1BB39066006DFA4E = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = 16B7ACC11BB39066006DFA4E;
+					};
+					16B7ACE51BB39066006DFA4E = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = 16B7ACC11BB39066006DFA4E;
+					};
+				};
+			};
+			buildConfigurationList = 16B7ACBD1BB39066006DFA4E /* Build configuration list for PBXProject "UmbraCalc" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 16B7ACB91BB39065006DFA4E;
+			productRefGroup = 16B7ACC31BB39066006DFA4E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				16B7ACC11BB39066006DFA4E /* UmbraCalc */,
+				16B7ACDA1BB39066006DFA4E /* UmbraCalcTests */,
+				16B7ACE51BB39066006DFA4E /* UmbraCalcUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		16B7ACC01BB39066006DFA4E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16B7ACD51BB39066006DFA4E /* LaunchScreen.storyboard in Resources */,
+				16B7ACD21BB39066006DFA4E /* Assets.xcassets in Resources */,
+				16B7ACD01BB39066006DFA4E /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16B7ACD91BB39066006DFA4E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16B7ACE41BB39066006DFA4E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		16B7ACBE1BB39066006DFA4E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16B7ACC91BB39066006DFA4E /* UmbraCalc.xcdatamodeld in Sources */,
+				16B7ACC61BB39066006DFA4E /* AppDelegate.swift in Sources */,
+				16B7ACCB1BB39066006DFA4E /* MasterViewController.swift in Sources */,
+				16B7ACCD1BB39066006DFA4E /* DetailViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16B7ACD71BB39066006DFA4E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16B7ACE01BB39066006DFA4E /* UmbraCalcTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16B7ACE21BB39066006DFA4E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16B7ACEB1BB39066006DFA4E /* UmbraCalcUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		16B7ACDD1BB39066006DFA4E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 16B7ACC11BB39066006DFA4E /* UmbraCalc */;
+			targetProxy = 16B7ACDC1BB39066006DFA4E /* PBXContainerItemProxy */;
+		};
+		16B7ACE81BB39066006DFA4E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 16B7ACC11BB39066006DFA4E /* UmbraCalc */;
+			targetProxy = 16B7ACE71BB39066006DFA4E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		16B7ACCE1BB39066006DFA4E /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				16B7ACCF1BB39066006DFA4E /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		16B7ACD31BB39066006DFA4E /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				16B7ACD41BB39066006DFA4E /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		16B7ACED1BB39066006DFA4E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		16B7ACEE1BB39066006DFA4E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		16B7ACF01BB39066006DFA4E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = UmbraCalc/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = net.87k.UmbraCalc;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		16B7ACF11BB39066006DFA4E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = UmbraCalc/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = net.87k.UmbraCalc;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		16B7ACF31BB39066006DFA4E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = UmbraCalcTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = net.87k.UmbraCalcTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/UmbraCalc.app/UmbraCalc";
+			};
+			name = Debug;
+		};
+		16B7ACF41BB39066006DFA4E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = UmbraCalcTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = net.87k.UmbraCalcTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/UmbraCalc.app/UmbraCalc";
+			};
+			name = Release;
+		};
+		16B7ACF61BB39066006DFA4E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = UmbraCalcUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = net.87k.UmbraCalcUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = UmbraCalc;
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		16B7ACF71BB39066006DFA4E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = UmbraCalcUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = net.87k.UmbraCalcUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = UmbraCalc;
+				USES_XCTRUNNER = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		16B7ACBD1BB39066006DFA4E /* Build configuration list for PBXProject "UmbraCalc" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				16B7ACED1BB39066006DFA4E /* Debug */,
+				16B7ACEE1BB39066006DFA4E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		16B7ACEF1BB39066006DFA4E /* Build configuration list for PBXNativeTarget "UmbraCalc" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				16B7ACF01BB39066006DFA4E /* Debug */,
+				16B7ACF11BB39066006DFA4E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		16B7ACF21BB39066006DFA4E /* Build configuration list for PBXNativeTarget "UmbraCalcTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				16B7ACF31BB39066006DFA4E /* Debug */,
+				16B7ACF41BB39066006DFA4E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		16B7ACF51BB39066006DFA4E /* Build configuration list for PBXNativeTarget "UmbraCalcUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				16B7ACF61BB39066006DFA4E /* Debug */,
+				16B7ACF71BB39066006DFA4E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		16B7ACC71BB39066006DFA4E /* UmbraCalc.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				16B7ACC81BB39066006DFA4E /* UmbraCalc.xcdatamodel */,
+			);
+			currentVersion = 16B7ACC81BB39066006DFA4E /* UmbraCalc.xcdatamodel */;
+			path = UmbraCalc.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 16B7ACBA1BB39066006DFA4E /* Project object */;
+}
