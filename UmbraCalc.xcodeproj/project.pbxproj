@@ -7,15 +7,41 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1699E9571BB6813400EDBCF7 /* VesselTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9561BB6813400EDBCF7 /* VesselTests.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9621BB7021C00EDBCF7 /* Station+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E95A1BB7021C00EDBCF7 /* Station+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9631BB7021C00EDBCF7 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E95B1BB7021C00EDBCF7 /* Station.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9641BB7021C00EDBCF7 /* Part+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E95C1BB7021C00EDBCF7 /* Part+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9651BB7021C00EDBCF7 /* Crew+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E95D1BB7021C00EDBCF7 /* Crew+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9661BB7021C00EDBCF7 /* Vessel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E95E1BB7021C00EDBCF7 /* Vessel+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9671BB7021C00EDBCF7 /* Base+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E95F1BB7021C00EDBCF7 /* Base+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9681BB7021C00EDBCF7 /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9601BB7021C00EDBCF7 /* Base.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9691BB7021C00EDBCF7 /* Kolony+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9611BB7021C00EDBCF7 /* Kolony+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E96B1BB708D600EDBCF7 /* CoreDataStackTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E96A1BB708D600EDBCF7 /* CoreDataStackTestCase.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E96D1BB710E900EDBCF7 /* ManagingObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E96C1BB710E900EDBCF7 /* ManagingObjectContext.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9701BB72A9D00EDBCF7 /* UIKiExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E96F1BB72A9D00EDBCF7 /* UIKiExtensions.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9751BB7358900EDBCF7 /* FetchedDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9741BB7358800EDBCF7 /* FetchedDataSource.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9771BB743FE00EDBCF7 /* KolonyListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9761BB743FE00EDBCF7 /* KolonyListTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9791BB74CFA00EDBCF7 /* CrewListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9781BB74CFA00EDBCF7 /* CrewListTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E97B1BB74F2400EDBCF7 /* StationListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E97A1BB74F2400EDBCF7 /* StationListTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		16B7ACC61BB39066006DFA4E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACC51BB39066006DFA4E /* AppDelegate.swift */; };
 		16B7ACC91BB39066006DFA4E /* UmbraCalc.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACC71BB39066006DFA4E /* UmbraCalc.xcdatamodeld */; };
-		16B7ACCB1BB39066006DFA4E /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACCA1BB39066006DFA4E /* MasterViewController.swift */; };
-		16B7ACCD1BB39066006DFA4E /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACCC1BB39066006DFA4E /* DetailViewController.swift */; };
 		16B7ACD01BB39066006DFA4E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B7ACCE1BB39066006DFA4E /* Main.storyboard */; };
 		16B7ACD21BB39066006DFA4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16B7ACD11BB39066006DFA4E /* Assets.xcassets */; };
 		16B7ACD51BB39066006DFA4E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B7ACD31BB39066006DFA4E /* LaunchScreen.storyboard */; };
-		16B7ACE01BB39066006DFA4E /* UmbraCalcTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACDF1BB39066006DFA4E /* UmbraCalcTests.swift */; };
 		16B7ACEB1BB39066006DFA4E /* UmbraCalcUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACEA1BB39066006DFA4E /* UmbraCalcUITests.swift */; };
+		16B7ACFF1BB3AC51006DFA4E /* Vessel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACF91BB3AC51006DFA4E /* Vessel.swift */; settings = {ASSET_TAGS = (); }; };
+		16B7AD011BB3AC51006DFA4E /* Part.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACFB1BB3AC51006DFA4E /* Part.swift */; settings = {ASSET_TAGS = (); }; };
+		16B7AD031BB3AC51006DFA4E /* Crew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACFD1BB3AC51006DFA4E /* Crew.swift */; settings = {ASSET_TAGS = (); }; };
+		16B7AD051BB3BC50006DFA4E /* CrewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD041BB3BC50006DFA4E /* CrewTests.swift */; settings = {ASSET_TAGS = (); }; };
+		16B7AD071BB3BE57006DFA4E /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD061BB3BE57006DFA4E /* CoreDataStack.swift */; settings = {ASSET_TAGS = (); }; };
+		16B7AD0B1BB3CB8B006DFA4E /* PartTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD0A1BB3CB8B006DFA4E /* PartTests.swift */; settings = {ASSET_TAGS = (); }; };
+		16B7AD0D1BB3CE36006DFA4E /* PartFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD0C1BB3CE36006DFA4E /* PartFixtures.swift */; settings = {ASSET_TAGS = (); }; };
+		16B7AD191BB3E120006DFA4E /* Kolony.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD171BB3E120006DFA4E /* Kolony.swift */; settings = {ASSET_TAGS = (); }; };
+		16B7AD1F1BB5134A006DFA4E /* FoundationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD1E1BB5134A006DFA4E /* FoundationExtensions.swift */; settings = {ASSET_TAGS = (); }; };
+		16B7AD221BB526D9006DFA4E /* ConfigNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD211BB526D9006DFA4E /* ConfigNode.swift */; settings = {ASSET_TAGS = (); }; };
+		16B7AD241BB53035006DFA4E /* ConfigNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD231BB53035006DFA4E /* ConfigNodeTests.swift */; settings = {ASSET_TAGS = (); }; };
+		16B7AD261BB53793006DFA4E /* PartNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD251BB53793006DFA4E /* PartNode.swift */; settings = {ASSET_TAGS = (); }; };
+		16B7AD281BB53D53006DFA4E /* PartNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD271BB53D53006DFA4E /* PartNodeTests.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,21 +62,47 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1699E9561BB6813400EDBCF7 /* VesselTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VesselTests.swift; sourceTree = "<group>"; };
+		1699E95A1BB7021C00EDBCF7 /* Station+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Station+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		1699E95B1BB7021C00EDBCF7 /* Station.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
+		1699E95C1BB7021C00EDBCF7 /* Part+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Part+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		1699E95D1BB7021C00EDBCF7 /* Crew+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Crew+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		1699E95E1BB7021C00EDBCF7 /* Vessel+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Vessel+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		1699E95F1BB7021C00EDBCF7 /* Base+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Base+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		1699E9601BB7021C00EDBCF7 /* Base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Base.swift; sourceTree = "<group>"; };
+		1699E9611BB7021C00EDBCF7 /* Kolony+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Kolony+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		1699E96A1BB708D600EDBCF7 /* CoreDataStackTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStackTestCase.swift; sourceTree = "<group>"; };
+		1699E96C1BB710E900EDBCF7 /* ManagingObjectContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagingObjectContext.swift; sourceTree = "<group>"; };
+		1699E96F1BB72A9D00EDBCF7 /* UIKiExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKiExtensions.swift; sourceTree = "<group>"; };
+		1699E9741BB7358800EDBCF7 /* FetchedDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchedDataSource.swift; sourceTree = "<group>"; };
+		1699E9761BB743FE00EDBCF7 /* KolonyListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KolonyListTableViewController.swift; sourceTree = "<group>"; };
+		1699E9781BB74CFA00EDBCF7 /* CrewListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrewListTableViewController.swift; sourceTree = "<group>"; };
+		1699E97A1BB74F2400EDBCF7 /* StationListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationListTableViewController.swift; sourceTree = "<group>"; };
 		16B7ACC21BB39066006DFA4E /* UmbraCalc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UmbraCalc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		16B7ACC51BB39066006DFA4E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		16B7ACC81BB39066006DFA4E /* UmbraCalc.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UmbraCalc.xcdatamodel; sourceTree = "<group>"; };
-		16B7ACCA1BB39066006DFA4E /* MasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterViewController.swift; sourceTree = "<group>"; };
-		16B7ACCC1BB39066006DFA4E /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		16B7ACCF1BB39066006DFA4E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		16B7ACD11BB39066006DFA4E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		16B7ACD41BB39066006DFA4E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		16B7ACD61BB39066006DFA4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		16B7ACDB1BB39066006DFA4E /* UmbraCalcTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UmbraCalcTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		16B7ACDF1BB39066006DFA4E /* UmbraCalcTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmbraCalcTests.swift; sourceTree = "<group>"; };
 		16B7ACE11BB39066006DFA4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		16B7ACE61BB39066006DFA4E /* UmbraCalcUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UmbraCalcUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		16B7ACEA1BB39066006DFA4E /* UmbraCalcUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmbraCalcUITests.swift; sourceTree = "<group>"; };
 		16B7ACEC1BB39066006DFA4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		16B7ACF91BB3AC51006DFA4E /* Vessel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vessel.swift; sourceTree = "<group>"; };
+		16B7ACFB1BB3AC51006DFA4E /* Part.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Part.swift; sourceTree = "<group>"; };
+		16B7ACFD1BB3AC51006DFA4E /* Crew.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Crew.swift; sourceTree = "<group>"; };
+		16B7AD041BB3BC50006DFA4E /* CrewTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrewTests.swift; sourceTree = "<group>"; };
+		16B7AD061BB3BE57006DFA4E /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		16B7AD0A1BB3CB8B006DFA4E /* PartTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartTests.swift; sourceTree = "<group>"; };
+		16B7AD0C1BB3CE36006DFA4E /* PartFixtures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartFixtures.swift; sourceTree = "<group>"; };
+		16B7AD171BB3E120006DFA4E /* Kolony.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Kolony.swift; sourceTree = "<group>"; };
+		16B7AD1E1BB5134A006DFA4E /* FoundationExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoundationExtensions.swift; sourceTree = "<group>"; };
+		16B7AD211BB526D9006DFA4E /* ConfigNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigNode.swift; sourceTree = "<group>"; };
+		16B7AD231BB53035006DFA4E /* ConfigNodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigNodeTests.swift; sourceTree = "<group>"; };
+		16B7AD251BB53793006DFA4E /* PartNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartNode.swift; sourceTree = "<group>"; };
+		16B7AD271BB53D53006DFA4E /* PartNodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartNodeTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +130,51 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1699E9581BB6814300EDBCF7 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				16B7AD231BB53035006DFA4E /* ConfigNodeTests.swift */,
+				16B7AD041BB3BC50006DFA4E /* CrewTests.swift */,
+				16B7AD0C1BB3CE36006DFA4E /* PartFixtures.swift */,
+				16B7AD271BB53D53006DFA4E /* PartNodeTests.swift */,
+				16B7AD0A1BB3CB8B006DFA4E /* PartTests.swift */,
+				1699E9561BB6813400EDBCF7 /* VesselTests.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		1699E9591BB6815100EDBCF7 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				1699E9781BB74CFA00EDBCF7 /* CrewListTableViewController.swift */,
+				1699E97A1BB74F2400EDBCF7 /* StationListTableViewController.swift */,
+				16B7ACC51BB39066006DFA4E /* AppDelegate.swift */,
+				1699E9741BB7358800EDBCF7 /* FetchedDataSource.swift */,
+				1699E9761BB743FE00EDBCF7 /* KolonyListTableViewController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		1699E9721BB733D800EDBCF7 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				1699E96C1BB710E900EDBCF7 /* ManagingObjectContext.swift */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
+		1699E9731BB733F200EDBCF7 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				16B7ACD11BB39066006DFA4E /* Assets.xcassets */,
+				16B7ACD61BB39066006DFA4E /* Info.plist */,
+				16B7ACD31BB39066006DFA4E /* LaunchScreen.storyboard */,
+				16B7ACCE1BB39066006DFA4E /* Main.storyboard */,
+				16B7ACC71BB39066006DFA4E /* UmbraCalc.xcdatamodeld */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		16B7ACB91BB39065006DFA4E = {
 			isa = PBXGroup;
 			children = (
@@ -101,14 +198,11 @@
 		16B7ACC41BB39066006DFA4E /* UmbraCalc */ = {
 			isa = PBXGroup;
 			children = (
-				16B7ACC51BB39066006DFA4E /* AppDelegate.swift */,
-				16B7ACCA1BB39066006DFA4E /* MasterViewController.swift */,
-				16B7ACCC1BB39066006DFA4E /* DetailViewController.swift */,
-				16B7ACCE1BB39066006DFA4E /* Main.storyboard */,
-				16B7ACD11BB39066006DFA4E /* Assets.xcassets */,
-				16B7ACD31BB39066006DFA4E /* LaunchScreen.storyboard */,
-				16B7ACD61BB39066006DFA4E /* Info.plist */,
-				16B7ACC71BB39066006DFA4E /* UmbraCalc.xcdatamodeld */,
+				1699E9591BB6815100EDBCF7 /* Controllers */,
+				16F999B31BB663730018A685 /* Extensions */,
+				16F999B11BB663080018A685 /* Models */,
+				1699E9721BB733D800EDBCF7 /* Protocols */,
+				1699E9731BB733F200EDBCF7 /* Resources */,
 			);
 			path = UmbraCalc;
 			sourceTree = "<group>";
@@ -116,7 +210,8 @@
 		16B7ACDE1BB39066006DFA4E /* UmbraCalcTests */ = {
 			isa = PBXGroup;
 			children = (
-				16B7ACDF1BB39066006DFA4E /* UmbraCalcTests.swift */,
+				1699E96A1BB708D600EDBCF7 /* CoreDataStackTestCase.swift */,
+				1699E9581BB6814300EDBCF7 /* Models */,
 				16B7ACE11BB39066006DFA4E /* Info.plist */,
 			);
 			path = UmbraCalcTests;
@@ -131,6 +226,37 @@
 			path = UmbraCalcUITests;
 			sourceTree = "<group>";
 		};
+		16F999B11BB663080018A685 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				16B7AD061BB3BE57006DFA4E /* CoreDataStack.swift */,
+				1699E9601BB7021C00EDBCF7 /* Base.swift */,
+				1699E95F1BB7021C00EDBCF7 /* Base+CoreDataProperties.swift */,
+				16B7AD211BB526D9006DFA4E /* ConfigNode.swift */,
+				16B7ACFD1BB3AC51006DFA4E /* Crew.swift */,
+				1699E95D1BB7021C00EDBCF7 /* Crew+CoreDataProperties.swift */,
+				16B7AD171BB3E120006DFA4E /* Kolony.swift */,
+				1699E9611BB7021C00EDBCF7 /* Kolony+CoreDataProperties.swift */,
+				16B7ACFB1BB3AC51006DFA4E /* Part.swift */,
+				1699E95C1BB7021C00EDBCF7 /* Part+CoreDataProperties.swift */,
+				16B7AD251BB53793006DFA4E /* PartNode.swift */,
+				1699E95B1BB7021C00EDBCF7 /* Station.swift */,
+				1699E95A1BB7021C00EDBCF7 /* Station+CoreDataProperties.swift */,
+				16B7ACF91BB3AC51006DFA4E /* Vessel.swift */,
+				1699E95E1BB7021C00EDBCF7 /* Vessel+CoreDataProperties.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		16F999B31BB663730018A685 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				16B7AD1E1BB5134A006DFA4E /* FoundationExtensions.swift */,
+				1699E96F1BB72A9D00EDBCF7 /* UIKiExtensions.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -141,6 +267,7 @@
 				16B7ACBE1BB39066006DFA4E /* Sources */,
 				16B7ACBF1BB39066006DFA4E /* Frameworks */,
 				16B7ACC01BB39066006DFA4E /* Resources */,
+				16B7AD201BB51FCC006DFA4E /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -198,6 +325,7 @@
 				TargetAttributes = {
 					16B7ACC11BB39066006DFA4E = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = BL63K249S3;
 					};
 					16B7ACDA1BB39066006DFA4E = {
 						CreatedOnToolsVersion = 7.0;
@@ -256,15 +384,51 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		16B7AD201BB51FCC006DFA4E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -ex\nPARTS=\"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Parts\"\nmkdir -p \"$PARTS\"\nfind \"$SOURCE_ROOT/Parts\" -name \"*.cfg\" -print0 | xargs -0 -J % cp -v % \"$PARTS\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		16B7ACBE1BB39066006DFA4E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1699E9641BB7021C00EDBCF7 /* Part+CoreDataProperties.swift in Sources */,
 				16B7ACC91BB39066006DFA4E /* UmbraCalc.xcdatamodeld in Sources */,
+				16B7ACFF1BB3AC51006DFA4E /* Vessel.swift in Sources */,
+				1699E9661BB7021C00EDBCF7 /* Vessel+CoreDataProperties.swift in Sources */,
+				1699E9621BB7021C00EDBCF7 /* Station+CoreDataProperties.swift in Sources */,
+				1699E9771BB743FE00EDBCF7 /* KolonyListTableViewController.swift in Sources */,
+				1699E9681BB7021C00EDBCF7 /* Base.swift in Sources */,
 				16B7ACC61BB39066006DFA4E /* AppDelegate.swift in Sources */,
-				16B7ACCB1BB39066006DFA4E /* MasterViewController.swift in Sources */,
-				16B7ACCD1BB39066006DFA4E /* DetailViewController.swift in Sources */,
+				1699E9791BB74CFA00EDBCF7 /* CrewListTableViewController.swift in Sources */,
+				1699E9631BB7021C00EDBCF7 /* Station.swift in Sources */,
+				16B7AD031BB3AC51006DFA4E /* Crew.swift in Sources */,
+				1699E9751BB7358900EDBCF7 /* FetchedDataSource.swift in Sources */,
+				16B7AD071BB3BE57006DFA4E /* CoreDataStack.swift in Sources */,
+				16B7AD011BB3AC51006DFA4E /* Part.swift in Sources */,
+				1699E96D1BB710E900EDBCF7 /* ManagingObjectContext.swift in Sources */,
+				1699E9701BB72A9D00EDBCF7 /* UIKiExtensions.swift in Sources */,
+				1699E9691BB7021C00EDBCF7 /* Kolony+CoreDataProperties.swift in Sources */,
+				16B7AD191BB3E120006DFA4E /* Kolony.swift in Sources */,
+				16B7AD261BB53793006DFA4E /* PartNode.swift in Sources */,
+				1699E9651BB7021C00EDBCF7 /* Crew+CoreDataProperties.swift in Sources */,
+				1699E97B1BB74F2400EDBCF7 /* StationListTableViewController.swift in Sources */,
+				16B7AD221BB526D9006DFA4E /* ConfigNode.swift in Sources */,
+				16B7AD1F1BB5134A006DFA4E /* FoundationExtensions.swift in Sources */,
+				1699E9671BB7021C00EDBCF7 /* Base+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,7 +436,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16B7ACE01BB39066006DFA4E /* UmbraCalcTests.swift in Sources */,
+				16B7AD281BB53D53006DFA4E /* PartNodeTests.swift in Sources */,
+				16B7AD0B1BB3CB8B006DFA4E /* PartTests.swift in Sources */,
+				1699E9571BB6813400EDBCF7 /* VesselTests.swift in Sources */,
+				16B7AD241BB53035006DFA4E /* ConfigNodeTests.swift in Sources */,
+				1699E96B1BB708D600EDBCF7 /* CoreDataStackTestCase.swift in Sources */,
+				16B7AD051BB3BC50006DFA4E /* CrewTests.swift in Sources */,
+				16B7AD0D1BB3CE36006DFA4E /* PartFixtures.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,10 +576,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = UmbraCalc/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.87k.UmbraCalc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -417,10 +590,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = UmbraCalc/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.87k.UmbraCalc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -491,6 +667,7 @@
 				16B7ACF11BB39066006DFA4E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		16B7ACF21BB39066006DFA4E /* Build configuration list for PBXNativeTarget "UmbraCalcTests" */ = {
 			isa = XCConfigurationList;
@@ -499,6 +676,7 @@
 				16B7ACF41BB39066006DFA4E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		16B7ACF51BB39066006DFA4E /* Build configuration list for PBXNativeTarget "UmbraCalcUITests" */ = {
 			isa = XCConfigurationList;
@@ -507,6 +685,7 @@
 				16B7ACF71BB39066006DFA4E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
