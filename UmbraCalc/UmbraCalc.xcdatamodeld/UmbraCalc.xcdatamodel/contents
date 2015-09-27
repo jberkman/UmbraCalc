@@ -4,8 +4,8 @@
         <relationship name="kolony" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Kolony" inverseName="bases" inverseEntity="Kolony" syncable="YES"/>
     </entity>
     <entity name="Crew" representedClassName=".Crew" syncable="YES">
-        <attribute name="career" attributeType="String" syncable="YES"/>
-        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="career" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="starCount" attributeType="Integer 16" minValueString="0" maxValueString="5" defaultValueString="0" syncable="YES"/>
         <relationship name="part" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Part" inverseName="crew" inverseEntity="Part" syncable="YES"/>
     </entity>

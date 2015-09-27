@@ -33,3 +33,25 @@ extension NSObject {
     }
 
 }
+
+class ObserverContext: NSObject {
+    let keyPath: String
+    let options: NSKeyValueObservingOptions
+    var context = 0
+    init(keyPath: String, options: NSKeyValueObservingOptions = []) {
+        self.keyPath = keyPath
+        self.options = options
+    }
+}
+
+extension NSObject {
+
+    func addObserver(observer: NSObject, context: ObserverContext) {
+        addObserver(observer, forKeyPath: context.keyPath, options: context.options, context: &context.context)
+    }
+
+    func removeObserver(observer: NSObject, context: ObserverContext) {
+        removeObserver(observer, forKeyPath: context.keyPath, context: &context.context)
+    }
+    
+}

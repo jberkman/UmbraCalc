@@ -23,6 +23,8 @@
 		1699E9771BB743FE00EDBCF7 /* KolonyListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9761BB743FE00EDBCF7 /* KolonyListTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9791BB74CFA00EDBCF7 /* CrewListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9781BB74CFA00EDBCF7 /* CrewListTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E97B1BB74F2400EDBCF7 /* StationListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E97A1BB74F2400EDBCF7 /* StationListTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E97D1BB7992000EDBCF7 /* CrewDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E97C1BB7992000EDBCF7 /* CrewDetailTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9811BB7C7AD00EDBCF7 /* StringListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9801BB7C7AD00EDBCF7 /* StringListTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		16B7ACC61BB39066006DFA4E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACC51BB39066006DFA4E /* AppDelegate.swift */; };
 		16B7ACC91BB39066006DFA4E /* UmbraCalc.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACC71BB39066006DFA4E /* UmbraCalc.xcdatamodeld */; };
 		16B7ACD01BB39066006DFA4E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B7ACCE1BB39066006DFA4E /* Main.storyboard */; };
@@ -78,6 +80,8 @@
 		1699E9761BB743FE00EDBCF7 /* KolonyListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KolonyListTableViewController.swift; sourceTree = "<group>"; };
 		1699E9781BB74CFA00EDBCF7 /* CrewListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrewListTableViewController.swift; sourceTree = "<group>"; };
 		1699E97A1BB74F2400EDBCF7 /* StationListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationListTableViewController.swift; sourceTree = "<group>"; };
+		1699E97C1BB7992000EDBCF7 /* CrewDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrewDetailTableViewController.swift; sourceTree = "<group>"; };
+		1699E9801BB7C7AD00EDBCF7 /* StringListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringListTableViewController.swift; sourceTree = "<group>"; };
 		16B7ACC21BB39066006DFA4E /* UmbraCalc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UmbraCalc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		16B7ACC51BB39066006DFA4E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		16B7ACC81BB39066006DFA4E /* UmbraCalc.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UmbraCalc.xcdatamodel; sourceTree = "<group>"; };
@@ -146,11 +150,13 @@
 		1699E9591BB6815100EDBCF7 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				1699E9781BB74CFA00EDBCF7 /* CrewListTableViewController.swift */,
-				1699E97A1BB74F2400EDBCF7 /* StationListTableViewController.swift */,
 				16B7ACC51BB39066006DFA4E /* AppDelegate.swift */,
+				1699E97C1BB7992000EDBCF7 /* CrewDetailTableViewController.swift */,
+				1699E9781BB74CFA00EDBCF7 /* CrewListTableViewController.swift */,
 				1699E9741BB7358800EDBCF7 /* FetchedDataSource.swift */,
 				1699E9761BB743FE00EDBCF7 /* KolonyListTableViewController.swift */,
+				1699E97A1BB74F2400EDBCF7 /* StationListTableViewController.swift */,
+				1699E9801BB7C7AD00EDBCF7 /* StringListTableViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -229,10 +235,10 @@
 		16F999B11BB663080018A685 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				16B7AD061BB3BE57006DFA4E /* CoreDataStack.swift */,
 				1699E9601BB7021C00EDBCF7 /* Base.swift */,
 				1699E95F1BB7021C00EDBCF7 /* Base+CoreDataProperties.swift */,
 				16B7AD211BB526D9006DFA4E /* ConfigNode.swift */,
+				16B7AD061BB3BE57006DFA4E /* CoreDataStack.swift */,
 				16B7ACFD1BB3AC51006DFA4E /* Crew.swift */,
 				1699E95D1BB7021C00EDBCF7 /* Crew+CoreDataProperties.swift */,
 				16B7AD171BB3E120006DFA4E /* Kolony.swift */,
@@ -414,6 +420,7 @@
 				1699E9681BB7021C00EDBCF7 /* Base.swift in Sources */,
 				16B7ACC61BB39066006DFA4E /* AppDelegate.swift in Sources */,
 				1699E9791BB74CFA00EDBCF7 /* CrewListTableViewController.swift in Sources */,
+				1699E97D1BB7992000EDBCF7 /* CrewDetailTableViewController.swift in Sources */,
 				1699E9631BB7021C00EDBCF7 /* Station.swift in Sources */,
 				16B7AD031BB3AC51006DFA4E /* Crew.swift in Sources */,
 				1699E9751BB7358900EDBCF7 /* FetchedDataSource.swift in Sources */,
@@ -424,6 +431,7 @@
 				1699E9691BB7021C00EDBCF7 /* Kolony+CoreDataProperties.swift in Sources */,
 				16B7AD191BB3E120006DFA4E /* Kolony.swift in Sources */,
 				16B7AD261BB53793006DFA4E /* PartNode.swift in Sources */,
+				1699E9811BB7C7AD00EDBCF7 /* StringListTableViewController.swift in Sources */,
 				1699E9651BB7021C00EDBCF7 /* Crew+CoreDataProperties.swift in Sources */,
 				1699E97B1BB74F2400EDBCF7 /* StationListTableViewController.swift in Sources */,
 				16B7AD221BB526D9006DFA4E /* ConfigNode.swift in Sources */,
