@@ -27,6 +27,7 @@
 		1699E9811BB7C7AD00EDBCF7 /* StringListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9801BB7C7AD00EDBCF7 /* StringListTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9851BB83C4A00EDBCF7 /* EmptyDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9841BB83C4A00EDBCF7 /* EmptyDetailViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9871BB8494B00EDBCF7 /* CoreDataAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9861BB8494B00EDBCF7 /* CoreDataAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9891BB8871F00EDBCF7 /* MasterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9881BB8871F00EDBCF7 /* MasterTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		16B7ACC61BB39066006DFA4E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACC51BB39066006DFA4E /* AppDelegate.swift */; };
 		16B7ACC91BB39066006DFA4E /* UmbraCalc.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACC71BB39066006DFA4E /* UmbraCalc.xcdatamodeld */; };
 		16B7ACD01BB39066006DFA4E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B7ACCE1BB39066006DFA4E /* Main.storyboard */; };
@@ -86,6 +87,7 @@
 		1699E9801BB7C7AD00EDBCF7 /* StringListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringListTableViewController.swift; sourceTree = "<group>"; };
 		1699E9841BB83C4A00EDBCF7 /* EmptyDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyDetailViewController.swift; sourceTree = "<group>"; };
 		1699E9861BB8494B00EDBCF7 /* CoreDataAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataAdditions.swift; sourceTree = "<group>"; };
+		1699E9881BB8871F00EDBCF7 /* MasterTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterTableViewController.swift; sourceTree = "<group>"; };
 		16B7ACC21BB39066006DFA4E /* UmbraCalc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UmbraCalc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		16B7ACC51BB39066006DFA4E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		16B7ACC81BB39066006DFA4E /* UmbraCalc.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UmbraCalc.xcdatamodel; sourceTree = "<group>"; };
@@ -154,6 +156,7 @@
 		1699E9591BB6815100EDBCF7 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				1699E9881BB8871F00EDBCF7 /* MasterTableViewController.swift */,
 				16B7ACC51BB39066006DFA4E /* AppDelegate.swift */,
 				1699E97C1BB7992000EDBCF7 /* CrewDetailTableViewController.swift */,
 				1699E9781BB74CFA00EDBCF7 /* CrewListTableViewController.swift */,
@@ -445,6 +448,7 @@
 				16B7AD221BB526D9006DFA4E /* ConfigNode.swift in Sources */,
 				16B7AD1F1BB5134A006DFA4E /* FoundationExtensions.swift in Sources */,
 				1699E9671BB7021C00EDBCF7 /* Base+CoreDataProperties.swift in Sources */,
+				1699E9891BB8871F00EDBCF7 /* MasterTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

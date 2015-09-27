@@ -27,7 +27,7 @@ class StationListTableViewController: UITableViewController {
             cell.textLabel!.text = station.name
         }
 
-        dataSource.tableView = tableView
+        dataSource.tableViewController = self
 
         let fetchRequest = NSFetchRequest(entityName: "Station")
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]

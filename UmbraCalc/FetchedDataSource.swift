@@ -20,9 +20,10 @@ class FetchedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
 
     var reuseIdentifier = "reuseIdentifier"
     var configureCell: ((cell: Cell, entity: Entity) -> Void)?
-    var tableView: UITableView? {
+    var tableViewController: UITableViewController? {
         didSet {
-            tableView?.dataSource = self
+            oldValue?.tableView.dataSource = nil
+            tableViewController?.tableView.dataSource = self
         }
     }
 
@@ -55,7 +56,7 @@ class FetchedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
             do {
                 try fetchedResultsController?.performFetch()
                 fetchedResultsController?.delegate = self
-                tableView?.reloadData()
+                tableViewController?.tableView.reloadData()
             } catch let error as NSError {
                 NSLog("Could not perform fetch: %@", error)
                 fetchedResultsController = nil
@@ -64,6 +65,21 @@ class FetchedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
     }
 
     var entities: [Entity]? { return fetchedResultsController?.fetchedObjects as? [Entity] }
+
+    var selectedEntity: Entity? {
+        didSet {
+            if oldValue != nil {
+                NSNotificationCenter.defaultCenter().removeObserver(self, name: willDeleteEntityNotification, object: oldValue!)
+            }
+            if selectedEntity != nil {
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: "willDeleteEntityWithNotification:", name: willDeleteEntityNotification, object: selectedEntity!)
+            }
+        }
+    }
+
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: willDeleteEntityNotification, object: nil)
+    }
 
     private func createFetchedResultsController() -> NSFetchedResultsController? {
         guard let managedObjectContext = managedObjectContext, fetchRequest = fetchRequest else { return nil }
@@ -76,6 +92,23 @@ class FetchedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
 
     func indexPathOfEntity(entity: Entity) -> NSIndexPath? {
         return fetchedResultsController?.indexPathForObject(entity)
+    }
+
+    @objc private func willDeleteEntityWithNotification(notification: NSNotification) {
+        guard tableViewController?.splitViewController?.collapsed == false else {
+            selectedEntity = nil
+            return
+        }
+
+        guard let entity = entities?.lazy.filter({ $0 != self.selectedEntity }).first,
+            indexPath = indexPathOfEntity(entity) else {
+                selectedEntity = nil
+                guard let empty = tableViewController?.storyboard?.instantiateViewControllerWithIdentifier("emptyDetailViewController") else { return }
+                tableViewController?.showDetailViewController(empty, sender: self)
+                return
+        }
+
+        (tableViewController as? MasterTableViewController)?.showDetailViewControllerForEntityAtIndexPath(indexPath)
     }
 
     // extension FetchedTableViewController: UITableViewDataSource
@@ -117,16 +150,16 @@ class FetchedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
 
     // extension FetchedTableViewController: UIFetchedResultsControllerDelegate
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
-        tableView?.beginUpdates()
+        tableViewController?.tableView.beginUpdates()
     }
 
     func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
         switch type {
         case .Insert:
-            tableView?.insertSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+            tableViewController?.tableView.insertSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
 
         case .Delete:
-            tableView?.deleteSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+            tableViewController?.tableView.deleteSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
 
         default:
             break
@@ -136,23 +169,23 @@ class FetchedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
     func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         switch type {
         case .Insert:
-            tableView?.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
+            tableViewController?.tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
 
         case .Delete:
-            tableView?.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
+            tableViewController?.tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
 
         case .Update:
-            guard let cell = tableView?.cellForRowAtIndexPath(indexPath!) as? Cell else { break }
+            guard let cell = tableViewController?.tableView.cellForRowAtIndexPath(indexPath!) as? Cell else { break }
             configureCell?(cell: cell, entity: entityAtIndexPath(indexPath!)!)
 
         case .Move:
-            tableView?.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
-            tableView?.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
+            tableViewController?.tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
+            tableViewController?.tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
         }
     }
 
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        tableView?.endUpdates()
+        tableViewController?.tableView.endUpdates()
     }
 
 }

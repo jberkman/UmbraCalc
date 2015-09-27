@@ -27,7 +27,7 @@ class KolonyListTableViewController: UITableViewController {
             cell.textLabel!.text = kolony.name
         }
 
-        dataSource.tableView = tableView
+        dataSource.tableViewController = self
 
         let fetchRequest = NSFetchRequest(entityName: "Kolony")
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]

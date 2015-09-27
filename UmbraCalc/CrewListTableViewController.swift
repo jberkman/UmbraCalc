@@ -16,37 +16,12 @@
 import CoreData
 import UIKit
 
-class CrewListTableViewController: UITableViewController {
-
-    @IBOutlet weak var addButton: UIBarButtonItem!
+class CrewListTableViewController: MasterTableViewController {
 
     private lazy var dataSource: FetchedDataSource<Crew, UITableViewCell> = FetchedDataSource()
 
-    private var currentAccessoryType: UITableViewCellAccessoryType {
-        return splitViewController?.collapsed == false ? .None : .DisclosureIndicator
-    }
-
-    private var selectedCrew: Crew? {
-        didSet {
-            if oldValue != nil {
-                NSNotificationCenter.defaultCenter().removeObserver(self, name: willDeleteEntityNotification, object: oldValue!)
-            }
-            if selectedCrew != nil {
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: "willDeleteCrewWithNotification:", name: willDeleteEntityNotification, object: selectedCrew!)
-            }
-            showEmptyDetailViewController = false
-        }
-    }
-
-    private var showEmptyDetailViewController = false
-
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: willDeleteEntityNotification, object: nil)
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = editButtonItem()
 
         dataSource.configureCell = { [weak self] (cell: UITableViewCell, crew: Crew) in
             guard self != nil else { return }
@@ -62,22 +37,15 @@ class CrewListTableViewController: UITableViewController {
             cell.editingAccessoryType = accessoryType
         }
 
-        dataSource.tableView = tableView
+        dataSource.tableViewController = self
 
         let fetchRequest = NSFetchRequest(entityName: "Crew")
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
         dataSource.fetchRequest = fetchRequest
     }
 
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        updateVisibleAccessoryTypes()
-        updateDetailView()
-    }
-
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         guard let identifier = segue.identifier else { return }
-        print(__FUNCTION__, identifier)
         switch identifier {
         case "insertCrew":
             guard let crewDetail = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? CrewDetailTableViewController else { return }
@@ -96,50 +64,19 @@ class CrewListTableViewController: UITableViewController {
 
             crewDetail.crew = crew
             crewDetail.navigationItem.rightBarButtonItem = crewDetail.editButtonItem()
-            selectedCrew = crew
+            dataSource.selectedEntity = crew
 
         default:
             break
         }
     }
 
-    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        updateVisibleAccessoryTypes()
-    }
-
-    private func updateDetailView() {
-        guard splitViewController?.collapsed == false && tableView.indexPathForSelectedRow == nil else { return }
-        guard tableView.numberOfRowsInSection(0) > 0 else {
-            guard let emptyDetailViewController = storyboard?.instantiateViewControllerWithIdentifier("emptyDetailViewController") else { return }
-            showDetailViewController(emptyDetailViewController, sender: self)
-            return
-        }
-        editCrewAtIndexPath(NSIndexPath(forRow: 0, inSection: 0))
-    }
-
-    private func updateVisibleAccessoryTypes() {
-        let accessoryType = currentAccessoryType
-        tableView.visibleCells.forEach {
-            $0.accessoryType = accessoryType
-            $0.editingAccessoryType = accessoryType
-        }
-    }
-
-    override func setEditing(editing: Bool, animated: Bool) {
-        super.setEditing(editing, animated: animated)
-        navigationItem.setLeftBarButtonItem(editing || navigationController?.viewControllers.first == self ? addButton : nil, animated: animated)
-    }
-
-    private func editCrewAtIndexPath(indexPath: NSIndexPath) {
-        tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
+    override func showDetailViewControllerForEntityAtIndexPath(indexPath: NSIndexPath) {
         performSegueWithIdentifier("editCrew", sender: indexPath)
+        tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
     }
 
-}
-
-extension CrewListTableViewController {
-
+    // Crew detail button handlers
     @objc private func crewDetailViewControllerDidCancel() {
         dismissViewControllerAnimated(true, completion: nil)
     }
@@ -155,7 +92,7 @@ extension CrewListTableViewController {
             guard self.splitViewController?.collapsed == false,
                 let crewToSelect = self.dataSource.managedObjectContext?.objectWithID(objectID) as? Crew,
                 indexPath = self.dataSource.indexPathOfEntity(crewToSelect) else { return }
-            self.editCrewAtIndexPath(indexPath)
+            self.showDetailViewControllerForEntityAtIndexPath(indexPath)
         }
     }
 
@@ -163,42 +100,16 @@ extension CrewListTableViewController {
 
 extension CrewListTableViewController {
 
-    @objc private func willDeleteCrewWithNotification(notification: NSNotification) {
-        guard splitViewController?.collapsed == false else {
-            selectedCrew = nil
-            return
-        }
-
-        guard let crew = dataSource.entities?.lazy.filter({ $0 != self.selectedCrew }).first,
-            indexPath = dataSource.indexPathOfEntity(crew) else {
-                selectedCrew = nil
-                guard let empty = storyboard?.instantiateViewControllerWithIdentifier("emptyDetailViewController") else { return }
-                showDetailViewController(empty, sender: self)
-                return
-        }
-
-        editCrewAtIndexPath(indexPath)
+    override func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
+        guard dataSource.selectedEntity == nil else { return nil }
+        return super.splitViewController(splitViewController, separateSecondaryViewControllerFromPrimaryViewController: primaryViewController)
     }
-
 }
 
 extension CrewListTableViewController: ManagingObjectContextContainer {
 
     func setManagingObjectContext(managingObjectContext: ManagingObjectContext) {
         dataSource.managedObjectContext = managingObjectContext.managedObjectContext
-    }
-    
-}
-
-extension CrewListTableViewController: UISplitViewControllerDelegate {
-
-    func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
-        guard selectedCrew == nil else { return nil }
-        return storyboard?.instantiateViewControllerWithIdentifier("emptyDetailViewController")
-    }
-
-    func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController, ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {
-        return secondaryViewController is EmptyDetailViewController
     }
 
 }
