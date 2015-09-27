@@ -2,7 +2,7 @@
 //  Crew+CoreDataProperties.swift
 //  UmbraCalc
 //
-//  Created by jacob berkman on 2015-09-26.
+//  Created by jacob berkman on 2015-09-27.
 //  Copyright © 2015 jacob berkman.
 //
 //  Based on and includes portions of Moduler Kolonization System by RoverDude
@@ -22,7 +22,6 @@ import CoreData
 extension Crew {
 
     @NSManaged var career: String?
-    @NSManaged var name: String?
     @NSManaged var starCount: Int16
     @NSManaged var part: Part?
 

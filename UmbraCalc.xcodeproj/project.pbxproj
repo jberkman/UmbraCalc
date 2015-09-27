@@ -28,6 +28,13 @@
 		1699E9851BB83C4A00EDBCF7 /* EmptyDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9841BB83C4A00EDBCF7 /* EmptyDetailViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9871BB8494B00EDBCF7 /* CoreDataAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9861BB8494B00EDBCF7 /* CoreDataAdditions.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9891BB8871F00EDBCF7 /* MasterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9881BB8871F00EDBCF7 /* MasterTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E98B1BB8A20300EDBCF7 /* VesselDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E98A1BB8A20300EDBCF7 /* VesselDetailTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E98D1BB8A57300EDBCF7 /* DetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E98C1BB8A57300EDBCF7 /* DetailTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E98F1BB8CC1300EDBCF7 /* CrewFetchedDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E98E1BB8CC1300EDBCF7 /* CrewFetchedDataSource.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9921BB8D1F300EDBCF7 /* NamedFetchedDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9911BB8D1F300EDBCF7 /* NamedFetchedDataSource.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9941BB8D51000EDBCF7 /* NamedType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9931BB8D51000EDBCF7 /* NamedType.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9971BB8D65300EDBCF7 /* NamedEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9951BB8D65300EDBCF7 /* NamedEntity+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E9981BB8D65300EDBCF7 /* NamedEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9961BB8D65300EDBCF7 /* NamedEntity.swift */; settings = {ASSET_TAGS = (); }; };
 		16B7ACC61BB39066006DFA4E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACC51BB39066006DFA4E /* AppDelegate.swift */; };
 		16B7ACC91BB39066006DFA4E /* UmbraCalc.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACC71BB39066006DFA4E /* UmbraCalc.xcdatamodeld */; };
 		16B7ACD01BB39066006DFA4E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B7ACCE1BB39066006DFA4E /* Main.storyboard */; };
@@ -88,6 +95,13 @@
 		1699E9841BB83C4A00EDBCF7 /* EmptyDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyDetailViewController.swift; sourceTree = "<group>"; };
 		1699E9861BB8494B00EDBCF7 /* CoreDataAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataAdditions.swift; sourceTree = "<group>"; };
 		1699E9881BB8871F00EDBCF7 /* MasterTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterTableViewController.swift; sourceTree = "<group>"; };
+		1699E98A1BB8A20300EDBCF7 /* VesselDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VesselDetailTableViewController.swift; sourceTree = "<group>"; };
+		1699E98C1BB8A57300EDBCF7 /* DetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailTableViewController.swift; sourceTree = "<group>"; };
+		1699E98E1BB8CC1300EDBCF7 /* CrewFetchedDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrewFetchedDataSource.swift; sourceTree = "<group>"; };
+		1699E9911BB8D1F300EDBCF7 /* NamedFetchedDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NamedFetchedDataSource.swift; sourceTree = "<group>"; };
+		1699E9931BB8D51000EDBCF7 /* NamedType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NamedType.swift; sourceTree = "<group>"; };
+		1699E9951BB8D65300EDBCF7 /* NamedEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NamedEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		1699E9961BB8D65300EDBCF7 /* NamedEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NamedEntity.swift; sourceTree = "<group>"; };
 		16B7ACC21BB39066006DFA4E /* UmbraCalc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UmbraCalc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		16B7ACC51BB39066006DFA4E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		16B7ACC81BB39066006DFA4E /* UmbraCalc.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UmbraCalc.xcdatamodel; sourceTree = "<group>"; };
@@ -156,15 +170,16 @@
 		1699E9591BB6815100EDBCF7 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				1699E9881BB8871F00EDBCF7 /* MasterTableViewController.swift */,
 				16B7ACC51BB39066006DFA4E /* AppDelegate.swift */,
 				1699E97C1BB7992000EDBCF7 /* CrewDetailTableViewController.swift */,
 				1699E9781BB74CFA00EDBCF7 /* CrewListTableViewController.swift */,
+				1699E98C1BB8A57300EDBCF7 /* DetailTableViewController.swift */,
 				1699E9841BB83C4A00EDBCF7 /* EmptyDetailViewController.swift */,
-				1699E9741BB7358800EDBCF7 /* FetchedDataSource.swift */,
 				1699E9761BB743FE00EDBCF7 /* KolonyListTableViewController.swift */,
+				1699E9881BB8871F00EDBCF7 /* MasterTableViewController.swift */,
 				1699E97A1BB74F2400EDBCF7 /* StationListTableViewController.swift */,
 				1699E9801BB7C7AD00EDBCF7 /* StringListTableViewController.swift */,
+				1699E98A1BB8A20300EDBCF7 /* VesselDetailTableViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -173,6 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				1699E96C1BB710E900EDBCF7 /* ManagingObjectContext.swift */,
+				1699E9931BB8D51000EDBCF7 /* NamedType.swift */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -187,6 +203,16 @@
 				16B7ACC71BB39066006DFA4E /* UmbraCalc.xcdatamodeld */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		1699E9901BB8D0F900EDBCF7 /* DataSources */ = {
+			isa = PBXGroup;
+			children = (
+				1699E98E1BB8CC1300EDBCF7 /* CrewFetchedDataSource.swift */,
+				1699E9741BB7358800EDBCF7 /* FetchedDataSource.swift */,
+				1699E9911BB8D1F300EDBCF7 /* NamedFetchedDataSource.swift */,
+			);
+			name = DataSources;
 			sourceTree = "<group>";
 		};
 		16B7ACB91BB39065006DFA4E = {
@@ -213,6 +239,7 @@
 			isa = PBXGroup;
 			children = (
 				1699E9591BB6815100EDBCF7 /* Controllers */,
+				1699E9901BB8D0F900EDBCF7 /* DataSources */,
 				16F999B31BB663730018A685 /* Extensions */,
 				16F999B11BB663080018A685 /* Models */,
 				1699E9721BB733D800EDBCF7 /* Protocols */,
@@ -251,6 +278,8 @@
 				1699E95D1BB7021C00EDBCF7 /* Crew+CoreDataProperties.swift */,
 				16B7AD171BB3E120006DFA4E /* Kolony.swift */,
 				1699E9611BB7021C00EDBCF7 /* Kolony+CoreDataProperties.swift */,
+				1699E9961BB8D65300EDBCF7 /* NamedEntity.swift */,
+				1699E9951BB8D65300EDBCF7 /* NamedEntity+CoreDataProperties.swift */,
 				16B7ACFB1BB3AC51006DFA4E /* Part.swift */,
 				1699E95C1BB7021C00EDBCF7 /* Part+CoreDataProperties.swift */,
 				16B7AD251BB53793006DFA4E /* PartNode.swift */,
@@ -422,9 +451,11 @@
 			files = (
 				1699E9641BB7021C00EDBCF7 /* Part+CoreDataProperties.swift in Sources */,
 				16B7ACC91BB39066006DFA4E /* UmbraCalc.xcdatamodeld in Sources */,
+				1699E9981BB8D65300EDBCF7 /* NamedEntity.swift in Sources */,
 				16B7ACFF1BB3AC51006DFA4E /* Vessel.swift in Sources */,
 				1699E9661BB7021C00EDBCF7 /* Vessel+CoreDataProperties.swift in Sources */,
 				1699E9871BB8494B00EDBCF7 /* CoreDataAdditions.swift in Sources */,
+				1699E98F1BB8CC1300EDBCF7 /* CrewFetchedDataSource.swift in Sources */,
 				1699E9621BB7021C00EDBCF7 /* Station+CoreDataProperties.swift in Sources */,
 				1699E9771BB743FE00EDBCF7 /* KolonyListTableViewController.swift in Sources */,
 				1699E9681BB7021C00EDBCF7 /* Base.swift in Sources */,
@@ -436,14 +467,19 @@
 				1699E9751BB7358900EDBCF7 /* FetchedDataSource.swift in Sources */,
 				16B7AD071BB3BE57006DFA4E /* CoreDataStack.swift in Sources */,
 				16B7AD011BB3AC51006DFA4E /* Part.swift in Sources */,
+				1699E9921BB8D1F300EDBCF7 /* NamedFetchedDataSource.swift in Sources */,
+				1699E98D1BB8A57300EDBCF7 /* DetailTableViewController.swift in Sources */,
 				1699E96D1BB710E900EDBCF7 /* ManagingObjectContext.swift in Sources */,
 				1699E9701BB72A9D00EDBCF7 /* UIKiExtensions.swift in Sources */,
+				1699E9971BB8D65300EDBCF7 /* NamedEntity+CoreDataProperties.swift in Sources */,
 				1699E9691BB7021C00EDBCF7 /* Kolony+CoreDataProperties.swift in Sources */,
 				16B7AD191BB3E120006DFA4E /* Kolony.swift in Sources */,
 				16B7AD261BB53793006DFA4E /* PartNode.swift in Sources */,
 				1699E9811BB7C7AD00EDBCF7 /* StringListTableViewController.swift in Sources */,
 				1699E9851BB83C4A00EDBCF7 /* EmptyDetailViewController.swift in Sources */,
 				1699E9651BB7021C00EDBCF7 /* Crew+CoreDataProperties.swift in Sources */,
+				1699E98B1BB8A20300EDBCF7 /* VesselDetailTableViewController.swift in Sources */,
+				1699E9941BB8D51000EDBCF7 /* NamedType.swift in Sources */,
 				1699E97B1BB74F2400EDBCF7 /* StationListTableViewController.swift in Sources */,
 				16B7AD221BB526D9006DFA4E /* ConfigNode.swift in Sources */,
 				16B7AD1F1BB5134A006DFA4E /* FoundationExtensions.swift in Sources */,

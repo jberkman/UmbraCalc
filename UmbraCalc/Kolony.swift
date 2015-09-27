@@ -16,7 +16,7 @@
 import Foundation
 import CoreData
 
-class Kolony: NSManagedObject {
+class Kolony: NamedEntity {
 
     func withName(name: String) -> Self {
         return withValue(name, forKey: "name")

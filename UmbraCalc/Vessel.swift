@@ -19,7 +19,7 @@ import CoreData
 private let minEfficiency = 0.25
 private let maxEfficiency = 2.5
 
-class Vessel: NSManagedObject {
+class Vessel: NamedEntity {
 
     func withName(name: String) -> Self {
         return withValue(name, forKey: "name")
@@ -105,11 +105,11 @@ extension ManagingObjectContext {
 extension Part {
 
     var partsEfficiency: Double {
-        guard !efficiencyParts.isEmpty else { return 0 }
+        guard efficiencyParts?.isEmpty != true else { return 0 }
         guard let vessel = vessel else { return 0 }
         return Double(vessel.efficiencyParts
-            .filter { efficiencyParts[$0.name] != nil }
-            .map { Int($0.count) * efficiencyParts[$0.name]! }
+            .filter { $0.name != nil && efficiencyParts![$0.name!] != nil }
+            .map { Int($0.count) * efficiencyParts![$0.name!]! }
             .reduce(0, combine: +))
     }
 
@@ -125,7 +125,7 @@ extension Part {
 
     var efficiency: Double {
         let minEfficiency = 0.25
-        return efficiencyParts.isEmpty ? crewEfficiency : min(minEfficiency, crewEfficiency + partsEfficiency)
+        return efficiencyParts?.isEmpty != false ? crewEfficiency : min(minEfficiency, crewEfficiency + partsEfficiency)
     }
 
 }

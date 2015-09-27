@@ -21,7 +21,7 @@ class MasterTableViewController: UITableViewController {
     @IBOutlet weak var addButton: UIBarButtonItem?
 
     var currentAccessoryType: UITableViewCellAccessoryType {
-        return splitViewController?.collapsed == false ? .None : .DisclosureIndicator
+        return splitViewController?.delegate === self && splitViewController?.collapsed == false ? .None : .DisclosureIndicator
     }
 
     override func viewDidLoad() {
@@ -29,34 +29,27 @@ class MasterTableViewController: UITableViewController {
         navigationItem.rightBarButtonItem = editButtonItem()
     }
 
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        updateVisibleAccessoryTypes()
-        updateDetailView()
-    }
-
     override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        updateVisibleAccessoryTypes()
+
         updateDetailView()
+
+        let accessoryType = currentAccessoryType
+        clearsSelectionOnViewWillAppear = splitViewController?.delegate === self || splitViewController?.collapsed != false
+        tableView.visibleCells.forEach {
+            $0.accessoryType = accessoryType
+            $0.editingAccessoryType = accessoryType
+        }
     }
 
     private func updateDetailView() {
-        guard splitViewController?.collapsed == false && tableView.indexPathForSelectedRow == nil else { return }
+        guard splitViewController?.delegate === self && splitViewController?.collapsed == false && tableView.indexPathForSelectedRow == nil else { return }
         guard tableView.numberOfRowsInSection(0) > 0 else {
             guard let emptyDetailViewController = storyboard?.instantiateViewControllerWithIdentifier("emptyDetailViewController") else { return }
             showDetailViewController(emptyDetailViewController, sender: self)
             return
         }
         showDetailViewControllerForEntityAtIndexPath(NSIndexPath(forRow: 0, inSection: 0))
-    }
-
-    private func updateVisibleAccessoryTypes() {
-        let accessoryType = currentAccessoryType
-        tableView.visibleCells.forEach {
-            $0.accessoryType = accessoryType
-            $0.editingAccessoryType = accessoryType
-        }
     }
 
     override func setEditing(editing: Bool, animated: Bool) {

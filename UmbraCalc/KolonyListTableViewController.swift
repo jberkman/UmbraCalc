@@ -18,24 +18,16 @@ import UIKit
 
 class KolonyListTableViewController: MasterTableViewController {
 
-    private lazy var dataSource: FetchedDataSource<Kolony, UITableViewCell> = FetchedDataSource()
+    private lazy var dataSource: NamedEntityFetchedDataSource<Kolony, UITableViewCell> = NamedEntityFetchedDataSource()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        dataSource.configureCell = { (cell: UITableViewCell, kolony: Kolony) in
-            cell.textLabel!.text = kolony.name
-        }
-
         dataSource.tableViewController = self
-
-        let fetchRequest = NSFetchRequest(entityName: "Kolony")
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-        dataSource.fetchRequest = fetchRequest
+        dataSource.reloadData()
     }
 
     override func showDetailViewControllerForEntityAtIndexPath(indexPath: NSIndexPath) {
-        performSegueWithIdentifier("editKolony", sender: indexPath)
+//        performSegueWithIdentifier("editKolony", sender: indexPath)
         tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
     }
 

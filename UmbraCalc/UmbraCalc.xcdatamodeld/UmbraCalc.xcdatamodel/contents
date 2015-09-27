@@ -3,15 +3,16 @@
     <entity name="Base" representedClassName=".Base" parentEntity="Vessel" syncable="YES">
         <relationship name="kolony" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Kolony" inverseName="bases" inverseEntity="Kolony" syncable="YES"/>
     </entity>
-    <entity name="Crew" representedClassName=".Crew" syncable="YES">
+    <entity name="Crew" representedClassName=".Crew" parentEntity="NamedEntity" syncable="YES">
         <attribute name="career" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="starCount" attributeType="Integer 16" minValueString="0" maxValueString="5" defaultValueString="0" syncable="YES"/>
         <relationship name="part" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Part" inverseName="crew" inverseEntity="Part" syncable="YES"/>
     </entity>
-    <entity name="Kolony" representedClassName=".Kolony" syncable="YES">
-        <attribute name="name" attributeType="String" syncable="YES"/>
+    <entity name="Kolony" representedClassName=".Kolony" parentEntity="NamedEntity" syncable="YES">
         <relationship name="bases" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Base" inverseName="kolony" inverseEntity="Base" syncable="YES"/>
+    </entity>
+    <entity name="NamedEntity" representedClassName=".NamedEntity" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Part" representedClassName=".Part" syncable="YES">
         <attribute name="count" attributeType="Integer 16" minValueString="0" defaultValueString="0" syncable="YES"/>
@@ -20,16 +21,16 @@
         <relationship name="vessel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Vessel" inverseName="parts" inverseEntity="Vessel" syncable="YES"/>
     </entity>
     <entity name="Station" representedClassName=".Station" parentEntity="Vessel" syncable="YES"/>
-    <entity name="Vessel" representedClassName=".Vessel" isAbstract="YES" syncable="YES">
-        <attribute name="name" attributeType="String" syncable="YES"/>
+    <entity name="Vessel" representedClassName=".Vessel" isAbstract="YES" parentEntity="NamedEntity" syncable="YES">
         <relationship name="parts" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Part" inverseName="vessel" inverseEntity="Part" syncable="YES"/>
     </entity>
     <elements>
         <element name="Base" positionX="0" positionY="90" width="128" height="60"/>
-        <element name="Crew" positionX="-36" positionY="9" width="128" height="105"/>
-        <element name="Kolony" positionX="-27" positionY="72" width="128" height="75"/>
+        <element name="Crew" positionX="-36" positionY="9" width="128" height="90"/>
+        <element name="Kolony" positionX="-27" positionY="72" width="128" height="60"/>
         <element name="Part" positionX="-54" positionY="-9" width="128" height="105"/>
         <element name="Station" positionX="-18" positionY="81" width="128" height="45"/>
-        <element name="Vessel" positionX="-63" positionY="-18" width="128" height="75"/>
+        <element name="Vessel" positionX="-63" positionY="-18" width="128" height="60"/>
+        <element name="NamedEntity" positionX="-36" positionY="54" width="128" height="60"/>
     </elements>
 </model>

@@ -16,7 +16,7 @@
 import Foundation
 import CoreData
 
-class Crew: NSManagedObject {
+class Crew: NamedEntity {
 
     static let engineerTitle = "Engineer"
     static let scientistTitle = "Scientist"

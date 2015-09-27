@@ -18,30 +18,20 @@ import UIKit
 
 class CrewListTableViewController: MasterTableViewController {
 
-    private lazy var dataSource: FetchedDataSource<Crew, UITableViewCell> = FetchedDataSource()
+    private(set) lazy var dataSource: CrewFetchedDataSource<Crew, UITableViewCell> = CrewFetchedDataSource()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        let configureCell = dataSource.configureCell
         dataSource.configureCell = { [weak self] (cell: UITableViewCell, crew: Crew) in
+            configureCell?(cell: cell, entity: crew)
             guard self != nil else { return }
-            cell.textLabel?.text = crew.name
-            let starString = String(count: Int(crew.starCount), repeatedValue: "⭐️")
-            if let career = crew.career {
-                cell.detailTextLabel?.text = "\(career) \(starString)"
-            } else {
-                cell.detailTextLabel?.text = starString.isEmpty ? "0 Stars" : starString
-            }
             let accessoryType = self!.currentAccessoryType
             cell.accessoryType = accessoryType
             cell.editingAccessoryType = accessoryType
         }
-
         dataSource.tableViewController = self
-
-        let fetchRequest = NSFetchRequest(entityName: "Crew")
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-        dataSource.fetchRequest = fetchRequest
+        dataSource.reloadData()
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -57,13 +47,16 @@ class CrewListTableViewController: MasterTableViewController {
             crewDetail.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "crewDetailViewControllerDidFinish")
             crewDetail.editing = true
 
-        case "editCrew":
-            guard let crewDetail = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? CrewDetailTableViewController,
+        case "editCrew", "viewCrew":
+            guard let crewDetail = segue.destinationViewController as? CrewDetailTableViewController ??
+                (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? CrewDetailTableViewController,
                 indexPath = sender is UITableViewCell ? tableView.indexPathForCell(sender as! UITableViewCell) : sender as? NSIndexPath,
                 crew = dataSource.entityAtIndexPath(indexPath) else { return }
 
             crewDetail.crew = crew
-            crewDetail.navigationItem.rightBarButtonItem = crewDetail.editButtonItem()
+            if identifier == "editCrew" {
+                crewDetail.navigationItem.rightBarButtonItem = crewDetail.editButtonItem()
+            }
             dataSource.selectedEntity = crew
 
         default:

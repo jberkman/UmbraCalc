@@ -16,7 +16,7 @@
 import CoreData
 import UIKit
 
-class CrewDetailTableViewController: UITableViewController {
+class CrewDetailTableViewController: DetailTableViewController {
 
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var careerLabel: UILabel!
@@ -34,10 +34,8 @@ class CrewDetailTableViewController: UITableViewController {
     private let vesselContext = ObserverContext(keyPath: "vessel")
     private let vesselNameContext = ObserverContext(keyPath: "name")
 
-    private var ignoreContextChanges = false
     private var hasAppeared = false
 
-    private var managedObjectContext: NSManagedObjectContext?
     var crew: Crew? {
         didSet {
             // Prevent crew from being faulted
@@ -45,7 +43,7 @@ class CrewDetailTableViewController: UITableViewController {
             forEachCrewContext {
                 oldValue?.removeObserver(self, context: $0)
                 crew?.addObserver(self, context: $0)
-                contextDidChange($0)
+                observerContextDidChange($0)
             }
         }
     }
@@ -54,7 +52,7 @@ class CrewDetailTableViewController: UITableViewController {
         didSet {
             oldValue?.removeObserver(self, context: vesselContext)
             part?.addObserver(self, context: vesselContext)
-            contextDidChange(vesselContext)
+            observerContextDidChange(vesselContext)
         }
     }
 
@@ -62,7 +60,7 @@ class CrewDetailTableViewController: UITableViewController {
         didSet {
             oldValue?.removeObserver(self, context: vesselNameContext)
             vessel?.addObserver(self, context: vesselNameContext)
-            contextDidChange(vesselNameContext)
+            observerContextDidChange(vesselNameContext)
         }
     }
 
@@ -88,7 +86,7 @@ class CrewDetailTableViewController: UITableViewController {
         nameTextField.enabled = editing
     }
 
-    private func contextDidChange(context: UnsafeMutablePointer<Void>) -> Bool {
+    override func contextDidChange(context: UnsafeMutablePointer<Void>) -> Bool {
         switch context {
         case &nameContext.context:
             guard isViewLoaded() && !ignoreContextChanges else { break }
@@ -126,15 +124,11 @@ class CrewDetailTableViewController: UITableViewController {
         return true
     }
 
-    private func contextDidChange(context: ObserverContext) -> Bool {
-        return contextDidChange(&context.context)
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         editingDidChange()
         [ nameContext, careerContext, starCountContext, vesselNameContext ].forEach {
-            contextDidChange($0)
+            observerContextDidChange($0)
         }
         starCountStepper.addTarget(self, action: "stepperDidChange:", forControlEvents: .ValueChanged)
     }
@@ -155,11 +149,6 @@ class CrewDetailTableViewController: UITableViewController {
         }
     }
 
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        guard !contextDidChange(context) else { return }
-        super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-    }
-
     @IBAction func stepperDidChange(sender: UIStepper) {
         withIgnoredChanges {
             crew?.starCount = Int16(sender.value)
@@ -173,14 +162,6 @@ class CrewDetailTableViewController: UITableViewController {
 }
 
 extension CrewDetailTableViewController {
-
-    override func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-        return .None
-    }
-
-    override func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return false
-    }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         guard tableView.cellForRowAtIndexPath(indexPath) == careerCell else { return }

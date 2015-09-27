@@ -20,35 +20,28 @@ class FetchedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
 
     var reuseIdentifier = "reuseIdentifier"
     var configureCell: ((cell: Cell, entity: Entity) -> Void)?
+    let fetchRequest = NSFetchRequest()
+
+    var sectionNameKeyPath: String?
+    var cacheName: String?
+
+    var managedObjectContext: NSManagedObjectContext? {
+        didSet {
+            fetchRequest.entity = managedObjectContext?.persistentStoreCoordinator?.managedObjectModel.entities.lazy.filter {
+                $0.managedObjectClassName == NSStringFromClass(Entity.self)
+                }.first
+        }
+    }
+    
     var tableViewController: UITableViewController? {
         didSet {
             oldValue?.tableView.dataSource = nil
             tableViewController?.tableView.dataSource = self
         }
     }
-
-    var sectionNameKeyPath: String? {
-        didSet {
-            fetchedResultsController = createFetchedResultsController()
-        }
-    }
-
-    var cacheName: String? {
-        didSet {
-            fetchedResultsController = createFetchedResultsController()
-        }
-    }
-
-    var managedObjectContext: NSManagedObjectContext? {
-        didSet {
-            fetchedResultsController = createFetchedResultsController()
-        }
-    }
-
-    var fetchRequest: NSFetchRequest? = nil {
-        didSet {
-            fetchedResultsController = createFetchedResultsController()
-        }
+    func reloadData() {
+        guard let managedObjectContext = managedObjectContext else { return }
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: sectionNameKeyPath, cacheName: cacheName)
     }
 
     private(set) var fetchedResultsController: NSFetchedResultsController? {
@@ -56,11 +49,11 @@ class FetchedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
             do {
                 try fetchedResultsController?.performFetch()
                 fetchedResultsController?.delegate = self
-                tableViewController?.tableView.reloadData()
             } catch let error as NSError {
                 NSLog("Could not perform fetch: %@", error)
                 fetchedResultsController = nil
             }
+            tableViewController?.tableView.reloadData()
         }
     }
 
@@ -79,11 +72,6 @@ class FetchedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
 
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: willDeleteEntityNotification, object: nil)
-    }
-
-    private func createFetchedResultsController() -> NSFetchedResultsController? {
-        guard let managedObjectContext = managedObjectContext, fetchRequest = fetchRequest else { return nil }
-        return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: sectionNameKeyPath, cacheName: cacheName)
     }
 
     func entityAtIndexPath(indexPath: NSIndexPath) -> Entity? {
