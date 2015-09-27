@@ -63,6 +63,8 @@ class FetchedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
         }
     }
 
+    var entities: [Entity]? { return fetchedResultsController?.fetchedObjects as? [Entity] }
+
     private func createFetchedResultsController() -> NSFetchedResultsController? {
         guard let managedObjectContext = managedObjectContext, fetchRequest = fetchRequest else { return nil }
         return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: sectionNameKeyPath, cacheName: cacheName)
@@ -70,6 +72,10 @@ class FetchedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
 
     func entityAtIndexPath(indexPath: NSIndexPath) -> Entity? {
         return fetchedResultsController?.objectAtIndexPath(indexPath) as? Entity
+    }
+
+    func indexPathOfEntity(entity: Entity) -> NSIndexPath? {
+        return fetchedResultsController?.indexPathForObject(entity)
     }
 
     // extension FetchedTableViewController: UITableViewDataSource

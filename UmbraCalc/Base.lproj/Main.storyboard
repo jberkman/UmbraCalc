@@ -22,7 +22,7 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vOZ-mG-q2P" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-156" y="-593"/>
+            <point key="canvasLocation" x="-156" y="-599"/>
         </scene>
         <!--Kolonies-->
         <scene sceneID="B68-ol-kFO">
@@ -193,7 +193,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nlp-Mf-NE1">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nlp-Mf-NE1">
                                                     <rect key="frame" x="20" y="0.0" width="572" height="43"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -350,7 +350,6 @@
         <!--Crew-->
         <scene sceneID="lRB-6m-Bjc">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="U03-vQ-17G" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController id="5no-Rz-496" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Crew" id="Evk-T9-OAn"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="e4j-EW-J34">
@@ -361,6 +360,7 @@
                         <segue destination="OBm-Iv-Clm" kind="relationship" relationship="rootViewController" id="tW7-bJ-8Ao"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="U03-vQ-17G" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="747" y="180"/>
         </scene>

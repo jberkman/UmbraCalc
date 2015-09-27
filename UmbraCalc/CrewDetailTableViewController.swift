@@ -47,12 +47,6 @@ class CrewDetailTableViewController: UITableViewController {
                 crew?.addObserver(self, context: $0)
                 contextDidChange($0)
             }
-            if oldValue != nil {
-                NSNotificationCenter.defaultCenter().removeObserver(self, name: willDeleteEntityNotification, object: oldValue!)
-            }
-            if crew != nil {
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: "willDeleteCrewWithNotification:", name: willDeleteEntityNotification, object: crew!)
-            }
         }
     }
 
@@ -76,7 +70,6 @@ class CrewDetailTableViewController: UITableViewController {
         forEachCrewContext { crew?.removeObserver(self, context: $0) }
         part?.removeObserver(self, context: vesselContext)
         vessel?.removeObserver(self, context: vesselNameContext)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: willDeleteEntityNotification, object: nil)
     }
 
     private func forEachCrewContext(@noescape block: (ObserverContext) -> Void) {
@@ -175,11 +168,6 @@ class CrewDetailTableViewController: UITableViewController {
 
     override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
         return editing
-    }
-
-    @objc private func willDeleteCrewWithNotification(notification: NSNotification) {
-        guard let emptyDetailViewController = storyboard?.instantiateViewControllerWithIdentifier("emptyDetailViewController") else { return }
-        showDetailViewController(emptyDetailViewController, sender: self)
     }
 
 }

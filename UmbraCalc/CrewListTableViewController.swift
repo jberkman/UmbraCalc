@@ -72,11 +72,12 @@ class CrewListTableViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         updateVisibleAccessoryTypes()
+        updateDetailView()
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         guard let identifier = segue.identifier else { return }
-
+        print(__FUNCTION__, identifier)
         switch identifier {
         case "insertCrew":
             guard let crewDetail = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? CrewDetailTableViewController else { return }
@@ -90,8 +91,7 @@ class CrewListTableViewController: UITableViewController {
 
         case "editCrew":
             guard let crewDetail = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? CrewDetailTableViewController,
-                cell = sender as? UITableViewCell,
-                indexPath = tableView.indexPathForCell(cell),
+                indexPath = sender is UITableViewCell ? tableView.indexPathForCell(sender as! UITableViewCell) : sender as? NSIndexPath,
                 crew = dataSource.entityAtIndexPath(indexPath) else { return }
 
             crewDetail.crew = crew
@@ -108,6 +108,16 @@ class CrewListTableViewController: UITableViewController {
         updateVisibleAccessoryTypes()
     }
 
+    private func updateDetailView() {
+        guard splitViewController?.collapsed == false && tableView.indexPathForSelectedRow == nil else { return }
+        guard tableView.numberOfRowsInSection(0) > 0 else {
+            guard let emptyDetailViewController = storyboard?.instantiateViewControllerWithIdentifier("emptyDetailViewController") else { return }
+            showDetailViewController(emptyDetailViewController, sender: self)
+            return
+        }
+        editCrewAtIndexPath(NSIndexPath(forRow: 0, inSection: 0))
+    }
+
     private func updateVisibleAccessoryTypes() {
         let accessoryType = currentAccessoryType
         tableView.visibleCells.forEach {
@@ -116,27 +126,58 @@ class CrewListTableViewController: UITableViewController {
         }
     }
 
-    @objc private func crewDetailViewControllerDidCancel() {
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-
     override func setEditing(editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         navigationItem.setLeftBarButtonItem(editing || navigationController?.viewControllers.first == self ? addButton : nil, animated: animated)
     }
 
-    @objc private func crewDetailViewControllerDidFinish() {
-        guard let crewDetail = (presentedViewController as? UINavigationController)?.viewControllers.first as? CrewDetailTableViewController else { return }
+    private func editCrewAtIndexPath(indexPath: NSIndexPath) {
+        tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
+        performSegueWithIdentifier("editCrew", sender: indexPath)
+    }
 
-        crewDetail.setEditing(false, animated: false)
-        try! crewDetail.crew!.managedObjectContext!.save()
+}
 
+extension CrewListTableViewController {
+
+    @objc private func crewDetailViewControllerDidCancel() {
         dismissViewControllerAnimated(true, completion: nil)
     }
 
+    @objc private func crewDetailViewControllerDidFinish() {
+        guard let crewDetail = (presentedViewController as? UINavigationController)?.viewControllers.first as? CrewDetailTableViewController else { return }
+        dismissViewControllerAnimated(true) {
+            guard let crew = crewDetail.crew else { return }
+            try! crew.managedObjectContext!.obtainPermanentIDsForObjects([crew])
+            let objectID = crew.objectID
+            try! crew.managedObjectContext!.save()
+            
+            guard self.splitViewController?.collapsed == false,
+                let crewToSelect = self.dataSource.managedObjectContext?.objectWithID(objectID) as? Crew,
+                indexPath = self.dataSource.indexPathOfEntity(crewToSelect) else { return }
+            self.editCrewAtIndexPath(indexPath)
+        }
+    }
+
+}
+
+extension CrewListTableViewController {
+
     @objc private func willDeleteCrewWithNotification(notification: NSNotification) {
-        selectedCrew = nil
-        showEmptyDetailViewController = splitViewController?.collapsed == true
+        guard splitViewController?.collapsed == false else {
+            selectedCrew = nil
+            return
+        }
+
+        guard let crew = dataSource.entities?.lazy.filter({ $0 != self.selectedCrew }).first,
+            indexPath = dataSource.indexPathOfEntity(crew) else {
+                selectedCrew = nil
+                guard let empty = storyboard?.instantiateViewControllerWithIdentifier("emptyDetailViewController") else { return }
+                showDetailViewController(empty, sender: self)
+                return
+        }
+
+        editCrewAtIndexPath(indexPath)
     }
 
 }
@@ -152,8 +193,7 @@ extension CrewListTableViewController: ManagingObjectContextContainer {
 extension CrewListTableViewController: UISplitViewControllerDelegate {
 
     func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
-        guard showEmptyDetailViewController else { return nil }
-        showEmptyDetailViewController = false
+        guard selectedCrew == nil else { return nil }
         return storyboard?.instantiateViewControllerWithIdentifier("emptyDetailViewController")
     }
 
