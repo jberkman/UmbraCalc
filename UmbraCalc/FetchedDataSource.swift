@@ -99,6 +99,16 @@ class FetchedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
         return fetchedResultsController!.sectionForSectionIndexTitle(title, atIndex: index)
     }
 
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        switch editingStyle {
+        case .Delete:
+            entityAtIndexPath(indexPath)?.deleteEntity()
+
+        default:
+            break
+        }
+    }
+
     // extension FetchedTableViewController: UIFetchedResultsControllerDelegate
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
         tableView?.beginUpdates()

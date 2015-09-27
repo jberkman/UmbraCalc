@@ -47,6 +47,12 @@ class CrewDetailTableViewController: UITableViewController {
                 crew?.addObserver(self, context: $0)
                 contextDidChange($0)
             }
+            if oldValue != nil {
+                NSNotificationCenter.defaultCenter().removeObserver(self, name: willDeleteEntityNotification, object: oldValue!)
+            }
+            if crew != nil {
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: "willDeleteCrewWithNotification:", name: willDeleteEntityNotification, object: crew!)
+            }
         }
     }
 
@@ -70,6 +76,7 @@ class CrewDetailTableViewController: UITableViewController {
         forEachCrewContext { crew?.removeObserver(self, context: $0) }
         part?.removeObserver(self, context: vesselContext)
         vessel?.removeObserver(self, context: vesselNameContext)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: willDeleteEntityNotification, object: nil)
     }
 
     private func forEachCrewContext(@noescape block: (ObserverContext) -> Void) {
@@ -85,13 +92,7 @@ class CrewDetailTableViewController: UITableViewController {
 
     private func editingDidChange() {
         guard isViewLoaded() else { return }
-
         nameTextField.enabled = editing
-
-        let selectionStyle = editing ? UITableViewCellSelectionStyle.Default : .None
-
-        careerCell.selectionStyle = selectionStyle
-//        vesselCell.selectionStyle = selectionStyle
     }
 
     private func contextDidChange(context: UnsafeMutablePointer<Void>) -> Bool {
@@ -172,18 +173,13 @@ class CrewDetailTableViewController: UITableViewController {
         }
     }
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.identifier else { return }
-        switch identifier {
-        case "editCareer":
-            guard let viewController = segue.destinationViewController as? StringListTableViewController else { break }
-            viewController.strings = [ Crew.pilotTitle, Crew.engineerTitle, Crew.scientistTitle ].sort()
-            viewController.selectedValue = crew?.career ?? ""
-            viewController.delegate = self
+    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+        return editing
+    }
 
-        default:
-            break
-        }
+    @objc private func willDeleteCrewWithNotification(notification: NSNotification) {
+        guard let emptyDetailViewController = storyboard?.instantiateViewControllerWithIdentifier("emptyDetailViewController") else { return }
+        showDetailViewController(emptyDetailViewController, sender: self)
     }
 
 }
@@ -196,6 +192,21 @@ extension CrewDetailTableViewController {
 
     override func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return false
+    }
+
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        guard tableView.cellForRowAtIndexPath(indexPath) == careerCell else { return }
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        [ Crew.engineerTitle, Crew.pilotTitle, Crew.scientistTitle ].forEach { career in
+            alert.addAction(UIAlertAction(title: career, style: .Default) { _ in
+                self.crew?.career = career
+            })
+        }
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        alert.popoverPresentationController?.sourceView = careerCell
+        alert.popoverPresentationController?.sourceRect = careerCell.bounds
+        presentViewController(alert, animated: true, completion: nil)
     }
 
 }
@@ -211,14 +222,6 @@ extension CrewDetailTableViewController: UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return false
-    }
-
-}
-
-extension CrewDetailTableViewController: StringListTableViewControllerDelegate {
-
-    func stringListTableViewController(stringListTableViewController: StringListTableViewController, didSelectString string: String) {
-        crew?.career = string
     }
 
 }
