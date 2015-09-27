@@ -16,7 +16,7 @@
 import CoreData
 import UIKit
 
-class StationListTableViewController: UITableViewController {
+class StationListTableViewController: MasterTableViewController {
 
     private lazy var dataSource: FetchedDataSource<Station, UITableViewCell> = FetchedDataSource()
 
@@ -34,6 +34,11 @@ class StationListTableViewController: UITableViewController {
         dataSource.fetchRequest = fetchRequest
     }
 
+    override func showDetailViewControllerForEntityAtIndexPath(indexPath: NSIndexPath) {
+        performSegueWithIdentifier("editStation", sender: indexPath)
+        tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
+    }
+
 }
 
 extension StationListTableViewController: ManagingObjectContextContainer {
@@ -42,4 +47,12 @@ extension StationListTableViewController: ManagingObjectContextContainer {
         dataSource.managedObjectContext = managingObjectContext.managedObjectContext
     }
     
+}
+
+extension StationListTableViewController {
+
+    override func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
+        guard dataSource.selectedEntity == nil else { return nil }
+        return super.splitViewController(splitViewController, separateSecondaryViewControllerFromPrimaryViewController: primaryViewController)
+    }
 }

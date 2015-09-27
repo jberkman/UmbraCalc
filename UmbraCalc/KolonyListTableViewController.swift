@@ -16,7 +16,7 @@
 import CoreData
 import UIKit
 
-class KolonyListTableViewController: UITableViewController {
+class KolonyListTableViewController: MasterTableViewController {
 
     private lazy var dataSource: FetchedDataSource<Kolony, UITableViewCell> = FetchedDataSource()
 
@@ -34,6 +34,11 @@ class KolonyListTableViewController: UITableViewController {
         dataSource.fetchRequest = fetchRequest
     }
 
+    override func showDetailViewControllerForEntityAtIndexPath(indexPath: NSIndexPath) {
+        performSegueWithIdentifier("editKolony", sender: indexPath)
+        tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
+    }
+
 }
 
 extension KolonyListTableViewController: ManagingObjectContextContainer {
@@ -42,4 +47,12 @@ extension KolonyListTableViewController: ManagingObjectContextContainer {
         dataSource.managedObjectContext = managingObjectContext.managedObjectContext
     }
 
+}
+
+extension KolonyListTableViewController {
+
+    override func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
+        guard dataSource.selectedEntity == nil else { return nil }
+        return super.splitViewController(splitViewController, separateSecondaryViewControllerFromPrimaryViewController: primaryViewController)
+    }
 }

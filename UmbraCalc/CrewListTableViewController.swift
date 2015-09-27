@@ -98,18 +98,18 @@ class CrewListTableViewController: MasterTableViewController {
 
 }
 
-extension CrewListTableViewController {
-
-    override func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
-        guard dataSource.selectedEntity == nil else { return nil }
-        return super.splitViewController(splitViewController, separateSecondaryViewControllerFromPrimaryViewController: primaryViewController)
-    }
-}
-
 extension CrewListTableViewController: ManagingObjectContextContainer {
 
     func setManagingObjectContext(managingObjectContext: ManagingObjectContext) {
         dataSource.managedObjectContext = managingObjectContext.managedObjectContext
     }
 
+}
+
+extension CrewListTableViewController {
+
+    override func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
+        guard dataSource.selectedEntity == nil else { return nil }
+        return super.splitViewController(splitViewController, separateSecondaryViewControllerFromPrimaryViewController: primaryViewController)
+    }
 }
