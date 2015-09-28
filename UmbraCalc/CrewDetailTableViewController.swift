@@ -74,13 +74,6 @@ class CrewDetailTableViewController: DetailTableViewController {
         [ nameContext, careerContext, starCountContext, partContext ].forEach(block)
     }
 
-    private func withIgnoredChanges(@noescape block: () -> Void) {
-        let oldValue = ignoreContextChanges
-        ignoreContextChanges = true
-        block()
-        ignoreContextChanges = oldValue
-    }
-
     private func editingDidChange() {
         guard isViewLoaded() else { return }
         nameTextField.enabled = editing

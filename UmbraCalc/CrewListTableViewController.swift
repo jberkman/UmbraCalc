@@ -24,8 +24,8 @@ class CrewListTableViewController: MasterTableViewController {
         super.viewDidLoad()
         let configureCell = dataSource.configureCell
         dataSource.configureCell = { [weak self] (cell: UITableViewCell, crew: Crew) in
-            configureCell?(cell: cell, entity: crew)
             guard self != nil else { return }
+            configureCell?(cell: cell, entity: crew)
             let accessoryType = self!.currentAccessoryType
             cell.accessoryType = accessoryType
             cell.editingAccessoryType = accessoryType

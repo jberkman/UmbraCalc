@@ -22,6 +22,7 @@ private let partsSubdirectory = "Parts"
 
 private let crewBonusKey = "CrewBonus"
 private let crewCapacityKey = "CrewCapacity"
+private let descriptionKey = "description"
 private let efficiencyPartListKey = "efficiencyPart"
 private let livingSpaceKey = "livingSpace"
 private let maxEfficencyKey = "MaxEfficiency"
@@ -60,6 +61,7 @@ class PartNode: NSObject {
 
     let name: String
     let title: String
+    let descriptionText: String
     let crewCapacity: Int
     let crewBonus: Double
     let maxEfficiency: Double
@@ -73,6 +75,7 @@ class PartNode: NSObject {
         guard let part = configNode[partKey] as? [NSObject: AnyObject] else {
             name = ""
             title = ""
+            descriptionText = ""
             crewCapacity = 0
             self.crewBonus = 0
             self.maxEfficiency = 0
@@ -97,6 +100,7 @@ class PartNode: NSObject {
 
         name = part[nameKey] as? String ?? ""
         title = part[titleKey] as? String ?? ""
+        descriptionText = part[descriptionKey] as? String ?? (part[descriptionKey] as? [String])?.joinWithSeparator("\n") ?? ""
         crewCapacity = intWithValue(part[crewCapacityKey])
 
         let modules: [[NSObject: AnyObject]]

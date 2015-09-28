@@ -3,7 +3,14 @@
 //  UmbraCalc
 //
 //  Created by jacob berkman on 2015-09-27.
-//  Copyright © 2015 jacob berkman. All rights reserved.
+//  Copyright © 2015 jacob berkman.
+//
+//  Based on and includes portions of Moduler Kolonization System by RoverDude
+//  https://github.com/BobPalmer/MKS/
+//
+//  This work is licensed under the Creative Commons Attribution-NonCommercial
+//  4.0 International License. To view a copy of this license, visit
+//  http://creativecommons.org/licenses/by-nc/4.0/.
 //
 
 import CoreData
@@ -15,10 +22,10 @@ class DetailTableViewController: UITableViewController, ManagingObjectContext {
 
     var ignoreContextChanges = false
 
-    private func withIgnoredChanges(@noescape block: () -> Void) {
+    func withIgnoredChanges(@noescape body: () -> Void) {
         let oldValue = ignoreContextChanges
         ignoreContextChanges = true
-        block()
+        body()
         ignoreContextChanges = oldValue
     }
 

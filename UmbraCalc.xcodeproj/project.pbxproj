@@ -35,6 +35,8 @@
 		1699E9941BB8D51000EDBCF7 /* NamedType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9931BB8D51000EDBCF7 /* NamedType.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9971BB8D65300EDBCF7 /* NamedEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9951BB8D65300EDBCF7 /* NamedEntity+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9981BB8D65300EDBCF7 /* NamedEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9961BB8D65300EDBCF7 /* NamedEntity.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E99A1BB8FE3900EDBCF7 /* PartListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9991BB8FE3800EDBCF7 /* PartListTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		1699E99C1BB9030600EDBCF7 /* PartNodeListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E99B1BB9030600EDBCF7 /* PartNodeListTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		16B7ACC61BB39066006DFA4E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACC51BB39066006DFA4E /* AppDelegate.swift */; };
 		16B7ACC91BB39066006DFA4E /* UmbraCalc.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACC71BB39066006DFA4E /* UmbraCalc.xcdatamodeld */; };
 		16B7ACD01BB39066006DFA4E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16B7ACCE1BB39066006DFA4E /* Main.storyboard */; };
@@ -102,6 +104,8 @@
 		1699E9931BB8D51000EDBCF7 /* NamedType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NamedType.swift; sourceTree = "<group>"; };
 		1699E9951BB8D65300EDBCF7 /* NamedEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NamedEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		1699E9961BB8D65300EDBCF7 /* NamedEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NamedEntity.swift; sourceTree = "<group>"; };
+		1699E9991BB8FE3800EDBCF7 /* PartListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartListTableViewController.swift; sourceTree = "<group>"; };
+		1699E99B1BB9030600EDBCF7 /* PartNodeListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartNodeListTableViewController.swift; sourceTree = "<group>"; };
 		16B7ACC21BB39066006DFA4E /* UmbraCalc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UmbraCalc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		16B7ACC51BB39066006DFA4E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		16B7ACC81BB39066006DFA4E /* UmbraCalc.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UmbraCalc.xcdatamodel; sourceTree = "<group>"; };
@@ -177,6 +181,8 @@
 				1699E9841BB83C4A00EDBCF7 /* EmptyDetailViewController.swift */,
 				1699E9761BB743FE00EDBCF7 /* KolonyListTableViewController.swift */,
 				1699E9881BB8871F00EDBCF7 /* MasterTableViewController.swift */,
+				1699E9991BB8FE3800EDBCF7 /* PartListTableViewController.swift */,
+				1699E99B1BB9030600EDBCF7 /* PartNodeListTableViewController.swift */,
 				1699E97A1BB74F2400EDBCF7 /* StationListTableViewController.swift */,
 				1699E9801BB7C7AD00EDBCF7 /* StringListTableViewController.swift */,
 				1699E98A1BB8A20300EDBCF7 /* VesselDetailTableViewController.swift */,
@@ -451,6 +457,7 @@
 			files = (
 				1699E9641BB7021C00EDBCF7 /* Part+CoreDataProperties.swift in Sources */,
 				16B7ACC91BB39066006DFA4E /* UmbraCalc.xcdatamodeld in Sources */,
+				1699E99C1BB9030600EDBCF7 /* PartNodeListTableViewController.swift in Sources */,
 				1699E9981BB8D65300EDBCF7 /* NamedEntity.swift in Sources */,
 				16B7ACFF1BB3AC51006DFA4E /* Vessel.swift in Sources */,
 				1699E9661BB7021C00EDBCF7 /* Vessel+CoreDataProperties.swift in Sources */,
@@ -467,6 +474,7 @@
 				1699E9751BB7358900EDBCF7 /* FetchedDataSource.swift in Sources */,
 				16B7AD071BB3BE57006DFA4E /* CoreDataStack.swift in Sources */,
 				16B7AD011BB3AC51006DFA4E /* Part.swift in Sources */,
+				1699E99A1BB8FE3900EDBCF7 /* PartListTableViewController.swift in Sources */,
 				1699E9921BB8D1F300EDBCF7 /* NamedFetchedDataSource.swift in Sources */,
 				1699E98D1BB8A57300EDBCF7 /* DetailTableViewController.swift in Sources */,
 				1699E96D1BB710E900EDBCF7 /* ManagingObjectContext.swift in Sources */,
