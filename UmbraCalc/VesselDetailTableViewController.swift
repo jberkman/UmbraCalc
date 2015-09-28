@@ -27,12 +27,6 @@ class VesselDetailTableViewController: DetailTableViewController {
     @IBOutlet weak var happinessLabel: UILabel!
 
     private let nameContext = ObserverContext(keyPath: "name")
-    private let partsContext = ObserverContext(keyPath: "parts")
-    private let crewContext = ObserverContext(keyPath: "crew")
-
-    private func forEachContext(@noescape body: (ObserverContext) -> Void) {
-        [ crewContext, nameContext, partsContext ].forEach(body)
-    }
 
     private var hasAppeared = false
 
@@ -40,24 +34,33 @@ class VesselDetailTableViewController: DetailTableViewController {
         didSet {
             // Prevent vessel from being faulted
             managedObjectContext = vessel?.managedObjectContext
-            forEachContext {
-                oldValue?.removeObserver(self, context: $0)
-                vessel?.addObserver(self, context: $0)
-                observerContextDidChange($0)
-            }
+            oldValue?.removeObserver(self, context: nameContext)
+            vessel?.addObserver(self, context: nameContext)
+            observerContextDidChange(nameContext)
         }
     }
 
     deinit {
-        forEachContext {
-            vessel?.removeObserver(self, context: $0)
-        }
+        vessel?.removeObserver(self, context: nameContext)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         editingDidChange()
+    }
+
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         observerContextDidChange(nameContext)
+
+        partsCountLabel.text = String(vessel?.partCount ?? 0)
+
+        crewCountLabel.text = String(vessel?.crewCount ?? 0)
+
+        crewCapacityLabel.text = String(vessel?.crewCapacity ?? 0)
+        livingSpacesLabel.text = String(vessel?.livingSpaceCount ?? 0)
+        workspacesLabel.text = String(vessel?.workspaceCount ?? 0)
+        happinessLabel.text = "\(Int(100 * (vessel?.crewHappiness ?? 0)))%"
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -78,19 +81,6 @@ class VesselDetailTableViewController: DetailTableViewController {
         case &nameContext.context:
             guard isViewLoaded() && !ignoreContextChanges else { break }
             nameTextField.text = vessel?.name
-
-        case &partsContext.context:
-            guard isViewLoaded() else { break }
-            partsCountLabel.text = String(vessel?.parts?.count ?? 0)
-            crewCapacityLabel.text = String(vessel?.crewCapacity ?? 0)
-            livingSpacesLabel.text = String(vessel?.livingSpaceCount ?? 0)
-            workspacesLabel.text = String(vessel?.workspaceCount ?? 0)
-            happinessLabel.text = String(vessel?.crewHappiness ?? 0)
-
-        case &crewContext.context:
-            guard isViewLoaded() else { break }
-            crewCountLabel.text = String(vessel?.crewCount ?? 0)
-            happinessLabel.text = "\(Int(100 * (vessel?.crewHappiness ?? 0)))%"
 
         default:
             return false

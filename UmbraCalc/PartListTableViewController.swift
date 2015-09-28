@@ -42,10 +42,10 @@ class PartListTableViewController: UITableViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         guard let identifier = segue.identifier else { return }
         switch identifier {
-//        case "editPart":
-//            guard let partDetail = segue.destinationViewController as? PartDetailTableViewController,
-//                indexPath = sender is UITableViewCell ? tableView.indexPathForCell(sender as! UITableViewCell) : sender as? NSIndexPath else { return }
-//            partDetail.part = dataSource.entityAtIndexPath(indexPath)
+        case "editPart":
+            guard let partDetail = segue.destinationViewController as? PartDetailTableViewController,
+                indexPath = sender is UITableViewCell ? tableView.indexPathForCell(sender as! UITableViewCell) : sender as? NSIndexPath else { return }
+            partDetail.part = dataSource.entityAtIndexPath(indexPath)
 
         case "insertPart":
             guard let partNodeListViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? PartNodeListTableViewController else { return }

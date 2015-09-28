@@ -45,11 +45,11 @@ class Part: NSManagedObject {
 
     var name: String? { return partNode?.name }
     var title: String? { return partNode?.title }
-    var crewCapacity: Int { return partNode?.crewCapacity ?? 0 }
+    var crewCapacity: Int { return Int(count) * (partNode?.crewCapacity ?? 0) }
     var crewBonus: Double { return partNode?.crewBonus ?? 0 }
     var maxEfficency: Double { return partNode?.maxEfficiency ?? 0 }
-    var workspaceCount: Int { return partNode?.workspaceCount ?? 0 }
-    var livingSpaceCount: Int { return partNode?.livingSpaceCount ?? 0 }
+    var workspaceCount: Int { return Int(count) * (partNode?.workspaceCount ?? 0) }
+    var livingSpaceCount: Int { return Int(count) * (partNode?.livingSpaceCount ?? 0) }
     var primarySkill: String? { return partNode?.primarySkill }
     var secondarySkill: String? { return partNode?.secondarySkill }
     var efficiencyParts: [String: Int]? { return partNode?.efficiencyParts ?? [:] }

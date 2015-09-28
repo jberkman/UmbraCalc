@@ -37,16 +37,20 @@ class Vessel: NamedEntity {
         return (parts as? Set<Part>)?.map(transform).reduce(0.0, combine: +) ?? 0
     }
 
+    var partCount: Int {
+        return partSum { Int($0.count) }
+    }
+
     var workspaceCount: Int {
-        return partSum { $0.workspaceCount * Int($0.count) }
+        return partSum { $0.workspaceCount }
     }
 
     var crewCapacity: Int {
-        return partSum { $0.crewCapacity * Int($0.count) }
+        return partSum { $0.crewCapacity }
     }
 
     var livingSpaceCount: Int {
-        return partSum { $0.livingSpaceCount * Int($0.count) }
+        return partSum { $0.livingSpaceCount }
     }
 
     var crewCount: Int {

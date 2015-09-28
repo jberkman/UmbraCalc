@@ -737,10 +737,10 @@
             </objects>
             <point key="canvasLocation" x="5333" y="-1543"/>
         </scene>
-        <!--Table View Controller-->
+        <!--Part Detail Table View Controller-->
         <scene sceneID="OFB-V6-RO2">
             <objects>
-                <tableViewController id="SWM-Ie-YbJ" sceneMemberID="viewController">
+                <tableViewController id="SWM-Ie-YbJ" customClass="PartDetailTableViewController" customModule="UmbraCalc" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="p1H-1Z-xEV">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1014,6 +1014,19 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="awa-QE-rH6"/>
+                    <connections>
+                        <outlet property="careerFactorLabel" destination="MIa-1E-Thg" id="OAx-N6-eeX"/>
+                        <outlet property="countLabel" destination="0Hn-X9-gX3" id="1Ec-BR-cBI"/>
+                        <outlet property="countStepper" destination="gx2-eh-pA6" id="v4x-eQ-9uf"/>
+                        <outlet property="crewCapacityLabel" destination="5Pq-me-gA9" id="Uhc-tZ-CRu"/>
+                        <outlet property="crewCountLabel" destination="UDU-a1-6Ny" id="Gq3-yh-oym"/>
+                        <outlet property="crewEfficiencyLabel" destination="nZN-3z-5mn" id="51Q-pG-lpy"/>
+                        <outlet property="efficiencyLabel" destination="awf-xa-ffc" id="t7y-gi-8t4"/>
+                        <outlet property="efficiencyPartsCount" destination="aZY-Lg-DYT" id="qMJ-Kf-9Lz"/>
+                        <outlet property="livingSpaceCountLabel" destination="qdN-ek-tmM" id="Uvg-qk-YwY"/>
+                        <outlet property="partsEfficiencyLabel" destination="4Ag-Cl-4iy" id="6Ni-aX-2lk"/>
+                        <outlet property="workspaceCountLabel" destination="S47-ER-voH" id="jWs-4X-dIj"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RRC-hK-FFu" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" id="gx2-eh-pA6">
