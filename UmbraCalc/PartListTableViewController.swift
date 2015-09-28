@@ -33,7 +33,7 @@ class PartListTableViewController: UITableViewController {
         dataSource.fetchRequest.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         dataSource.configureCell = { (cell: UITableViewCell, part: Part) in
             cell.textLabel?.text = part.title
-            cell.detailTextLabel?.text = "\(part.crew?.count ?? 0) Crew, \(Int(part.efficiency * 100))%"
+            cell.detailTextLabel?.text = "Installed: \(part.count) Crew: \(part.crew?.count ?? 0) Efficiency: \(Int(part.efficiency * 100))%"
         }
         dataSource.tableViewController = self
         dataSource.reloadData()
@@ -79,8 +79,12 @@ extension PartListTableViewController: PartNodeListTableViewControllerDelegate {
 
     func partNodeListTableViewController(partNodeListTableViewController: PartNodeListTableViewController, didSelectPartNode partNode: PartNode) {
         dismissViewControllerAnimated(true) {
-            guard let part = self.dataSource.insertPartWithPartName(partNode.name)?.withVessel(self.vessel),
-                indexPath = self.dataSource.indexPathOfEntity(part) else { return }
+            guard let part = (self.vessel?.parts as? Set<Part>)?.lazy
+                .filter({ $0.partName == partNode.name })
+                .first?.withAdditionalCount(1) ??
+                self.dataSource.insertPartWithPartName(partNode.name)?.withVessel(self.vessel) else { return }
+            self.dataSource.managedObjectContext?.processPendingChanges()
+            guard let indexPath = self.dataSource.indexPathOfEntity(part) else { return }
             self.performSegueWithIdentifier("editPart", sender: indexPath)
         }
     }

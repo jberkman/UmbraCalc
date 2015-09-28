@@ -90,7 +90,7 @@ class VesselDetailTableViewController: DetailTableViewController {
         case &crewContext.context:
             guard isViewLoaded() else { break }
             crewCountLabel.text = String(vessel?.crewCount ?? 0)
-            happinessLabel.text = String(vessel?.crewHappiness ?? 0)
+            happinessLabel.text = "\(Int(100 * (vessel?.crewHappiness ?? 0)))%"
 
         default:
             return false

@@ -31,6 +31,10 @@ class Part: NSManagedObject {
         return withValue(count, forKey: "count")
     }
 
+    func withAdditionalCount(additionalCount: Int) -> Self {
+        return withCount(Int(count) + additionalCount)
+    }
+
     func withVessel(vessel: Vessel?) -> Self {
         return withValue(vessel, forKey: "vessel")
     }
