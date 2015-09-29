@@ -18,15 +18,14 @@ import UIKit
 
 class CrewListTableViewController: MasterTableViewController {
 
-    private(set) lazy var dataSource: CrewFetchedDataSource<Crew, UITableViewCell> = CrewFetchedDataSource()
+    private(set) lazy var dataSource: FetchedDataSource<Crew, UITableViewCell> = FetchedDataSource()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let configureCell = dataSource.configureCell
         dataSource.configureCell = { [weak self] (cell: UITableViewCell, crew: Crew) in
-            guard self != nil else { return }
-            configureCell?(cell: cell, entity: crew)
-            let accessoryType = self!.currentAccessoryType
+            guard let accessoryType = self?.currentAccessoryType else { return }
+            self?.dataSource.configureCell(cell, namedEntity: crew)
+            self?.dataSource.configureCell(cell, crew: crew)
             cell.accessoryType = accessoryType
             cell.editingAccessoryType = accessoryType
         }

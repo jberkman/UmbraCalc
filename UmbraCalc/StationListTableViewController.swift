@@ -18,7 +18,7 @@ import UIKit
 
 class StationListTableViewController: MasterTableViewController {
 
-    private lazy var dataSource: NamedEntityFetchedDataSource<Station, UITableViewCell> = NamedEntityFetchedDataSource()
+    private lazy var dataSource: FetchedDataSource<Station, UITableViewCell> = FetchedDataSource()
 
     override func viewDidLoad() {
         super.viewDidLoad()

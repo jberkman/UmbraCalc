@@ -16,26 +16,26 @@
 import CoreData
 import UIKit
 
-class NamedEntityFetchedDataSource<Entity: NamedEntity, Cell: UITableViewCell>: FetchedDataSource<Entity, Cell> {
+extension FetchedDataSource where Entity: NamedEntity {
 
-    override init() {
-        super.init()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-        configureCell = { (cell: Cell, entity: Entity) in
-            cell.textLabel!.text = entity.name
-        }
+    var nameSortDescriptors: [NSSortDescriptor] {
+        return [NSSortDescriptor(key: "name", ascending: true)]
+    }
+
+    func configureCell(cell: Cell, namedEntity: Entity) {
+        cell.textLabel!.text = namedEntity.name
     }
 
 }
 
-class NamedTypeFetchedDataSource<Entity: NSManagedObject, Cell: UITableViewCell where Entity: NamedType>: FetchedDataSource<Entity, Cell> {
+extension FetchedDataSource where Entity: NamedType {
 
-    override init() {
-        super.init()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-        configureCell = { (cell: Cell, entity: Entity) in
-            cell.textLabel!.text = entity.name
-        }
+    var nameSortDescriptors: [NSSortDescriptor] {
+        return [NSSortDescriptor(key: "name", ascending: true)]
     }
-    
+
+    func configureCell(cell: Cell, namedType: Entity) {
+        cell.textLabel!.text = namedType.name
+    }
+
 }

@@ -15,20 +15,14 @@
 
 import UIKit
 
-class CrewFetchedDataSource<Entity: Crew, Cell: UITableViewCell>: NamedEntityFetchedDataSource<Entity, Cell> {
+extension FetchedDataSource where Entity: Crew {
 
-    override init() {
-        super.init()
-        let namedConfigureCell = configureCell
-        configureCell = { [weak self] (cell: Cell, crew: Entity) in
-            namedConfigureCell?(cell: cell, entity: crew)
-            guard self != nil else { return }
-            let starString = String(count: Int(crew.starCount), repeatedValue: "⭐️")
-            if let career = crew.career {
-                cell.detailTextLabel?.text = "\(career) \(starString)"
-            } else {
-                cell.detailTextLabel?.text = starString.isEmpty ? "0 Stars" : starString
-            }
+    func configureCell(cell: Cell, crew: Entity) {
+        let starString = String(count: Int(crew.starCount), repeatedValue: "⭐️")
+        if let career = crew.career {
+            cell.detailTextLabel?.text = "\(career) \(starString)"
+        } else {
+            cell.detailTextLabel?.text = starString.isEmpty ? "0 Stars" : starString
         }
     }
 

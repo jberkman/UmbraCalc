@@ -18,11 +18,14 @@ import UIKit
 
 class KolonyListTableViewController: MasterTableViewController {
 
-    private lazy var dataSource: NamedEntityFetchedDataSource<Kolony, UITableViewCell> = NamedEntityFetchedDataSource()
+    private lazy var dataSource: FetchedDataSource<Kolony, UITableViewCell> = FetchedDataSource()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         dataSource.tableViewController = self
+        dataSource.configureCell = { [weak self] (cell: UITableViewCell, kolony: Kolony) in
+            self?.dataSource.configureCell(cell, namedEntity: kolony)
+        }
         dataSource.reloadData()
     }
 
