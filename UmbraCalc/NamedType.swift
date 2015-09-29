@@ -21,6 +21,14 @@ protocol NamedType: NSObjectProtocol {
 
 }
 
+extension NamedType {
+
+    static var sortDescriptors: [NSSortDescriptor] {
+        return [NSSortDescriptor(key: "name", ascending: true)]
+    }
+
+}
+
 protocol MutableNamedType: NamedType {
 
     var name: String? { get set }
@@ -28,10 +36,6 @@ protocol MutableNamedType: NamedType {
 }
 
 extension ManagedDataSourceType where Entity: NamedType {
-
-    var nameSortDescriptors: [NSSortDescriptor] {
-        return [NSSortDescriptor(key: "name", ascending: true)]
-    }
 
     func configureCell(cell: Cell, forNamedType namedType: Entity) {
         cell.textLabel!.text = namedType.name

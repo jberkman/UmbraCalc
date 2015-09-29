@@ -90,11 +90,12 @@ class VesselDetailTableViewController: DetailTableViewController {
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.segueIdentifier else { return }
+        guard let vessel = vessel, identifier = segue.segueIdentifier else { return }
         switch identifier {
         case .View:
-            guard let vessel = vessel, crewList = segue.destinationViewController as? CrewListTableViewController else { return }
+            guard let crewList = segue.destinationViewController as? CrewSelectionTableViewController else { return }
             crewList.dataSource.fetchRequest.predicate = NSPredicate(format: "vessel = %@", vessel)
+            crewList.editing = false
             if let name = vessel.name {
                 crewList.navigationItem.title = "\(name) Crew"
             }
@@ -102,7 +103,8 @@ class VesselDetailTableViewController: DetailTableViewController {
         case .Edit:
             guard let partList = segue.destinationViewController as? PartListTableViewController else { return }
             partList.vessel = vessel
-            if let name = vessel?.name {
+            partList.editing = editing
+            if let name = vessel.name {
                 partList.navigationItem.title = "\(name) Parts"
             }
 

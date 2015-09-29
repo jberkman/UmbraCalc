@@ -60,6 +60,24 @@ class PartDetailTableViewController: DetailTableViewController {
         countStepper.addTarget(self, action: "countStepperDidChange:", forControlEvents: .ValueChanged)
     }
 
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        guard let identifier = segue.segueIdentifier, part = part else { return }
+        switch identifier {
+        case .Edit, .View:
+            guard let crewList = segue.destinationViewController as? CrewSelectionTableViewController else { return }
+            crewList.dataSource.selectedEntities = part.crew as? Set<Crew>
+            crewList.dataSource.maxCount = part.crewCapacity
+            crewList.editing = editing
+            if !editing {
+                crewList.dataSource.fetchRequest.predicate = NSPredicate(format: "part = %@", part)
+            }
+
+        default:
+            break
+        }
+
+    }
+
     override func contextDidChange(context: UnsafeMutablePointer<Void>) -> Bool {
         switch context {
         case &countContext.context:
@@ -72,7 +90,9 @@ class PartDetailTableViewController: DetailTableViewController {
 
         case &crewContext.context:
             guard isViewLoaded() else { return true }
-            crewCountLabel.text = String(part?.crew?.count ?? 0)
+            let count = part?.crew?.count ?? 0
+            crewCountLabel.text = String(count)
+            countStepper.minimumValue = Double(count)
 
         default:
             return false
@@ -94,6 +114,14 @@ class PartDetailTableViewController: DetailTableViewController {
         withIgnoredChanges {
             part?.count = Int16(stepper.value)
         }
+    }
+
+}
+
+extension PartDetailTableViewController: ViewControllerDelegate {
+
+    func viewControllerDidFinish<ViewController : UIViewController>(viewController: ViewController) {
+        part?.crew = (viewController as? CrewSelectionTableViewController)?.dataSource.selectedEntities
     }
 
 }

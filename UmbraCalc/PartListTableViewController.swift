@@ -43,6 +43,7 @@ class PartListTableViewController: UITableViewController {
             guard let partDetail = segue.destinationViewController as? PartDetailTableViewController,
                 indexPath = tableView.indexPathForSegueSender(sender) else { return }
             partDetail.part = dataSource.entityAtIndexPath(indexPath)
+            partDetail.editing = editing
 
         case .Insert:
             guard let partNodeListViewController: PartNodeListTableViewController = segue.destinationViewControllerWithType() else { return }

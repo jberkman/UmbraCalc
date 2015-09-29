@@ -18,7 +18,9 @@ import CoreData
 
 class NamedEntity: NSManagedObject {
 
-// Insert code here to add functionality to your managed object subclass
+    class var sortDescriptors: [NSSortDescriptor] {
+        return [NSSortDescriptor(key: "name", ascending: true)]
+    }
 
 }
 
@@ -26,10 +28,6 @@ class NamedEntity: NSManagedObject {
 // extension NamedEntity: MutableNamedType { }
 
 extension ManagedDataSourceType where Entity: NamedEntity {
-
-    var nameSortDescriptors: [NSSortDescriptor] {
-        return [NSSortDescriptor(key: "name", ascending: true)]
-    }
 
     func configureCell(cell: Cell, forNamedEntity namedEntity: Entity) {
         cell.textLabel!.text = namedEntity.name

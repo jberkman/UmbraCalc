@@ -1,5 +1,5 @@
 //
-//  CrewListTableViewController.swift
+//  StationMasterTableViewController.swift
 //  UmbraCalc
 //
 //  Created by jacob berkman on 2015-09-26.
@@ -16,53 +16,54 @@
 import CoreData
 import UIKit
 
-class CrewListTableViewController: MasterTableViewController {
+class StationMasterTableViewController: MasterTableViewController {
 
-    private(set) lazy var dataSource: MasterDataSource<Crew, UITableViewCell> = MasterDataSource()
+    private lazy var dataSource: MasterDataSource<Station, UITableViewCell> = MasterDataSource()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         dataSource.delegate = self
-        dataSource.fetchRequest.sortDescriptors = dataSource.nameSortDescriptors
+        dataSource.fetchRequest.sortDescriptors = NamedEntity.sortDescriptors
         dataSource.tableViewController = self
         dataSource.reloadData()
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         guard let identifier = segue.segueIdentifier,
-            crewDetail: CrewDetailTableViewController = segue.destinationViewControllerWithType() else { return }
+            vesselDetail: VesselDetailTableViewController = segue.destinationViewControllerWithType() else { return }
+
         switch identifier {
         case .Insert:
             let scratchContext = ScratchContext(parent: dataSource)
-            crewDetail.crew = scratchContext.insertCrew()!.withCareer(Crew.pilotTitle)
-            crewDetail.navigationItem.title = "Add Crew"
-            crewDetail.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "crewDetailViewControllerDidCancel")
-            crewDetail.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "crewDetailViewControllerDidFinish")
-            crewDetail.editing = true
+            vesselDetail.vessel = scratchContext.insertStation()
+            vesselDetail.navigationItem.title = "Add Station"
+            vesselDetail.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "vesselDetailViewControllerDidCancel")
+            vesselDetail.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "vesselDetailViewControllerDidFinish")
+            vesselDetail.editing = true
 
         case .Edit, .View:
             guard let indexPath = tableView.indexPathForSegueSender(sender) else { return }
-            let crew = dataSource.entityAtIndexPath(indexPath)
-            crewDetail.crew = crew
-            if case .Edit = identifier {
-                crewDetail.navigationItem.rightBarButtonItem = crewDetail.editButtonItem()
-            }
-            dataSource.selectedEntity = crew
+            let vessel = dataSource.entityAtIndexPath(indexPath)
+            vesselDetail.vessel = vessel
+            vesselDetail.navigationItem.title = "Station Details"
+            vesselDetail.editing = true
+            dataSource.selectedEntity = vessel
+
         }
     }
 
-    // Crew detail button handlers
-    @objc private func crewDetailViewControllerDidCancel() {
+    // Station detail button handlers
+    @objc private func vesselDetailViewControllerDidCancel() {
         dismissViewControllerAnimated(true, completion: nil)
     }
 
-    @objc private func crewDetailViewControllerDidFinish() {
-        guard let crewDetail = (presentedViewController as? UINavigationController)?.viewControllers.first as? CrewDetailTableViewController else { return }
+    @objc private func vesselDetailViewControllerDidFinish() {
+        guard let vesselDetail = (presentedViewController as? UINavigationController)?.viewControllers.first as? VesselDetailTableViewController else { return }
         dismissViewControllerAnimated(true) {
-            _ = try? crewDetail.crew?.saveToParentContext { (crew: Crew?) in
+            _ = try? vesselDetail.vessel?.saveToParentContext { (station: Station?) in
                 guard self.splitViewController?.collapsed == false,
-                    let crewToSelect = crew,
-                    indexPath = self.dataSource.indexPathOfEntity(crewToSelect) else { return }
+                    let stationToSelect = station,
+                    indexPath = self.dataSource.indexPathOfEntity(stationToSelect) else { return }
 
                 self.performSegueWithIdentifier(SegueIdentifier.Edit.rawValue, sender: indexPath)
                 self.tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
@@ -72,28 +73,23 @@ class CrewListTableViewController: MasterTableViewController {
 
 }
 
-extension CrewListTableViewController: ManagedDataSourceDelegate {
+extension StationMasterTableViewController: ManagedDataSourceDelegate {
 
     func managedDataSource<Entity, Cell>(managedDataSource: ManagedDataSource<Entity, Cell>, configureCell cell: Cell, forEntity entity: Entity) {
-        let crew = entity as! Crew
-        dataSource.configureCell(cell, forNamedEntity: crew)
-        dataSource.configureCell(cell, forCrew: crew)
-        let accessoryType = currentAccessoryType
-        cell.accessoryType = accessoryType
-        cell.editingAccessoryType = accessoryType
+        dataSource.configureCell(cell, forNamedEntity: entity as! Station)
     }
 
 }
 
-extension CrewListTableViewController: ManagingObjectContextContainer {
+extension StationMasterTableViewController: ManagingObjectContextContainer {
 
     func setManagingObjectContext(managingObjectContext: ManagingObjectContext) {
         dataSource.managedObjectContext = managingObjectContext.managedObjectContext
     }
-
+    
 }
 
-extension CrewListTableViewController {
+extension StationMasterTableViewController {
 
     override func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
         guard dataSource.selectedEntity == nil else { return nil }

@@ -1,5 +1,5 @@
 //
-//  StationListTableViewController.swift
+//  CrewMasterTableViewController.swift
 //  UmbraCalc
 //
 //  Created by jacob berkman on 2015-09-26.
@@ -16,56 +16,54 @@
 import CoreData
 import UIKit
 
-class StationListTableViewController: MasterTableViewController {
+class CrewMasterTableViewController: MasterTableViewController {
 
-    private lazy var dataSource: MasterDataSource<Station, UITableViewCell> = MasterDataSource()
+    private(set) lazy var dataSource: MasterDataSource<Crew, UITableViewCell> = MasterDataSource()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         dataSource.delegate = self
-        dataSource.fetchRequest.sortDescriptors = dataSource.nameSortDescriptors
+        dataSource.fetchRequest.sortDescriptors = NamedEntity.sortDescriptors
         dataSource.tableViewController = self
         dataSource.reloadData()
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         guard let identifier = segue.segueIdentifier,
-            vesselDetail: VesselDetailTableViewController = segue.destinationViewControllerWithType() else { return }
-
+            crewDetail: CrewDetailTableViewController = segue.destinationViewControllerWithType() else { return }
         switch identifier {
         case .Insert:
             let scratchContext = ScratchContext(parent: dataSource)
-            vesselDetail.vessel = scratchContext.insertStation()
-            vesselDetail.navigationItem.title = "Add Station"
-            vesselDetail.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "vesselDetailViewControllerDidCancel")
-            vesselDetail.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "vesselDetailViewControllerDidFinish")
-            vesselDetail.editing = true
+            crewDetail.crew = scratchContext.insertCrew()!.withCareer(Crew.pilotTitle)
+            crewDetail.navigationItem.title = "Add Crew"
+            crewDetail.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "crewDetailViewControllerDidCancel")
+            crewDetail.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "crewDetailViewControllerDidFinish")
+            crewDetail.editing = true
 
         case .Edit, .View:
             guard let indexPath = tableView.indexPathForSegueSender(sender) else { return }
-            let vessel = dataSource.entityAtIndexPath(indexPath)
-            vesselDetail.vessel = vessel
-            vesselDetail.navigationItem.title = "Station Details"
+            let crew = dataSource.entityAtIndexPath(indexPath)
+            crewDetail.crew = crew
             if case .Edit = identifier {
-                vesselDetail.navigationItem.rightBarButtonItem = vesselDetail.editButtonItem()
+                crewDetail.navigationItem.rightBarButtonItem = crewDetail.editButtonItem()
             }
-            dataSource.selectedEntity = vessel
-
+            crewDetail.editing = editing
+            dataSource.selectedEntity = crew
         }
     }
 
-    // Station detail button handlers
-    @objc private func vesselDetailViewControllerDidCancel() {
+    // Crew detail button handlers
+    @objc private func crewDetailViewControllerDidCancel() {
         dismissViewControllerAnimated(true, completion: nil)
     }
 
-    @objc private func vesselDetailViewControllerDidFinish() {
-        guard let vesselDetail = (presentedViewController as? UINavigationController)?.viewControllers.first as? VesselDetailTableViewController else { return }
+    @objc private func crewDetailViewControllerDidFinish() {
+        guard let crewDetail = (presentedViewController as? UINavigationController)?.viewControllers.first as? CrewDetailTableViewController else { return }
         dismissViewControllerAnimated(true) {
-            _ = try? vesselDetail.vessel?.saveToParentContext { (station: Station?) in
+            _ = try? crewDetail.crew?.saveToParentContext { (crew: Crew?) in
                 guard self.splitViewController?.collapsed == false,
-                    let stationToSelect = station,
-                    indexPath = self.dataSource.indexPathOfEntity(stationToSelect) else { return }
+                    let crewToSelect = crew,
+                    indexPath = self.dataSource.indexPathOfEntity(crewToSelect) else { return }
 
                 self.performSegueWithIdentifier(SegueIdentifier.Edit.rawValue, sender: indexPath)
                 self.tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
@@ -75,23 +73,28 @@ class StationListTableViewController: MasterTableViewController {
 
 }
 
-extension StationListTableViewController: ManagedDataSourceDelegate {
+extension CrewMasterTableViewController: ManagedDataSourceDelegate {
 
     func managedDataSource<Entity, Cell>(managedDataSource: ManagedDataSource<Entity, Cell>, configureCell cell: Cell, forEntity entity: Entity) {
-        dataSource.configureCell(cell, forNamedEntity: entity as! Station)
+        let crew = entity as! Crew
+        dataSource.configureCell(cell, forNamedEntity: crew)
+        dataSource.configureCell(cell, forCrew: crew)
+        let accessoryType = currentAccessoryType
+        cell.accessoryType = accessoryType
+        cell.editingAccessoryType = accessoryType
     }
 
 }
 
-extension StationListTableViewController: ManagingObjectContextContainer {
+extension CrewMasterTableViewController: ManagingObjectContextContainer {
 
     func setManagingObjectContext(managingObjectContext: ManagingObjectContext) {
         dataSource.managedObjectContext = managingObjectContext.managedObjectContext
     }
-    
+
 }
 
-extension StationListTableViewController {
+extension CrewMasterTableViewController {
 
     override func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
         guard dataSource.selectedEntity == nil else { return nil }

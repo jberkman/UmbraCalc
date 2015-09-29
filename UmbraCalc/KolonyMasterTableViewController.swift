@@ -1,5 +1,5 @@
 //
-//  KolonyListTableViewController.swift
+//  KolonyMasterTableViewController.swift
 //  UmbraCalc
 //
 //  Created by jacob berkman on 2015-09-26.
@@ -16,21 +16,21 @@
 import CoreData
 import UIKit
 
-class KolonyListTableViewController: MasterTableViewController {
+class KolonyMasterTableViewController: MasterTableViewController {
 
     private lazy var dataSource: MasterDataSource<Kolony, UITableViewCell> = MasterDataSource()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         dataSource.delegate = self
-        dataSource.fetchRequest.sortDescriptors = dataSource.nameSortDescriptors
+        dataSource.fetchRequest.sortDescriptors = NamedEntity.sortDescriptors
         dataSource.tableViewController = self
         dataSource.reloadData()
     }
 
 }
 
-extension KolonyListTableViewController: ManagedDataSourceDelegate {
+extension KolonyMasterTableViewController: ManagedDataSourceDelegate {
 
     func managedDataSource<Entity, Cell>(managedDataSource: ManagedDataSource<Entity, Cell>, configureCell cell: Cell, forEntity entity: Entity) {
         dataSource.configureCell(cell, forNamedEntity: entity as! Kolony)
@@ -38,7 +38,7 @@ extension KolonyListTableViewController: ManagedDataSourceDelegate {
 
 }
 
-extension KolonyListTableViewController: ManagingObjectContextContainer {
+extension KolonyMasterTableViewController: ManagingObjectContextContainer {
 
     func setManagingObjectContext(managingObjectContext: ManagingObjectContext) {
         dataSource.managedObjectContext = managingObjectContext.managedObjectContext
@@ -46,7 +46,7 @@ extension KolonyListTableViewController: ManagingObjectContextContainer {
 
 }
 
-extension KolonyListTableViewController {
+extension KolonyMasterTableViewController {
 
     override func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
         guard dataSource.selectedEntity == nil else { return nil }
