@@ -17,7 +17,7 @@ import UIKit
 
 class PartListTableViewController: UITableViewController {
 
-    var dataSource: FetchedDataSource<Part, UITableViewCell> = FetchedDataSource()
+    var dataSource: ManagedDataSource<Part, UITableViewCell> = ManagedDataSource()
 
     var vessel: Vessel? {
         didSet {
@@ -30,12 +30,9 @@ class PartListTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        dataSource.delegate = self
         dataSource.fetchRequest.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-        dataSource.configureCell = { (cell: UITableViewCell, part: Part) in
-            cell.textLabel?.text = part.title
-            cell.detailTextLabel?.text = "Installed: \(part.count) Crew: \(part.crew?.count ?? 0) Efficiency: \(Int(part.efficiency * 100))%"
-        }
-        dataSource.tableViewController = self
+        dataSource.tableView = tableView
         dataSource.reloadData()
     }
 
@@ -63,6 +60,16 @@ extension PartListTableViewController {
 
     @objc private func partNodeListViewControllerDidCancel() {
         dismissViewControllerAnimated(true, completion: nil)
+    }
+
+}
+
+extension PartListTableViewController: ManagedDataSourceDelegate {
+
+    func managedDataSource<Entity, Cell>(managedDataSource: ManagedDataSource<Entity, Cell>, configureCell cell: Cell, forEntity entity: Entity) {
+        let part = entity as! Part
+        cell.textLabel?.text = part.title
+        cell.detailTextLabel?.text = "Installed: \(part.count) Crew: \(part.crew?.count ?? 0) Efficiency: \(Int(part.efficiency * 100))%"
     }
 
 }

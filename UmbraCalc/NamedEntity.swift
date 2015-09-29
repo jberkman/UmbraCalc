@@ -24,3 +24,15 @@ class NamedEntity: NSManagedObject {
 
 // http://www.openradar.me/radar?id=6421938515738624
 // extension NamedEntity: MutableNamedType { }
+
+extension ManagedDataSourceType where Entity: NamedEntity {
+
+    var nameSortDescriptors: [NSSortDescriptor] {
+        return [NSSortDescriptor(key: "name", ascending: true)]
+    }
+
+    func configureCell(cell: Cell, forNamedEntity namedEntity: Entity) {
+        cell.textLabel!.text = namedEntity.name
+    }
+    
+}

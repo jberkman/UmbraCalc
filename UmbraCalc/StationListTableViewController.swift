@@ -18,10 +18,12 @@ import UIKit
 
 class StationListTableViewController: MasterTableViewController {
 
-    private lazy var dataSource: FetchedDataSource<Station, UITableViewCell> = FetchedDataSource()
+    private lazy var dataSource: MasterDataSource<Station, UITableViewCell> = MasterDataSource()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        dataSource.masterDelegate = self
+        dataSource.fetchRequest.sortDescriptors = dataSource.nameSortDescriptors
         dataSource.tableViewController = self
         dataSource.reloadData()
     }
@@ -43,9 +45,9 @@ class StationListTableViewController: MasterTableViewController {
             case "editStation", "viewStation":
                 guard let vesselDetail = segue.destinationViewController as? VesselDetailTableViewController ??
                     (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? VesselDetailTableViewController,
-                    indexPath = sender is UITableViewCell ? tableView.indexPathForCell(sender as! UITableViewCell) : sender as? NSIndexPath,
-                    vessel = dataSource.entityAtIndexPath(indexPath) else { return }
+                    indexPath = sender is UITableViewCell ? tableView.indexPathForCell(sender as! UITableViewCell) : sender as? NSIndexPath else { return }
 
+                let vessel = dataSource.entityAtIndexPath(indexPath)
                 vesselDetail.vessel = vessel
                 vesselDetail.navigationItem.title = "Station Details"
                 if identifier == "editStation" {
@@ -82,6 +84,22 @@ class StationListTableViewController: MasterTableViewController {
                 indexPath = self.dataSource.indexPathOfEntity(vesselToSelect) else { return }
             self.showDetailViewControllerForEntityAtIndexPath(indexPath)
         }
+    }
+
+}
+
+extension StationListTableViewController: ManagedDataSourceDelegate {
+
+    func managedDataSource<Entity, Cell>(managedDataSource: ManagedDataSource<Entity, Cell>, configureCell cell: Cell, forEntity entity: Entity) {
+        dataSource.configureCell(cell, forNamedEntity: entity as! Station)
+    }
+
+}
+
+extension StationListTableViewController: MasterDataSourceDelegate {
+
+    func masterDataSource<Entity, Cell>(masterDataSource: MasterDataSource<Entity, Cell>, showDetailViewControllerForRowAtIndexPath indexPath: NSIndexPath) {
+        showDetailViewControllerForEntityAtIndexPath(indexPath)
     }
 
 }

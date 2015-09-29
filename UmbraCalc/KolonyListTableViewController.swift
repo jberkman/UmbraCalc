@@ -18,20 +18,35 @@ import UIKit
 
 class KolonyListTableViewController: MasterTableViewController {
 
-    private lazy var dataSource: FetchedDataSource<Kolony, UITableViewCell> = FetchedDataSource()
+    private lazy var dataSource: MasterDataSource<Kolony, UITableViewCell> = MasterDataSource()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        dataSource.masterDelegate = self
+        dataSource.fetchRequest.sortDescriptors = dataSource.nameSortDescriptors
         dataSource.tableViewController = self
-        dataSource.configureCell = { [weak self] (cell: UITableViewCell, kolony: Kolony) in
-            self?.dataSource.configureCell(cell, namedEntity: kolony)
-        }
         dataSource.reloadData()
     }
 
     override func showDetailViewControllerForEntityAtIndexPath(indexPath: NSIndexPath) {
-//        performSegueWithIdentifier("editKolony", sender: indexPath)
+        //        performSegueWithIdentifier("editKolony", sender: indexPath)
         tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
+    }
+
+}
+
+extension KolonyListTableViewController: ManagedDataSourceDelegate {
+
+    func managedDataSource<Entity, Cell>(managedDataSource: ManagedDataSource<Entity, Cell>, configureCell cell: Cell, forEntity entity: Entity) {
+        dataSource.configureCell(cell, forNamedEntity: entity as! Kolony)
+    }
+
+}
+
+extension KolonyListTableViewController: MasterDataSourceDelegate {
+
+    func masterDataSource<Entity, Cell>(masterDataSource: MasterDataSource<Entity, Cell>, showDetailViewControllerForRowAtIndexPath indexPath: NSIndexPath) {
+        showDetailViewControllerForEntityAtIndexPath(indexPath)
     }
 
 }

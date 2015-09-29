@@ -18,17 +18,12 @@ import UIKit
 
 class CrewListTableViewController: MasterTableViewController {
 
-    private(set) lazy var dataSource: FetchedDataSource<Crew, UITableViewCell> = FetchedDataSource()
+    private(set) lazy var dataSource: MasterDataSource<Crew, UITableViewCell> = MasterDataSource()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSource.configureCell = { [weak self] (cell: UITableViewCell, crew: Crew) in
-            guard let accessoryType = self?.currentAccessoryType else { return }
-            self?.dataSource.configureCell(cell, namedEntity: crew)
-            self?.dataSource.configureCell(cell, crew: crew)
-            cell.accessoryType = accessoryType
-            cell.editingAccessoryType = accessoryType
-        }
+        dataSource.masterDelegate = self
+        dataSource.fetchRequest.sortDescriptors = dataSource.nameSortDescriptors
         dataSource.tableViewController = self
         dataSource.reloadData()
     }
@@ -49,9 +44,9 @@ class CrewListTableViewController: MasterTableViewController {
         case "editCrew", "viewCrew":
             guard let crewDetail = segue.destinationViewController as? CrewDetailTableViewController ??
                 (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? CrewDetailTableViewController,
-                indexPath = sender is UITableViewCell ? tableView.indexPathForCell(sender as! UITableViewCell) : sender as? NSIndexPath,
-                crew = dataSource.entityAtIndexPath(indexPath) else { return }
+                indexPath = sender is UITableViewCell ? tableView.indexPathForCell(sender as! UITableViewCell) : sender as? NSIndexPath else { return }
 
+            let crew = dataSource.entityAtIndexPath(indexPath)
             crewDetail.crew = crew
             if identifier == "editCrew" {
                 crewDetail.navigationItem.rightBarButtonItem = crewDetail.editButtonItem()
@@ -86,6 +81,27 @@ class CrewListTableViewController: MasterTableViewController {
                 indexPath = self.dataSource.indexPathOfEntity(crewToSelect) else { return }
             self.showDetailViewControllerForEntityAtIndexPath(indexPath)
         }
+    }
+
+}
+
+extension CrewListTableViewController: ManagedDataSourceDelegate {
+
+    func managedDataSource<Entity, Cell>(managedDataSource: ManagedDataSource<Entity, Cell>, configureCell cell: Cell, forEntity entity: Entity) {
+        let crew = entity as! Crew
+        dataSource.configureCell(cell, forNamedEntity: crew)
+        dataSource.configureCell(cell, forCrew: crew)
+        let accessoryType = currentAccessoryType
+        cell.accessoryType = accessoryType
+        cell.editingAccessoryType = accessoryType
+    }
+
+}
+
+extension CrewListTableViewController: MasterDataSourceDelegate {
+
+    func masterDataSource<Entity, Cell>(masterDataSource: MasterDataSource<Entity, Cell>, showDetailViewControllerForRowAtIndexPath indexPath: NSIndexPath) {
+        showDetailViewControllerForEntityAtIndexPath(indexPath)
     }
 
 }
