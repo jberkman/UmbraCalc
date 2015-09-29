@@ -22,48 +22,36 @@ class StationListTableViewController: MasterTableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSource.masterDelegate = self
+        dataSource.delegate = self
         dataSource.fetchRequest.sortDescriptors = dataSource.nameSortDescriptors
         dataSource.tableViewController = self
         dataSource.reloadData()
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.identifier else { return }
-        print(self.dynamicType, __FUNCTION__, identifier)
+        guard let identifier = segue.segueIdentifier,
+            vesselDetail: VesselDetailTableViewController = segue.destinationViewControllerWithType() else { return }
+
         switch identifier {
-            case "insertStation":
-                guard let vesselDetail = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? VesselDetailTableViewController else { return }
+        case .Insert:
+            let scratchContext = ScratchContext(parent: dataSource)
+            vesselDetail.vessel = scratchContext.insertStation()
+            vesselDetail.navigationItem.title = "Add Station"
+            vesselDetail.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "vesselDetailViewControllerDidCancel")
+            vesselDetail.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "vesselDetailViewControllerDidFinish")
+            vesselDetail.editing = true
 
-                let scratchContext = ScratchContext(parent: dataSource)
-                vesselDetail.vessel = scratchContext.insertStation()
-                vesselDetail.navigationItem.title = "Add Station"
-                vesselDetail.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "vesselDetailViewControllerDidCancel")
-                vesselDetail.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "vesselDetailViewControllerDidFinish")
-                vesselDetail.editing = true
-
-            case "editStation", "viewStation":
-                guard let vesselDetail = segue.destinationViewController as? VesselDetailTableViewController ??
-                    (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? VesselDetailTableViewController,
-                    indexPath = sender is UITableViewCell ? tableView.indexPathForCell(sender as! UITableViewCell) : sender as? NSIndexPath else { return }
-
-                let vessel = dataSource.entityAtIndexPath(indexPath)
-                vesselDetail.vessel = vessel
-                vesselDetail.navigationItem.title = "Station Details"
-                if identifier == "editStation" {
-                    vesselDetail.navigationItem.rightBarButtonItem = vesselDetail.editButtonItem()
-                }
-                dataSource.selectedEntity = vessel
-
-        default:
-            break
+        case .Edit, .View:
+            guard let indexPath = tableView.indexPathForSegueSender(sender) else { return }
+            let vessel = dataSource.entityAtIndexPath(indexPath)
+            vesselDetail.vessel = vessel
+            vesselDetail.navigationItem.title = "Station Details"
+            if case .Edit = identifier {
+                vesselDetail.navigationItem.rightBarButtonItem = vesselDetail.editButtonItem()
+            }
+            dataSource.selectedEntity = vessel
 
         }
-    }
-
-    override func showDetailViewControllerForEntityAtIndexPath(indexPath: NSIndexPath) {
-        performSegueWithIdentifier("editStation", sender: indexPath)
-        tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
     }
 
     // Station detail button handlers
@@ -74,15 +62,14 @@ class StationListTableViewController: MasterTableViewController {
     @objc private func vesselDetailViewControllerDidFinish() {
         guard let vesselDetail = (presentedViewController as? UINavigationController)?.viewControllers.first as? VesselDetailTableViewController else { return }
         dismissViewControllerAnimated(true) {
-            guard let vessel = vesselDetail.vessel else { return }
-            try! vessel.managedObjectContext!.obtainPermanentIDsForObjects([vessel])
-            let objectID = vessel.objectID
-            try! vessel.managedObjectContext!.save()
+            _ = try? vesselDetail.vessel?.saveToParentContext { (station: Station?) in
+                guard self.splitViewController?.collapsed == false,
+                    let stationToSelect = station,
+                    indexPath = self.dataSource.indexPathOfEntity(stationToSelect) else { return }
 
-            guard self.splitViewController?.collapsed == false,
-                let vesselToSelect = self.dataSource.managedObjectContext?.objectWithID(objectID) as? Station,
-                indexPath = self.dataSource.indexPathOfEntity(vesselToSelect) else { return }
-            self.showDetailViewControllerForEntityAtIndexPath(indexPath)
+                self.performSegueWithIdentifier(SegueIdentifier.Edit.rawValue, sender: indexPath)
+                self.tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
+            }
         }
     }
 
@@ -92,14 +79,6 @@ extension StationListTableViewController: ManagedDataSourceDelegate {
 
     func managedDataSource<Entity, Cell>(managedDataSource: ManagedDataSource<Entity, Cell>, configureCell cell: Cell, forEntity entity: Entity) {
         dataSource.configureCell(cell, forNamedEntity: entity as! Station)
-    }
-
-}
-
-extension StationListTableViewController: MasterDataSourceDelegate {
-
-    func masterDataSource<Entity, Cell>(masterDataSource: MasterDataSource<Entity, Cell>, showDetailViewControllerForRowAtIndexPath indexPath: NSIndexPath) {
-        showDetailViewControllerForEntityAtIndexPath(indexPath)
     }
 
 }

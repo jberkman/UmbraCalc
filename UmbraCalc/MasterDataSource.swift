@@ -16,23 +16,11 @@
 import CoreData
 import UIKit
 
-protocol MasterDataSourceDelegate: ManagedDataSourceDelegate {
-
-    func masterDataSource<Entity, Cell>(masterDataSource: MasterDataSource<Entity, Cell>, showDetailViewControllerForRowAtIndexPath indexPath: NSIndexPath)
-
-}
-
 class MasterDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: ManagedDataSource<Entity, Cell> {
 
     var tableViewController: UITableViewController? {
         didSet {
             tableView = tableViewController?.tableView
-        }
-    }
-
-    weak var masterDelegate: MasterDataSourceDelegate? {
-        didSet {
-            delegate = masterDelegate
         }
     }
 
@@ -65,7 +53,8 @@ class MasterDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: ManagedD
                 return
         }
 
-        masterDelegate?.masterDataSource(self, showDetailViewControllerForRowAtIndexPath: indexPath)
+        tableViewController?.performSegueWithIdentifier(SegueIdentifier.Edit.rawValue, sender: indexPath)
+        tableViewController?.tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
     }
 
 }

@@ -27,6 +27,7 @@ class VesselDetailTableViewController: DetailTableViewController {
     @IBOutlet weak var happinessLabel: UILabel!
 
     private let nameContext = ObserverContext(keyPath: "name")
+    private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
 
     private var hasAppeared = false
 
@@ -60,7 +61,7 @@ class VesselDetailTableViewController: DetailTableViewController {
         crewCapacityLabel.text = String(vessel?.crewCapacity ?? 0)
         livingSpacesLabel.text = String(vessel?.livingSpaceCount ?? 0)
         workspacesLabel.text = String(vessel?.workspaceCount ?? 0)
-        happinessLabel.text = "\(Int(100 * (vessel?.crewHappiness ?? 0)))%"
+        happinessLabel.text = percentFormatter.stringFromNumber(vessel?.crewHappiness ?? 0)
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -89,23 +90,22 @@ class VesselDetailTableViewController: DetailTableViewController {
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.identifier else { return }
-        print(self.dynamicType, __FUNCTION__, identifier)
+        guard let identifier = segue.segueIdentifier else { return }
         switch identifier {
-        case "browseCrew":
+        case .View:
             guard let vessel = vessel, crewList = segue.destinationViewController as? CrewListTableViewController else { return }
             crewList.dataSource.fetchRequest.predicate = NSPredicate(format: "vessel = %@", vessel)
             if let name = vessel.name {
                 crewList.navigationItem.title = "\(name) Crew"
             }
 
-        case "editParts":
+        case .Edit:
             guard let partList = segue.destinationViewController as? PartListTableViewController else { return }
             partList.vessel = vessel
             if let name = vessel?.name {
                 partList.navigationItem.title = "\(name) Parts"
             }
-            
+
         default:
             break
         }

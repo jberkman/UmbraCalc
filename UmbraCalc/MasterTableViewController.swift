@@ -49,16 +49,14 @@ class MasterTableViewController: UITableViewController {
             showDetailViewController(emptyDetailViewController, sender: self)
             return
         }
-        showDetailViewControllerForEntityAtIndexPath(NSIndexPath(forRow: 0, inSection: 0))
+        let indexPath = NSIndexPath(forItem: 0, inSection: 0)
+        performSegueWithIdentifier(SegueIdentifier.Edit.rawValue, sender: indexPath)
+        tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
     }
 
     override func setEditing(editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         navigationItem.setLeftBarButtonItem(editing || navigationController?.viewControllers.first == self ? addButton : nil, animated: animated)
-    }
-
-    func showDetailViewControllerForEntityAtIndexPath(indexPath: NSIndexPath) {
-        fatalError("\(__FUNCTION__): not implemented")
     }
 
 }

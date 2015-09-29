@@ -45,3 +45,20 @@ class ScratchContext: NSObject, ManagingObjectContext {
     }
 
 }
+
+extension NSManagedObject {
+
+    func saveToParentContext<Entity: NSManagedObject>(completion: (Entity?) -> Void) throws {
+        guard let parentContext = managedObjectContext?.parentContext else {
+            completion(nil)
+            return
+        }
+        try managedObjectContext?.obtainPermanentIDsForObjects([self])
+        try managedObjectContext?.save()
+        let ID = objectID
+        parentContext.performBlock {
+            completion(parentContext.objectWithID(ID) as? Entity)
+        }
+    }
+
+}

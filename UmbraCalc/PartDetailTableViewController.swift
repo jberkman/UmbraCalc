@@ -32,6 +32,7 @@ class PartDetailTableViewController: DetailTableViewController {
 
     private let countContext = ObserverContext(keyPath: "count")
     private let crewContext = ObserverContext(keyPath: "crew")
+    private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
 
     func forEachContext(@noescape body: (ObserverContext) -> Void) {
         [ countContext, crewContext ].forEach(body)
@@ -80,11 +81,11 @@ class PartDetailTableViewController: DetailTableViewController {
         crewCapacityLabel.text = String(part?.crewCapacity ?? 0)
         livingSpaceCountLabel.text = String(part?.livingSpaceCount ?? 0)
         workspaceCountLabel.text = String(part?.workspaceCount ?? 0)
-        careerFactorLabel.text = "\(Int(100 * (part?.crewCareerFactor ?? 0)))%"
-        crewEfficiencyLabel.text = "\(Int(100 * (part?.crewEfficiency ?? 0)))%"
+        careerFactorLabel.text = percentFormatter.stringFromNumber(part?.crewCareerFactor ?? 0)
+        crewEfficiencyLabel.text = percentFormatter.stringFromNumber(part?.crewEfficiency ?? 0)
         efficiencyPartsCount.text = String(part?.efficiencyParts?.count ?? 0)
-        partsEfficiencyLabel.text = "\(Int(100 * (part?.partsEfficiency ?? 0)))%"
-        efficiencyLabel.text = "\(Int(100 * (part?.efficiency ?? 0)))%"
+        partsEfficiencyLabel.text = percentFormatter.stringFromNumber(part?.partsEfficiency ?? 0)
+        efficiencyLabel.text = percentFormatter.stringFromNumber(part?.efficiency ?? 0)
 
         return true
     }

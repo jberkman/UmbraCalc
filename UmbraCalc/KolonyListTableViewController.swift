@@ -22,15 +22,10 @@ class KolonyListTableViewController: MasterTableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSource.masterDelegate = self
+        dataSource.delegate = self
         dataSource.fetchRequest.sortDescriptors = dataSource.nameSortDescriptors
         dataSource.tableViewController = self
         dataSource.reloadData()
-    }
-
-    override func showDetailViewControllerForEntityAtIndexPath(indexPath: NSIndexPath) {
-        //        performSegueWithIdentifier("editKolony", sender: indexPath)
-        tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
     }
 
 }
@@ -39,14 +34,6 @@ extension KolonyListTableViewController: ManagedDataSourceDelegate {
 
     func managedDataSource<Entity, Cell>(managedDataSource: ManagedDataSource<Entity, Cell>, configureCell cell: Cell, forEntity entity: Entity) {
         dataSource.configureCell(cell, forNamedEntity: entity as! Kolony)
-    }
-
-}
-
-extension KolonyListTableViewController: MasterDataSourceDelegate {
-
-    func masterDataSource<Entity, Cell>(masterDataSource: MasterDataSource<Entity, Cell>, showDetailViewControllerForRowAtIndexPath indexPath: NSIndexPath) {
-        showDetailViewControllerForEntityAtIndexPath(indexPath)
     }
 
 }

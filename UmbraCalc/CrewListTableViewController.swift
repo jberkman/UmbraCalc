@@ -22,18 +22,17 @@ class CrewListTableViewController: MasterTableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSource.masterDelegate = self
+        dataSource.delegate = self
         dataSource.fetchRequest.sortDescriptors = dataSource.nameSortDescriptors
         dataSource.tableViewController = self
         dataSource.reloadData()
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.identifier else { return }
+        guard let identifier = segue.segueIdentifier,
+            crewDetail: CrewDetailTableViewController = segue.destinationViewControllerWithType() else { return }
         switch identifier {
-        case "insertCrew":
-            guard let crewDetail = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? CrewDetailTableViewController else { return }
-
+        case .Insert:
             let scratchContext = ScratchContext(parent: dataSource)
             crewDetail.crew = scratchContext.insertCrew()!.withCareer(Crew.pilotTitle)
             crewDetail.navigationItem.title = "Add Crew"
@@ -41,26 +40,15 @@ class CrewListTableViewController: MasterTableViewController {
             crewDetail.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "crewDetailViewControllerDidFinish")
             crewDetail.editing = true
 
-        case "editCrew", "viewCrew":
-            guard let crewDetail = segue.destinationViewController as? CrewDetailTableViewController ??
-                (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? CrewDetailTableViewController,
-                indexPath = sender is UITableViewCell ? tableView.indexPathForCell(sender as! UITableViewCell) : sender as? NSIndexPath else { return }
-
+        case .Edit, .View:
+            guard let indexPath = tableView.indexPathForSegueSender(sender) else { return }
             let crew = dataSource.entityAtIndexPath(indexPath)
             crewDetail.crew = crew
-            if identifier == "editCrew" {
+            if case .Edit = identifier {
                 crewDetail.navigationItem.rightBarButtonItem = crewDetail.editButtonItem()
             }
             dataSource.selectedEntity = crew
-
-        default:
-            break
         }
-    }
-
-    override func showDetailViewControllerForEntityAtIndexPath(indexPath: NSIndexPath) {
-        performSegueWithIdentifier("editCrew", sender: indexPath)
-        tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
     }
 
     // Crew detail button handlers
@@ -71,15 +59,14 @@ class CrewListTableViewController: MasterTableViewController {
     @objc private func crewDetailViewControllerDidFinish() {
         guard let crewDetail = (presentedViewController as? UINavigationController)?.viewControllers.first as? CrewDetailTableViewController else { return }
         dismissViewControllerAnimated(true) {
-            guard let crew = crewDetail.crew else { return }
-            try! crew.managedObjectContext!.obtainPermanentIDsForObjects([crew])
-            let objectID = crew.objectID
-            try! crew.managedObjectContext!.save()
-            
-            guard self.splitViewController?.collapsed == false,
-                let crewToSelect = self.dataSource.managedObjectContext?.objectWithID(objectID) as? Crew,
-                indexPath = self.dataSource.indexPathOfEntity(crewToSelect) else { return }
-            self.showDetailViewControllerForEntityAtIndexPath(indexPath)
+            _ = try? crewDetail.crew?.saveToParentContext { (crew: Crew?) in
+                guard self.splitViewController?.collapsed == false,
+                    let crewToSelect = crew,
+                    indexPath = self.dataSource.indexPathOfEntity(crewToSelect) else { return }
+
+                self.performSegueWithIdentifier(SegueIdentifier.Edit.rawValue, sender: indexPath)
+                self.tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
+            }
         }
     }
 
@@ -94,14 +81,6 @@ extension CrewListTableViewController: ManagedDataSourceDelegate {
         let accessoryType = currentAccessoryType
         cell.accessoryType = accessoryType
         cell.editingAccessoryType = accessoryType
-    }
-
-}
-
-extension CrewListTableViewController: MasterDataSourceDelegate {
-
-    func masterDataSource<Entity, Cell>(masterDataSource: MasterDataSource<Entity, Cell>, showDetailViewControllerForRowAtIndexPath indexPath: NSIndexPath) {
-        showDetailViewControllerForEntityAtIndexPath(indexPath)
     }
 
 }

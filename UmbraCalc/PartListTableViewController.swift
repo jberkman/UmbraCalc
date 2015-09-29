@@ -18,7 +18,7 @@ import UIKit
 class PartListTableViewController: UITableViewController {
 
     var dataSource: ManagedDataSource<Part, UITableViewCell> = ManagedDataSource()
-
+    private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
     var vessel: Vessel? {
         didSet {
             dataSource.managedObjectContext = vessel?.managedObjectContext
@@ -37,20 +37,17 @@ class PartListTableViewController: UITableViewController {
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.identifier else { return }
+        guard let identifier = segue.segueIdentifier else { return }
         switch identifier {
-        case "editPart":
+        case .Edit, .View:
             guard let partDetail = segue.destinationViewController as? PartDetailTableViewController,
-                indexPath = sender is UITableViewCell ? tableView.indexPathForCell(sender as! UITableViewCell) : sender as? NSIndexPath else { return }
+                indexPath = tableView.indexPathForSegueSender(sender) else { return }
             partDetail.part = dataSource.entityAtIndexPath(indexPath)
 
-        case "insertPart":
-            guard let partNodeListViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? PartNodeListTableViewController else { return }
+        case .Insert:
+            guard let partNodeListViewController: PartNodeListTableViewController = segue.destinationViewControllerWithType() else { return }
             partNodeListViewController.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "partNodeListViewControllerDidCancel")
             partNodeListViewController.delegate = self
-
-        default:
-            break
         }
     }
 
@@ -69,7 +66,7 @@ extension PartListTableViewController: ManagedDataSourceDelegate {
     func managedDataSource<Entity, Cell>(managedDataSource: ManagedDataSource<Entity, Cell>, configureCell cell: Cell, forEntity entity: Entity) {
         let part = entity as! Part
         cell.textLabel?.text = part.title
-        cell.detailTextLabel?.text = "Installed: \(part.count) Crew: \(part.crew?.count ?? 0) Efficiency: \(Int(part.efficiency * 100))%"
+        cell.detailTextLabel?.text = "Installed: \(part.count) Crew: \(part.crew?.count ?? 0) Efficiency: \(percentFormatter.stringFromNumber(part.efficiency)!)"
     }
 
 }
@@ -92,7 +89,7 @@ extension PartListTableViewController: PartNodeListTableViewControllerDelegate {
                 self.dataSource.insertPartWithPartName(partNode.name)?.withVessel(self.vessel) else { return }
             self.dataSource.managedObjectContext?.processPendingChanges()
             guard let indexPath = self.dataSource.indexPathOfEntity(part) else { return }
-            self.performSegueWithIdentifier("editPart", sender: indexPath)
+            self.performSegueWithIdentifier(SegueIdentifier.Edit.rawValue, sender: indexPath)
         }
     }
 
