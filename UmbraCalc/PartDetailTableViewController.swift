@@ -59,7 +59,7 @@ class PartDetailTableViewController: DetailTableViewController {
         forEachContext { observerContextDidChange($0) }
         countStepper.addTarget(self, action: "countStepperDidChange:", forControlEvents: .ValueChanged)
     }
-
+/*
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         guard let identifier = segue.segueIdentifier, part = part else { return }
         switch identifier {
@@ -77,7 +77,7 @@ class PartDetailTableViewController: DetailTableViewController {
         }
 
     }
-
+*/
     override func contextDidChange(context: UnsafeMutablePointer<Void>) -> Bool {
         switch context {
         case &countContext.context:
@@ -117,7 +117,7 @@ class PartDetailTableViewController: DetailTableViewController {
     }
 
 }
-
+/*
 extension PartDetailTableViewController: ViewControllerDelegate {
 
     func viewControllerDidFinish<ViewController : UIViewController>(viewController: ViewController) {
@@ -125,3 +125,4 @@ extension PartDetailTableViewController: ViewControllerDelegate {
     }
 
 }
+*/

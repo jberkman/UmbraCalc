@@ -96,11 +96,17 @@ class Vessel: NamedEntity {
 
 }
 
+extension Vessel: SegueableType, Segueable {
+
+    class var segueTypeNoun: String { return "Vessel" }
+
+}
+
 extension ManagingObjectContext {
 
     func insertVessel() -> Vessel? {
         guard let managedObjectContext = managedObjectContext,
-            entity = NSEntityDescription.entityForName("Vessel", inManagedObjectContext: managedObjectContext) else { return nil  }
+            entity = NSEntityDescription.entityForName(Vessel.segueTypeNoun, inManagedObjectContext: managedObjectContext) else { return nil  }
         return Vessel(entity: entity, insertIntoManagedObjectContext: managedObjectContext)
     }
 

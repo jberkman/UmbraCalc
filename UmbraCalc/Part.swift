@@ -70,11 +70,17 @@ class Part: NSManagedObject {
 
 extension Part: NamedType { }
 
+extension Part: SegueableType, Segueable {
+
+    class var segueTypeNoun: String { return "Part" }
+
+}
+
 extension ManagingObjectContext {
 
     func insertPartWithPartName(partName: String) -> Part? {
         guard let managedObjectContext = managedObjectContext,
-            entity = NSEntityDescription.entityForName("Part", inManagedObjectContext: managedObjectContext) else { return nil }
+            entity = NSEntityDescription.entityForName(Part.segueTypeNoun, inManagedObjectContext: managedObjectContext) else { return nil }
         let part = Part(entity: entity, insertIntoManagedObjectContext: managedObjectContext)
         part.partName = partName
         return part.withCount(1)

@@ -16,7 +16,7 @@
 import CoreData
 import UIKit
 
-class CrewDetailTableViewController: DetailTableViewController {
+class CrewDetailTableViewController: UITableViewController, ManagingObjectContext {
 
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var careerLabel: UILabel!
@@ -26,105 +26,50 @@ class CrewDetailTableViewController: DetailTableViewController {
 
     @IBOutlet weak var careerCell: UITableViewCell!
 
-    private let nameContext = ObserverContext(keyPath: "name")
-    private let careerContext = ObserverContext(keyPath: "career")
-    private let starCountContext = ObserverContext(keyPath: "starCount")
-    private let partContext = ObserverContext(keyPath: "part")
-    private let vesselContext = ObserverContext(keyPath: "vessel")
-    private let vesselNameContext = ObserverContext(keyPath: "name")
-
     private var hasAppeared = false
 
+    var managedObjectContext: NSManagedObjectContext?
     var crew: Crew? {
         didSet {
             // Prevent crew from being faulted
             managedObjectContext = crew?.managedObjectContext
-            forEachCrewContext {
-                oldValue?.removeObserver(self, context: $0)
-                crew?.addObserver(self, context: $0)
-                observerContextDidChange($0)
-            }
+            updateView()
         }
     }
 
-    private var part: Part? {
-        didSet {
-            oldValue?.removeObserver(self, context: vesselContext)
-            part?.addObserver(self, context: vesselContext)
-            observerContextDidChange(vesselContext)
-        }
-    }
-
-    private var vessel: Vessel? {
-        didSet {
-            oldValue?.removeObserver(self, context: vesselNameContext)
-            vessel?.addObserver(self, context: vesselNameContext)
-            observerContextDidChange(vesselNameContext)
-        }
-    }
-
-    deinit {
-        forEachCrewContext { crew?.removeObserver(self, context: $0) }
-        part?.removeObserver(self, context: vesselContext)
-        vessel?.removeObserver(self, context: vesselNameContext)
-    }
-
-    private func forEachCrewContext(@noescape block: (ObserverContext) -> Void) {
-        [ nameContext, careerContext, starCountContext, partContext ].forEach(block)
-    }
-
-    private func updateAssignmentLabel() {
-        guard isViewLoaded() else { return }
-        guard let partName = part?.title, vesselName = vessel?.name else {
-            assignmentLabel.text = "Unassigned"
+    private func updateStars() {
+        guard let starCount = crew?.starCount else {
+            starCountLabel.text = nil
             return
         }
-        assignmentLabel.text = "\(vesselName) - \(partName)"
+        starCountLabel.text = starCount > 0 ? String(count: Int(starCount), repeatedValue: "⭐️") : "0 Stars"
     }
 
-    override func contextDidChange(context: UnsafeMutablePointer<Void>) -> Bool {
-        switch context {
-        case &nameContext.context:
-            guard isViewLoaded() && !ignoreContextChanges else { break }
-            nameTextField.text = crew?.name
+    private func updateView() {
+        guard isViewLoaded() else { return }
 
-        case &careerContext.context:
-            guard isViewLoaded() else { break }
-            careerLabel.text = crew?.career ?? "Unemployed"
+        nameTextField.text = crew?.name
 
-        case &starCountContext.context:
-            guard isViewLoaded() else { break }
-            guard let starCount = crew?.starCount else {
-                starCountLabel.text = nil
-                starCountStepper.enabled = false
-                break
-            }
-            starCountLabel.text = starCount > 0 ? String(count: Int(starCount), repeatedValue: "⭐️") : "0 Stars"
+        updateStars()
+        starCountStepper.value = Double(crew?.starCount ?? 0)
 
-            guard !ignoreContextChanges else { break }
-            starCountStepper.value = Double(starCount)
+        careerLabel.text = crew?.career ?? "Unemployed"
 
-        case &partContext.context:
-            part = crew?.part
-
-        case &vesselContext.context:
-            vessel = part?.vessel
-
-        case &vesselNameContext.context:
-            updateAssignmentLabel()
-
-        default:
-            return false
+        if let partName = crew?.part?.title, vesselName = crew?.part?.vessel?.name {
+            assignmentLabel.text = "\(vesselName) - \(partName)"
+        } else {
+            assignmentLabel.text = "Unassigned"
         }
-        return true
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        [ nameContext, careerContext, starCountContext, vesselNameContext ].forEach {
-            observerContextDidChange($0)
-        }
         starCountStepper.addTarget(self, action: "stepperDidChange:", forControlEvents: .ValueChanged)
+    }
+
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        updateView()
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -135,24 +80,22 @@ class CrewDetailTableViewController: DetailTableViewController {
         nameTextField.becomeFirstResponder()
     }
 
-    @IBAction func stepperDidChange(sender: UIStepper) {
-        withIgnoredChanges {
-            crew?.starCount = Int16(sender.value)
-        }
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        guard "save" == segue.identifier else { return }
+        crew?.name = nameTextField.text
     }
 
-}
+    @IBAction func stepperDidChange(sender: UIStepper) {
+        crew?.starCount = Int16(sender.value)
 
-extension CrewDetailTableViewController {
+    }
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard tableView.cellForRowAtIndexPath(indexPath) == careerCell else { return }
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    private func presentCareerSheet() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-        [ Crew.engineerTitle, Crew.pilotTitle, Crew.scientistTitle ].forEach { career in
+        [ Crew.engineerTitle, Crew.pilotTitle, Crew.scientistTitle ].sort(<).forEach { career in
             alert.addAction(UIAlertAction(title: career, style: .Default) { _ in
                 self.crew?.career = career
-            })
+                })
         }
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
         alert.popoverPresentationController?.sourceView = careerCell
@@ -162,12 +105,20 @@ extension CrewDetailTableViewController {
 
 }
 
+extension CrewDetailTableViewController {
+
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        guard tableView.cellForRowAtIndexPath(indexPath) == careerCell else { return }
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        presentCareerSheet()
+    }
+
+}
+
 extension CrewDetailTableViewController: UITextFieldDelegate {
 
     func textFieldDidEndEditing(textField: UITextField) {
-        withIgnoredChanges {
-            crew?.name = textField.text
-        }
+        crew?.name = textField.text
     }
 
     func textFieldShouldReturn(textField: UITextField) -> Bool {

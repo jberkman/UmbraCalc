@@ -27,9 +27,9 @@ class NamedEntity: NSManagedObject {
 // http://www.openradar.me/radar?id=6421938515738624
 // extension NamedEntity: MutableNamedType { }
 
-extension ManagedDataSourceType where Entity: NamedEntity {
+extension ManagedDataSourceType {
 
-    func configureCell(cell: Cell, forNamedEntity namedEntity: Entity) {
+    func configureCell(cell: Cell, forNamedEntity namedEntity: NamedEntity) {
         cell.textLabel!.text = namedEntity.name
     }
     

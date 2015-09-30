@@ -37,18 +37,20 @@ class PartListTableViewController: UITableViewController {
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.segueIdentifier else { return }
+        guard let identifier = segue.identifier else { return }
         switch identifier {
-        case .Edit, .View:
+        case Part.showSegueIdentifier:
             guard let partDetail = segue.destinationViewController as? PartDetailTableViewController,
                 indexPath = tableView.indexPathForSegueSender(sender) else { return }
             partDetail.part = dataSource.entityAtIndexPath(indexPath)
             partDetail.editing = editing
 
-        case .Insert:
-            guard let partNodeListViewController: PartNodeListTableViewController = segue.destinationViewControllerWithType() else { return }
-            partNodeListViewController.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "partNodeListViewControllerDidCancel")
-            partNodeListViewController.delegate = self
+//        case Part.addSegueIdentifier:
+//            guard let partNodeListViewController: PartNodeListTableViewController = segue.destinationViewControllerWithType() else { return }
+//            partNodeListViewController.delegate = self
+
+        default:
+            break
         }
     }
 
@@ -80,18 +82,18 @@ extension PartListTableViewController: ManagingObjectContextContainer {
     
 }
 
-extension PartListTableViewController: PartNodeListTableViewControllerDelegate {
-
-    func partNodeListTableViewController(partNodeListTableViewController: PartNodeListTableViewController, didSelectPartNode partNode: PartNode) {
-        dismissViewControllerAnimated(true) {
-            guard let part = (self.vessel?.parts as? Set<Part>)?.lazy
-                .filter({ $0.partName == partNode.name })
-                .first?.withAdditionalCount(1) ??
-                self.dataSource.insertPartWithPartName(partNode.name)?.withVessel(self.vessel) else { return }
-            self.dataSource.managedObjectContext?.processPendingChanges()
-            guard let indexPath = self.dataSource.indexPathOfEntity(part) else { return }
-            self.performSegueWithIdentifier(SegueIdentifier.Edit.rawValue, sender: indexPath)
-        }
-    }
-
-}
+//extension PartListTableViewController: PartNodeListTableViewControllerDelegate {
+//
+//    func partNodeListTableViewController(partNodeListTableViewController: PartNodeListTableViewController, didSelectPartNode partNode: PartNode) {
+//        dismissViewControllerAnimated(true) {
+//            guard let part = (self.vessel?.parts as? Set<Part>)?.lazy
+//                .filter({ $0.partName == partNode.name })
+//                .first?.withAdditionalCount(1) ??
+//                self.dataSource.insertPartWithPartName(partNode.name)?.withVessel(self.vessel) else { return }
+//            self.dataSource.managedObjectContext?.processPendingChanges()
+//            guard let indexPath = self.dataSource.indexPathOfEntity(part) else { return }
+//            self.performSegueWithIdentifier(SegueIdentifier.Edit.rawValue, sender: indexPath)
+//        }
+//    }
+//
+//}

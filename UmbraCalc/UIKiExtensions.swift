@@ -40,18 +40,7 @@ extension UISplitViewController: ManagingObjectContextContainer {
 
 }
 
-enum SegueIdentifier: String {
-    case Edit = "edit"
-    case Insert = "insert"
-    case View = "view"
-}
-
 extension UIStoryboardSegue {
-
-    var segueIdentifier: SegueIdentifier? {
-        guard let identifier = identifier else { return nil }
-        return SegueIdentifier(rawValue: identifier)
-    }
 
     func destinationViewControllerWithType<ViewController: UIViewController>() -> ViewController? {
         return destinationViewController as? ViewController ??

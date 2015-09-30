@@ -40,11 +40,15 @@ class Crew: NamedEntity {
 
 }
 
+extension Crew: SegueableType, Segueable {
+    class var segueTypeNoun: String { return "Crew" }
+}
+
 extension ManagingObjectContext {
 
     func insertCrew() -> Crew? {
         guard let managedObjectContext = managedObjectContext,
-            entity = NSEntityDescription.entityForName("Crew", inManagedObjectContext: managedObjectContext) else { return nil }
+            entity = NSEntityDescription.entityForName(Crew.segueTypeNoun, inManagedObjectContext: managedObjectContext) else { return nil }
         return Crew(entity: entity, insertIntoManagedObjectContext: managedObjectContext)
     }
 

@@ -22,11 +22,17 @@ class Station: Vessel {
 
 }
 
+extension Station {
+
+    override class var segueTypeNoun: String { return "Station" }
+
+}
+
 extension ManagingObjectContext {
 
     func insertStation() -> Station? {
         guard let managedObjectContext = managedObjectContext,
-            entity = NSEntityDescription.entityForName("Station", inManagedObjectContext: managedObjectContext) else { return nil }
+            entity = NSEntityDescription.entityForName(Station.segueTypeNoun, inManagedObjectContext: managedObjectContext) else { return nil }
         return Station(entity: entity, insertIntoManagedObjectContext: managedObjectContext)
     }
 

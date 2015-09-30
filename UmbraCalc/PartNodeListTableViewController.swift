@@ -32,7 +32,7 @@ class PartNodeListTableViewController: UITableViewController {
                 return partNode.crewCapacity + partNode.livingSpaceCount + partNode.workspaceCount
             }
             let (lhs, rhs) = (awesomeness($0), awesomeness($1))
-            return lhs > rhs || lhs == rhs && $0.title < $1.title
+            return lhs > rhs || (lhs == rhs && $0.title < $1.title)
     }
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {

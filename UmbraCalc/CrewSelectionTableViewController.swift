@@ -16,7 +16,7 @@
 import CoreData
 import UIKit
 
-class CrewSelectionTableViewController: SelectionTableViewController {
+class CrewSelectionTableViewController: UITableViewController {
 
     private(set) lazy var dataSource: SelectionDataSource<Crew, UITableViewCell> = SelectionDataSource()
 
@@ -26,6 +26,11 @@ class CrewSelectionTableViewController: SelectionTableViewController {
         dataSource.tableViewDelegate = self
         dataSource.fetchRequest.sortDescriptors = NamedEntity.sortDescriptors
         dataSource.tableView = tableView
+    }
+
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        guard dataSource.fetchedResultsController != nil else { return }
         dataSource.reloadData()
     }
 

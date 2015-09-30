@@ -53,17 +53,3 @@ extension AppDelegate: UIApplicationDelegate {
     }
 
 }
-
-extension AppDelegate: UISplitViewControllerDelegate {
-
-    func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController, ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {
-        print(__FUNCTION__, splitViewController, secondaryViewController, primaryViewController)
-        return secondaryViewController is EmptyDetailViewController
-    }
-
-    func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
-        print(__FUNCTION__, splitViewController, primaryViewController)
-        return nil
-    }
-
-}

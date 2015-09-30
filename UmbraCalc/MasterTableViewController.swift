@@ -16,19 +16,38 @@
 import CoreData
 import UIKit
 
-class MasterTableViewController: UITableViewController {
+class MasterTableViewController: ManagedTableViewController {
 
+    @IBOutlet weak var entitySegmentedControl: UISegmentedControl?
     @IBOutlet weak var addButton: UIBarButtonItem?
-
-    var editSegueIdentifier: String?
 
     var splitAccessoryType: UITableViewCellAccessoryType {
         return splitViewController?.delegate === self && splitViewController?.collapsed == false ? .None : .DisclosureIndicator
     }
 
+    override var selectedObject: Entity? {
+        didSet {
+            if oldValue != nil {
+                NSNotificationCenter.defaultCenter().removeObserver(self, name: willDeleteEntityNotification, object: oldValue!)
+            }
+            if selectedObject != nil {
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: "willDeleteEntityWithNotification:", name: willDeleteEntityNotification, object: selectedObject!)
+            }
+        }
+    }
+
+    var emptyDetailViewController: UIViewController? {
+        return storyboard?.instantiateViewControllerWithIdentifier("emptyDetailViewController")
+    }
+
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: willDeleteEntityNotification, object: nil)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = editButtonItem()
+        displayedEntityName = Kolony.segueTypeNoun
     }
 
     override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
@@ -47,14 +66,12 @@ class MasterTableViewController: UITableViewController {
     private func updateDetailView() {
         guard splitViewController?.delegate === self && splitViewController?.collapsed == false && tableView.indexPathForSelectedRow == nil else { return }
         guard tableView.numberOfRowsInSection(0) > 0 else {
-            guard let emptyDetailViewController = storyboard?.instantiateViewControllerWithIdentifier("emptyDetailViewController") else { return }
-            showDetailViewController(emptyDetailViewController, sender: self)
+            guard let viewController = emptyDetailViewController else { return }
+            showDetailViewController(viewController, sender: self)
             return
         }
         let indexPath = NSIndexPath(forItem: 0, inSection: 0)
-        if let segueIdentifier = editSegueIdentifier {
-            performSegueWithIdentifier(segueIdentifier, sender: indexPath)
-        }
+        performSegueWithIdentifier(displayedEntityName.showSegueIdentifier, sender: indexPath)
         tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
     }
 
@@ -63,12 +80,46 @@ class MasterTableViewController: UITableViewController {
         navigationItem.setLeftBarButtonItem(editing || navigationController?.viewControllers.first == self ? addButton : nil, animated: animated)
     }
 
+    override func managedDataSource<Entity, Cell>(managedDataSource: ManagedDataSource<Entity, Cell>, configureCell cell: Cell, forEntity entity: Entity) {
+        super.managedDataSource(managedDataSource, configureCell: cell, forEntity: entity)
+        let accessoryType = splitAccessoryType
+        cell.accessoryType = accessoryType
+        cell.editingAccessoryType = accessoryType
+    }
+
+    @IBAction func segmentDidChange(sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex {
+        case 0: displayedEntityName = Kolony.segueTypeNoun
+        case 1: displayedEntityName = Station.segueTypeNoun
+        case 2: displayedEntityName = Crew.segueTypeNoun
+        default: break
+        }
+    }
+
+    @objc private func willDeleteEntityWithNotification(notification: NSNotification) {
+        guard splitViewController?.collapsed == false else {
+            selectedObject = nil
+            return
+        }
+
+        guard let entity = dataSource.entities?.lazy.filter({ $0 != self.selectedObject }).first,
+            indexPath = dataSource.indexPathOfEntity(entity) else {
+                selectedObject = nil
+                guard let viewController = emptyDetailViewController else { return }
+                showDetailViewController(viewController, sender: self)
+                return
+        }
+
+        performSegueWithIdentifier(displayedEntityName.showSegueIdentifier, sender: indexPath)
+        tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
+    }
+
 }
 
 extension MasterTableViewController: UISplitViewControllerDelegate {
 
     func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
-        return storyboard?.instantiateViewControllerWithIdentifier("emptyDetailViewController")
+        return emptyDetailViewController
     }
 
     func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController, ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {

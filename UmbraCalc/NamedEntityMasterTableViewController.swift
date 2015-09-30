@@ -32,8 +32,8 @@ class NamedEntityMasterTableViewController: MasterTableViewController {
             return entities.lazy.filter { $0.name == self.rawValue }.first
         }
 
-        var showSegueIdentifier: String { return "show\(rawValue)" }
         var addSegueIdentifier: String { return "add\(rawValue)" }
+        var showSegueIdentifier: String { return "show\(rawValue)" }
 
     }
 
@@ -107,7 +107,7 @@ class NamedEntityMasterTableViewController: MasterTableViewController {
         case EntityDescription.Crew.addSegueIdentifier:
             guard let crewDetail: CrewDetailTableViewController = segue.destinationViewControllerWithType() else { return }
             let scratchContext = ScratchContext(parent: dataSource)
-            crewDetail.crew = scratchContext.insertCrew()
+            crewDetail.crew = scratchContext.insertCrew()?.withCareer(Crew.pilotTitle)
 
         case EntityDescription.Crew.showSegueIdentifier:
             guard let crewDetail: CrewDetailTableViewController = segue.destinationViewControllerWithType(),
@@ -125,6 +125,21 @@ class NamedEntityMasterTableViewController: MasterTableViewController {
         default:
             break
 
+        }
+    }
+
+    @IBAction func cancelAddEntitySegue(ssegue: UIStoryboardSegue) { }
+
+    @IBAction func addEntitySegue(segue: UIStoryboardSegue) {
+        guard let entity: NamedEntity = (segue.sourceViewController as? CrewDetailTableViewController)?.crew ??
+            (segue.sourceViewController as? VesselDetailTableViewController)?.vessel else { return }
+
+        _ = try? entity.saveToParentContext { (entity: NamedEntity?) in
+            guard self.splitViewController?.collapsed == false,
+                let entityToSelect = entity,
+                indexPath = self.dataSource.indexPathOfEntity(entityToSelect) else { return }
+
+            self.performSegueWithIdentifier(self.entityDescription.showSegueIdentifier, sender: indexPath)
         }
     }
 
