@@ -34,13 +34,13 @@ extension AppDelegate: UIApplicationDelegate {
         coreDataStack.insertCrew()!.withName("Bill").withCareer(Crew.engineerTitle).withStarCount(2)
         coreDataStack.insertCrew()!.withName("Bob").withCareer(Crew.scientistTitle).withStarCount(3)
         coreDataStack.insertCrew()!.withName("Valentina").withCareer(Crew.pilotTitle).withStarCount(4)
-        guard let tabBar = window?.rootViewController as? UITabBarController else { return false }
-        tabBar.setManagingObjectContext(coreDataStack)
-        tabBar.viewControllers?.forEach {
-            guard let split = $0 as? UISplitViewController else { return }
-            split.preferredDisplayMode = .AllVisible
-            split.delegate = ((split.viewControllers.first as? UINavigationController)?.viewControllers.first as? UISplitViewControllerDelegate) ?? self
-        }
+
+        guard let split = window?.rootViewController as? UISplitViewController,
+            navigationController = split.viewControllers.first as? UINavigationController,
+            master = navigationController.viewControllers.first as? UISplitViewControllerDelegate else { return false }
+
+        split.delegate = master
+        split.setManagingObjectContext(coreDataStack)
         return true
     }
 

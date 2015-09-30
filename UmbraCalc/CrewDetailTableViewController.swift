@@ -22,10 +22,9 @@ class CrewDetailTableViewController: DetailTableViewController {
     @IBOutlet weak var careerLabel: UILabel!
     @IBOutlet weak var starCountLabel: UILabel!
     @IBOutlet weak var starCountStepper: UIStepper!
-    @IBOutlet weak var vesselLabel: UILabel!
+    @IBOutlet weak var assignmentLabel: UILabel!
 
     @IBOutlet weak var careerCell: UITableViewCell!
-    @IBOutlet weak var vesselCell: UITableViewCell!
 
     private let nameContext = ObserverContext(keyPath: "name")
     private let careerContext = ObserverContext(keyPath: "career")
@@ -74,9 +73,13 @@ class CrewDetailTableViewController: DetailTableViewController {
         [ nameContext, careerContext, starCountContext, partContext ].forEach(block)
     }
 
-    private func editingDidChange() {
+    private func updateAssignmentLabel() {
         guard isViewLoaded() else { return }
-        nameTextField.enabled = editing
+        guard let partName = part?.title, vesselName = vessel?.name else {
+            assignmentLabel.text = "Unassigned"
+            return
+        }
+        assignmentLabel.text = "\(vesselName) - \(partName)"
     }
 
     override func contextDidChange(context: UnsafeMutablePointer<Void>) -> Bool {
@@ -108,8 +111,7 @@ class CrewDetailTableViewController: DetailTableViewController {
             vessel = part?.vessel
 
         case &vesselNameContext.context:
-            guard isViewLoaded() else { break }
-            vesselLabel.text = vessel?.name ?? "Unassigned"
+            updateAssignmentLabel()
 
         default:
             return false
@@ -119,7 +121,6 @@ class CrewDetailTableViewController: DetailTableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        editingDidChange()
         [ nameContext, careerContext, starCountContext, vesselNameContext ].forEach {
             observerContextDidChange($0)
         }
@@ -128,28 +129,16 @@ class CrewDetailTableViewController: DetailTableViewController {
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        guard !hasAppeared && editing else { return }
+        guard !hasAppeared else { return }
         hasAppeared = true
         guard crew?.name?.isEmpty != false else { return }
         nameTextField.becomeFirstResponder()
-    }
-
-    override func setEditing(editing: Bool, animated: Bool) {
-        super.setEditing(editing, animated: animated)
-        editingDidChange()
-        if !editing && nameTextField.isFirstResponder() {
-            nameTextField.resignFirstResponder()
-        }
     }
 
     @IBAction func stepperDidChange(sender: UIStepper) {
         withIgnoredChanges {
             crew?.starCount = Int16(sender.value)
         }
-    }
-
-    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
-        return editing
     }
 
 }

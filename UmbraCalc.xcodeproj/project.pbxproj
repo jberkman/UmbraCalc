@@ -21,6 +21,7 @@
 		162EA6241BBADE55001AFBBC /* CrewSelectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162EA6231BBADE55001AFBBC /* CrewSelectionTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		162EA6261BBAE5B8001AFBBC /* SelectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162EA6251BBAE5B8001AFBBC /* SelectionTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		162EA6281BBAE630001AFBBC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162EA6271BBAE630001AFBBC /* ViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		1689A66D1BBB96D700EA1D17 /* NamedEntityMasterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1689A66C1BBB96D600EA1D17 /* NamedEntityMasterTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9571BB6813400EDBCF7 /* VesselTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9561BB6813400EDBCF7 /* VesselTests.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9621BB7021C00EDBCF7 /* Station+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E95A1BB7021C00EDBCF7 /* Station+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9631BB7021C00EDBCF7 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E95B1BB7021C00EDBCF7 /* Station.swift */; settings = {ASSET_TAGS = (); }; };
@@ -88,6 +89,7 @@
 		162EA6231BBADE55001AFBBC /* CrewSelectionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrewSelectionTableViewController.swift; sourceTree = "<group>"; };
 		162EA6251BBAE5B8001AFBBC /* SelectionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectionTableViewController.swift; sourceTree = "<group>"; };
 		162EA6271BBAE630001AFBBC /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1689A66C1BBB96D600EA1D17 /* NamedEntityMasterTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NamedEntityMasterTableViewController.swift; sourceTree = "<group>"; };
 		1699E9561BB6813400EDBCF7 /* VesselTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VesselTests.swift; sourceTree = "<group>"; };
 		1699E95A1BB7021C00EDBCF7 /* Station+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Station+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		1699E95B1BB7021C00EDBCF7 /* Station.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
@@ -184,7 +186,6 @@
 		1699E9591BB6815100EDBCF7 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				162EA6251BBAE5B8001AFBBC /* SelectionTableViewController.swift */,
 				16B7ACC51BB39066006DFA4E /* AppDelegate.swift */,
 				1699E97C1BB7992000EDBCF7 /* CrewDetailTableViewController.swift */,
 				1699E9781BB74CFA00EDBCF7 /* CrewMasterTableViewController.swift */,
@@ -193,9 +194,11 @@
 				1699E9841BB83C4A00EDBCF7 /* EmptyDetailViewController.swift */,
 				1699E9761BB743FE00EDBCF7 /* KolonyMasterTableViewController.swift */,
 				1699E9881BB8871F00EDBCF7 /* MasterTableViewController.swift */,
+				1689A66C1BBB96D600EA1D17 /* NamedEntityMasterTableViewController.swift */,
 				162EA5F41BB91A62001AFBBC /* PartDetailTableViewController.swift */,
 				1699E9991BB8FE3800EDBCF7 /* PartListTableViewController.swift */,
 				1699E99B1BB9030600EDBCF7 /* PartNodeListTableViewController.swift */,
+				162EA6251BBAE5B8001AFBBC /* SelectionTableViewController.swift */,
 				1699E97A1BB74F2400EDBCF7 /* StationMasterTableViewController.swift */,
 				1699E9801BB7C7AD00EDBCF7 /* StringListTableViewController.swift */,
 				1699E98A1BB8A20300EDBCF7 /* VesselDetailTableViewController.swift */,
@@ -229,9 +232,9 @@
 		1699E9901BB8D0F900EDBCF7 /* DataSources */ = {
 			isa = PBXGroup;
 			children = (
-				162EA6211BBAD81D001AFBBC /* SelectionDataSource.swift */,
 				162EA6171BBA5C22001AFBBC /* ManagedDataSource.swift */,
 				1699E9741BB7358800EDBCF7 /* MasterDataSource.swift */,
+				162EA6211BBAD81D001AFBBC /* SelectionDataSource.swift */,
 			);
 			name = DataSources;
 			sourceTree = "<group>";
@@ -512,6 +515,7 @@
 				16B7AD221BB526D9006DFA4E /* ConfigNode.swift in Sources */,
 				162EA61E1BBA648F001AFBBC /* CrewMasterTableViewController.swift in Sources */,
 				16B7AD1F1BB5134A006DFA4E /* FoundationExtensions.swift in Sources */,
+				1689A66D1BBB96D700EA1D17 /* NamedEntityMasterTableViewController.swift in Sources */,
 				1699E9671BB7021C00EDBCF7 /* Base+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

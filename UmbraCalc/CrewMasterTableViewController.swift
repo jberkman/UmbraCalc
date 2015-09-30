@@ -79,7 +79,7 @@ extension CrewMasterTableViewController: ManagedDataSourceDelegate {
         let crew = entity as! Crew
         dataSource.configureCell(cell, forNamedEntity: crew)
         dataSource.configureCell(cell, forCrew: crew)
-        let accessoryType = currentAccessoryType
+        let accessoryType = splitAccessoryType
         cell.accessoryType = accessoryType
         cell.editingAccessoryType = accessoryType
     }

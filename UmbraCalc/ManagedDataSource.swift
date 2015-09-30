@@ -50,33 +50,33 @@ class ManagedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
 
     // extension UITableViewDataSource where Self: ManagedDataSourceType {
 
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    @objc func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return fetchedResultsController?.sections?.count ?? 0
     }
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    @objc func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return fetchedResultsController!.sections![section].numberOfObjects
     }
 
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    @objc func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier, forIndexPath: indexPath) as! Cell
         configureCell(cell, forEntity: entityAtIndexPath(indexPath))
         return cell
     }
 
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    @objc func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return fetchedResultsController!.sections![section].name
     }
 
-    func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
+    @objc func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
         return fetchedResultsController?.sectionIndexTitles
     }
 
-    func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
+    @objc func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
         return fetchedResultsController!.sectionForSectionIndexTitle(title, atIndex: index)
     }
 
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    @objc func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         switch editingStyle {
         case .Delete:
             entityAtIndexPath(indexPath).deleteEntity()
@@ -88,11 +88,11 @@ class ManagedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
 
     // extension NSFetchedResultsControllerDelegate where Self: ManagedDataSourceType {
 
-    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+    @objc func controllerWillChangeContent(controller: NSFetchedResultsController) {
         tableView.beginUpdates()
     }
 
-    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+    @objc func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
         switch type {
         case .Insert:
             tableView.insertSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
@@ -105,7 +105,7 @@ class ManagedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
         }
     }
 
-    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    @objc func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         switch type {
         case .Insert:
             tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
@@ -123,7 +123,7 @@ class ManagedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObjec
         }
     }
     
-    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+    @objc func controllerDidChangeContent(controller: NSFetchedResultsController) {
         tableView.endUpdates()
     }
     

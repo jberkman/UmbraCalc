@@ -52,9 +52,11 @@ extension ManagedDataSourceType where Self: ManagingObjectContext {
 
     func reloadData() {
         guard let managedObjectContext = managedObjectContext else { return }
-        fetchRequest.entity = managedObjectContext.persistentStoreCoordinator?.managedObjectModel.entities.lazy.filter {
-            $0.managedObjectClassName == NSStringFromClass(Entity.self)
-            }.first
+        if fetchRequest.entity == nil {
+            fetchRequest.entity = managedObjectContext.persistentStoreCoordinator?.managedObjectModel.entities.lazy.filter {
+                $0.managedObjectClassName == NSStringFromClass(Entity.self)
+                }.first
+        }
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: sectionNameKeyPath, cacheName: cacheName)
         do {
             try fetchedResultsController?.performFetch()

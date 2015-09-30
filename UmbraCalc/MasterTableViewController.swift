@@ -20,7 +20,9 @@ class MasterTableViewController: UITableViewController {
 
     @IBOutlet weak var addButton: UIBarButtonItem?
 
-    var currentAccessoryType: UITableViewCellAccessoryType {
+    var editSegueIdentifier: String?
+
+    var splitAccessoryType: UITableViewCellAccessoryType {
         return splitViewController?.delegate === self && splitViewController?.collapsed == false ? .None : .DisclosureIndicator
     }
 
@@ -34,7 +36,7 @@ class MasterTableViewController: UITableViewController {
 
         updateDetailView()
 
-        let accessoryType = currentAccessoryType
+        let accessoryType = splitAccessoryType
         clearsSelectionOnViewWillAppear = splitViewController?.delegate === self || splitViewController?.collapsed != false
         tableView.visibleCells.forEach {
             $0.accessoryType = accessoryType
@@ -50,7 +52,9 @@ class MasterTableViewController: UITableViewController {
             return
         }
         let indexPath = NSIndexPath(forItem: 0, inSection: 0)
-        performSegueWithIdentifier(SegueIdentifier.Edit.rawValue, sender: indexPath)
+        if let segueIdentifier = editSegueIdentifier {
+            performSegueWithIdentifier(segueIdentifier, sender: indexPath)
+        }
         tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
     }
 

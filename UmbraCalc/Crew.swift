@@ -50,15 +50,10 @@ extension ManagingObjectContext {
 
 }
 
-extension ManagedDataSourceType where Entity: Crew {
+extension ManagedDataSourceType {
 
-    func configureCell(cell: Cell, forCrew crew: Entity) {
-        let starString = String(count: Int(crew.starCount), repeatedValue: "⭐️")
-        if let career = crew.career {
-            cell.detailTextLabel?.text = "\(career) \(starString)"
-        } else {
-            cell.detailTextLabel?.text = starString.isEmpty ? "0 Stars" : starString
-        }
+    func configureCell(cell: Cell, forCrew crew: Crew) {
+        cell.textLabel?.text = (crew.name ?? "") + String(count: Int(crew.starCount), repeatedValue: "⭐️")
     }
-    
+
 }
