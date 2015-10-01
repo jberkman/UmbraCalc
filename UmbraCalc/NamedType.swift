@@ -15,7 +15,7 @@
 
 import Foundation
 
-protocol NamedType: NSObjectProtocol {
+protocol NamedType {
 
     var name: String? { get }
 
@@ -23,8 +23,8 @@ protocol NamedType: NSObjectProtocol {
 
 extension NamedType {
 
-    static var sortDescriptors: [NSSortDescriptor] {
-        return [NSSortDescriptor(key: "name", ascending: true)]
+    static var nameSortDescriptor: NSSortDescriptor {
+        return NSSortDescriptor(key: "name", ascending: true)
     }
 
 }
@@ -35,9 +35,9 @@ protocol MutableNamedType: NamedType {
 
 }
 
-extension ManagedDataSourceType where Entity: NamedType {
+extension FetchableDataSource {
 
-    func configureCell(cell: Cell, forNamedType namedType: Entity) {
+    func configureCell(cell: Cell, forNamedType namedType: NamedType) {
         cell.textLabel!.text = namedType.name
     }
     

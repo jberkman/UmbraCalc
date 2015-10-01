@@ -16,10 +16,10 @@
 import CoreData
 import UIKit
 
-class SelectionDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: ManagedDataSource<Entity, Cell>, UITableViewDelegate {
+class SelectionDataSource<Model: NSManagedObject, Cell: UITableViewCell>: FetchedDataSource<Model, Cell>, UITableViewDelegate {
 
-    var selectedEntities: Set<Entity>?
-    var maxCount = Int.max
+    var selectedModels = Set<Model>()
+    var maximumSelectionCount = Int.max
     weak var tableViewDelegate: UITableViewDelegate?
 
     override var tableView: UITableView! {
@@ -30,22 +30,22 @@ class SelectionDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: Manag
         }
     }
 
-    override func configureCell(cell: Cell, forEntity entity: Entity) {
-        cell.editingAccessoryType = selectedEntities?.contains(entity) == true ? UITableViewCellAccessoryType.Checkmark : .None
-        super.configureCell(cell, forEntity: entity)
+    override func configureCell(cell: Cell, forModel model: Model) {
+        cell.editingAccessoryType = selectedModels.contains(model) ? UITableViewCellAccessoryType.Checkmark : .None
+        super.configureCell(cell, forModel: model)
     }
 
     override func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         super.controller(controller, didChangeObject: anObject, atIndexPath: indexPath, forChangeType: type, newIndexPath: newIndexPath)
         guard case .Delete = type else { return }
-        selectedEntities?.remove(anObject as! Entity)
+        selectedModels.remove(anObject as! Model)
     }
 
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         guard tableView.editing else {
             return tableViewDelegate?.tableView?(tableView, shouldHighlightRowAtIndexPath: indexPath) != false
         }
-        return selectedEntities?.contains(entityAtIndexPath(indexPath)) == true || selectedEntities?.count < maxCount - 1
+        return selectedModels.contains(modelAtIndexPath(indexPath)) == true || selectedModels.count < maximumSelectionCount - 1
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -54,14 +54,14 @@ class SelectionDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: Manag
             return
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        let entity = entityAtIndexPath(indexPath)
-        if selectedEntities?.contains(entity) == true {
-            selectedEntities?.remove(entity)
+        let model = modelAtIndexPath(indexPath)
+        if selectedModels.contains(model) == true {
+            selectedModels.remove(model)
         } else {
-            selectedEntities?.insert(entity)
+            selectedModels.insert(model)
         }
         guard let cell = tableView.cellForRowAtIndexPath(indexPath) as? Cell else { return }
-        configureCell(cell, forEntity: entity)
+        configureCell(cell, forModel: model)
     }
 
 }

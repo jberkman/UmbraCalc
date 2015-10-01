@@ -18,16 +18,14 @@ import CoreData
 
 class NamedEntity: NSManagedObject {
 
-    class var sortDescriptors: [NSSortDescriptor] {
-        return [NSSortDescriptor(key: "name", ascending: true)]
-    }
+    static let nameSortDescriptor = NSSortDescriptor(key: "name", ascending: true)
 
 }
 
 // http://www.openradar.me/radar?id=6421938515738624
 // extension NamedEntity: MutableNamedType { }
 
-extension ManagedDataSourceType {
+extension FetchableDataSource {
 
     func configureCell(cell: Cell, forNamedEntity namedEntity: NamedEntity) {
         cell.textLabel!.text = namedEntity.name

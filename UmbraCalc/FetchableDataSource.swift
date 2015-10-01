@@ -1,5 +1,5 @@
 //
-//  ManagedDataSourceType.swift
+//  FetchableDataSource.swift
 //  UmbraCalc
 //
 //  Created by jacob berkman on 2015-09-28.
@@ -16,9 +16,9 @@
 import CoreData
 import UIKit
 
-protocol ManagedDataSourceType: class {
+protocol FetchableDataSource {
 
-    typealias Entity: NSManagedObject
+    typealias Model: AnyObject
     typealias Cell: UITableViewCell
 
     var fetchRequest: NSFetchRequest { get }
@@ -30,31 +30,31 @@ protocol ManagedDataSourceType: class {
 
     var fetchedResultsController: NSFetchedResultsController? { get set }
 
-    func configureCell(cell: Cell, forEntity entity: Entity)
+    func configureCell(cell: Cell, forModel model: Model)
 
 }
 
-extension ManagedDataSourceType {
+extension FetchableDataSource {
 
-    var entities: [Entity]? { return fetchedResultsController?.fetchedObjects as? [Entity] }
+    var fetchedModels: [Model]? { return fetchedResultsController?.fetchedObjects as? [Model] }
 
-    func entityAtIndexPath(indexPath: NSIndexPath) -> Entity {
-        return fetchedResultsController!.objectAtIndexPath(indexPath) as! Entity
+    func modelAtIndexPath(indexPath: NSIndexPath) -> Model {
+        return fetchedResultsController!.objectAtIndexPath(indexPath) as! Model
     }
 
-    func indexPathOfEntity(entity: Entity) -> NSIndexPath? {
-        return fetchedResultsController?.indexPathForObject(entity)
+    func indexPathForModel(model: Model) -> NSIndexPath? {
+        return fetchedResultsController?.indexPathForObject(model)
     }
 
 }
 
-extension ManagedDataSourceType where Self: ManagingObjectContext {
+extension FetchableDataSource where Self: ManagingObjectContext {
 
-    func reloadData() {
+    mutating func reloadData() {
         guard let managedObjectContext = managedObjectContext else { return }
         if fetchRequest.entity == nil {
             fetchRequest.entity = managedObjectContext.persistentStoreCoordinator?.managedObjectModel.entities.lazy.filter {
-                $0.managedObjectClassName == NSStringFromClass(Entity.self)
+                $0.managedObjectClassName == NSStringFromClass(Model.self)
                 }.first
         }
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: sectionNameKeyPath, cacheName: cacheName)

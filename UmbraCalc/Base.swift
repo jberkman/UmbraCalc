@@ -26,16 +26,6 @@ class Base: Vessel {
 
 extension Base {
 
-    override class var segueTypeNoun: String { return "Base" }
-
-}
-
-extension ManagingObjectContext {
-
-    func insertBase() -> Base? {
-        guard let managedObjectContext = managedObjectContext,
-            entity = NSEntityDescription.entityForName(Base.segueTypeNoun, inManagedObjectContext: managedObjectContext) else { return nil }
-        return Base(entity: entity, insertIntoManagedObjectContext: managedObjectContext)
-    }
+    override class var modelName: String { return "Base" }
 
 }

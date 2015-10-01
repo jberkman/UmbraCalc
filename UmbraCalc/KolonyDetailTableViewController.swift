@@ -1,5 +1,5 @@
 //
-//  VesselDetailTableViewController.swift
+//  KolonyDetailTableViewController.swift
 //  UmbraCalc
 //
 //  Created by jacob berkman on 2015-09-27.
@@ -16,19 +16,16 @@
 import CoreData
 import UIKit
 
-class VesselDetailTableViewController: UITableViewController {
+class KolonyDetailTableViewController: UITableViewController {
 
-    typealias Model = Vessel
+    typealias Model = Kolony
 
     @IBOutlet weak var nameTextField: UITextField!
-    @IBOutlet weak var partCountLabel: UILabel!
+    @IBOutlet weak var baseCountLabel: UILabel!
     @IBOutlet weak var crewCountLabel: UILabel!
     @IBOutlet weak var crewCapacityLabel: UILabel!
     @IBOutlet weak var livingSpacesLabel: UILabel!
     @IBOutlet weak var workspacesLabel: UILabel!
-    @IBOutlet weak var happinessLabel: UILabel!
-
-    private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
 
     private var hasAppeared = false
 
@@ -71,22 +68,21 @@ class VesselDetailTableViewController: UITableViewController {
 
         nameTextField.text = model?.name
 
-        partCountLabel.text = String(model?.partCount ?? 0)
+        baseCountLabel.text = String(model?.bases?.count ?? 0)
         crewCountLabel.text = String(model?.crewCount ?? 0)
 
         crewCapacityLabel.text = String(model?.crewCapacity ?? 0)
         livingSpacesLabel.text = String(model?.livingSpaceCount ?? 0)
         workspacesLabel.text = String(model?.workspaceCount ?? 0)
-        happinessLabel.text = percentFormatter.stringFromNumber(model?.crewHappiness ?? 0)
     }
 
 }
 
-extension VesselDetailTableViewController: ManagingObjectContext { }
+extension KolonyDetailTableViewController: ManagingObjectContext { }
 
-extension VesselDetailTableViewController: ModelControlling { }
+extension KolonyDetailTableViewController: ModelControlling { }
 
-extension VesselDetailTableViewController: UITextFieldDelegate {
+extension KolonyDetailTableViewController: UITextFieldDelegate {
 
     func textFieldDidEndEditing(textField: UITextField) {
         model?.name = textField.text

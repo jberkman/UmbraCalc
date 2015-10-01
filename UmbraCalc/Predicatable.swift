@@ -1,8 +1,8 @@
 //
-//  Station.swift
+//  Predicatable.swift
 //  UmbraCalc
 //
-//  Created by jacob berkman on 2015-09-26.
+//  Created by jacob berkman on 2015-10-02.
 //  Copyright © 2015 jacob berkman.
 //
 //  Based on and includes portions of Moduler Kolonization System by RoverDude
@@ -14,16 +14,11 @@
 //
 
 import Foundation
-import CoreData
 
-class Station: Vessel {
-
-// Insert code here to add functionality to your managed object subclass
-
+protocol Predicatable {
+    var predicate: NSPredicate { get }
 }
 
-extension Station {
-
-    override class var modelName: String { return "Station" }
-
+protocol MutablePredicatable: Predicatable {
+    var predicate: NSPredicate { get set }
 }

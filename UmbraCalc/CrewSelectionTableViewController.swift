@@ -18,13 +18,23 @@ import UIKit
 
 class CrewSelectionTableViewController: UITableViewController {
 
-    private(set) lazy var dataSource: SelectionDataSource<Crew, UITableViewCell> = SelectionDataSource()
+    typealias Model = Crew
+
+    private class DataSource: SelectionDataSource<Crew, UITableViewCell> {
+
+        override func configureCell(cell: UITableViewCell, forModel crew: Crew) {
+            configureCell(cell, forNamedEntity: crew)
+            configureCell(cell, forCrew: crew)
+        }
+
+    }
+
+    private(set) lazy var dataSource: SelectionDataSource<Crew, UITableViewCell> = DataSource()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSource.delegate = self
         dataSource.tableViewDelegate = self
-        dataSource.fetchRequest.sortDescriptors = NamedEntity.sortDescriptors
+        dataSource.fetchRequest.sortDescriptors = [NamedEntity.nameSortDescriptor]
         dataSource.tableView = tableView
     }
 
@@ -36,12 +46,16 @@ class CrewSelectionTableViewController: UITableViewController {
 
 }
 
-extension CrewSelectionTableViewController: ManagedDataSourceDelegate {
+extension CrewSelectionTableViewController: ModelMultipleSelecting {
 
-    func managedDataSource<Entity, Cell>(managedDataSource: ManagedDataSource<Entity, Cell>, configureCell cell: Cell, forEntity entity: Entity) {
-        let crew = entity as! Crew
-        dataSource.configureCell(cell, forNamedEntity: crew)
-        dataSource.configureCell(cell, forCrew: crew)
+    var selectedModels: Set<Model> {
+        get { return dataSource.selectedModels }
+        set { dataSource.selectedModels = newValue }
+    }
+
+    var maximumSelectionCount: Int {
+        get { return dataSource.maximumSelectionCount }
+        set { dataSource.maximumSelectionCount = newValue }
     }
 
 }

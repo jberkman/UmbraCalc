@@ -2,7 +2,7 @@
 //  FetchedDataSource.swift
 //  UmbraCalc
 //
-//  Created by jacob berkman on 2015-09-26.
+//  Created by jacob berkman on 2015-09-28.
 //  Copyright © 2015 jacob berkman.
 //
 //  Based on and includes portions of Moduler Kolonization System by RoverDude
@@ -16,164 +16,107 @@
 import CoreData
 import UIKit
 
-class FetchedDataSource<Entity: NSManagedObject, Cell: UITableViewCell>: NSObject, ManagingObjectContext, UITableViewDataSource, NSFetchedResultsControllerDelegate {
+class FetchedDataSource<Model: NSManagedObject, Cell: UITableViewCell>: NSObject, FetchableDataSource, ManagingObjectContext, NSFetchedResultsControllerDelegate, UITableViewDataSource {
 
-    var reuseIdentifier = "reuseIdentifier"
-    var configureCell: ((cell: Cell, entity: Entity) -> Void)?
     let fetchRequest = NSFetchRequest()
-
+    var reuseIdentifier = "reuseIdentifier"
     var sectionNameKeyPath: String?
     var cacheName: String?
 
-    var managedObjectContext: NSManagedObjectContext? {
+    var tableView: UITableView! {
         didSet {
-            fetchRequest.entity = managedObjectContext?.persistentStoreCoordinator?.managedObjectModel.entities.lazy.filter {
-                $0.managedObjectClassName == NSStringFromClass(Entity.self)
-                }.first
+            oldValue?.dataSource = nil
+            tableView?.dataSource = self
         }
     }
-    
-    var tableViewController: UITableViewController? {
+
+    var fetchedResultsController: NSFetchedResultsController? {
         didSet {
-            oldValue?.tableView.dataSource = nil
-            tableViewController?.tableView.dataSource = self
-        }
-    }
-    func reloadData() {
-        guard let managedObjectContext = managedObjectContext else { return }
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: sectionNameKeyPath, cacheName: cacheName)
-    }
-
-    private(set) var fetchedResultsController: NSFetchedResultsController? {
-        didSet {
-            do {
-                try fetchedResultsController?.performFetch()
-                fetchedResultsController?.delegate = self
-            } catch let error as NSError {
-                NSLog("Could not perform fetch: %@", error)
-                fetchedResultsController = nil
-            }
-            tableViewController?.tableView.reloadData()
+            fetchedResultsController?.delegate = self
         }
     }
 
-    var entities: [Entity]? { return fetchedResultsController?.fetchedObjects as? [Entity] }
+    var managedObjectContext: NSManagedObjectContext?
 
-    var selectedEntity: Entity? {
-        didSet {
-            if oldValue != nil {
-                NSNotificationCenter.defaultCenter().removeObserver(self, name: willDeleteEntityNotification, object: oldValue!)
-            }
-            if selectedEntity != nil {
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: "willDeleteEntityWithNotification:", name: willDeleteEntityNotification, object: selectedEntity!)
-            }
-        }
-    }
+    func configureCell(cell: Cell, forModel model: Model) { }
 
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: willDeleteEntityNotification, object: nil)
-    }
+    // extension UITableViewDataSource where Self: FetchableDataSource {
 
-    func entityAtIndexPath(indexPath: NSIndexPath) -> Entity? {
-        return fetchedResultsController?.objectAtIndexPath(indexPath) as? Entity
-    }
-
-    func indexPathOfEntity(entity: Entity) -> NSIndexPath? {
-        return fetchedResultsController?.indexPathForObject(entity)
-    }
-
-    @objc private func willDeleteEntityWithNotification(notification: NSNotification) {
-        guard tableViewController?.splitViewController?.collapsed == false else {
-            selectedEntity = nil
-            return
-        }
-
-        guard let entity = entities?.lazy.filter({ $0 != self.selectedEntity }).first,
-            indexPath = indexPathOfEntity(entity) else {
-                selectedEntity = nil
-                guard let empty = tableViewController?.storyboard?.instantiateViewControllerWithIdentifier("emptyDetailViewController") else { return }
-                tableViewController?.showDetailViewController(empty, sender: self)
-                return
-        }
-
-        (tableViewController as? MasterTableViewController)?.showDetailViewControllerForEntityAtIndexPath(indexPath)
-    }
-
-    // extension FetchedTableViewController: UITableViewDataSource
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    @objc func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return fetchedResultsController?.sections?.count ?? 0
     }
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    @objc func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return fetchedResultsController!.sections![section].numberOfObjects
     }
 
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    @objc func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier, forIndexPath: indexPath) as! Cell
-        configureCell?(cell: cell, entity: entityAtIndexPath(indexPath)!)
+        configureCell(cell, forModel: modelAtIndexPath(indexPath))
         return cell
     }
 
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    @objc func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return fetchedResultsController!.sections![section].name
     }
 
-    func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
+    @objc func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
         return fetchedResultsController?.sectionIndexTitles
     }
 
-    func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
+    @objc func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
         return fetchedResultsController!.sectionForSectionIndexTitle(title, atIndex: index)
     }
 
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    @objc func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         switch editingStyle {
         case .Delete:
-            entityAtIndexPath(indexPath)?.deleteEntity()
+            modelAtIndexPath(indexPath).deleteEntity()
 
         default:
             break
         }
     }
 
-    // extension FetchedTableViewController: UIFetchedResultsControllerDelegate
-    func controllerWillChangeContent(controller: NSFetchedResultsController) {
-        tableViewController?.tableView.beginUpdates()
+    // extension NSFetchedResultsControllerDelegate where Self: FetchableDataSource {
+
+    @objc func controllerWillChangeContent(controller: NSFetchedResultsController) {
+        tableView.beginUpdates()
     }
 
-    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+    @objc func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
         switch type {
         case .Insert:
-            tableViewController?.tableView.insertSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+            tableView.insertSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
 
         case .Delete:
-            tableViewController?.tableView.deleteSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+            tableView.deleteSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
 
         default:
             break
         }
     }
 
-    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    @objc func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         switch type {
         case .Insert:
-            tableViewController?.tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
+            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
 
         case .Delete:
-            tableViewController?.tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
+            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
 
         case .Update:
-            guard let cell = tableViewController?.tableView.cellForRowAtIndexPath(indexPath!) as? Cell else { break }
-            configureCell?(cell: cell, entity: entityAtIndexPath(indexPath!)!)
+            guard let cell = tableView.cellForRowAtIndexPath(indexPath!) as? Cell else { break }
+            configureCell(cell, forModel: modelAtIndexPath(indexPath!))
 
         case .Move:
-            tableViewController?.tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
-            tableViewController?.tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
+            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
+            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
         }
     }
-
-    func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        tableViewController?.tableView.endUpdates()
+    
+    @objc func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        tableView.endUpdates()
     }
-
+    
 }

@@ -1,5 +1,5 @@
 //
-//  CoreDataAdditions.swift
+//  CoreDataExtensions.swift
 //  UmbraCalc
 //
 //  Created by jacob berkman on 2015-09-27.
@@ -27,4 +27,20 @@ extension NSManagedObject {
         NSNotificationCenter.defaultCenter().postNotificationName(didDeleteEntityNotification, object: self)
     }
 
+    func saveToParentContext<Entity: NSManagedObject>(completion: ((Entity?) -> Void)?) throws {
+        guard let parentContext = managedObjectContext?.parentContext else {
+            completion?(nil)
+            return
+        }
+        try managedObjectContext?.obtainPermanentIDsForObjects([self])
+        try managedObjectContext?.save()
+        guard let completion = completion else { return }
+        let ID = objectID
+        parentContext.performBlock {
+            completion(parentContext.objectWithID(ID) as? Entity)
+        }
+    }
+
 }
+
+extension NSManagedObject: ManagingObjectContext { }

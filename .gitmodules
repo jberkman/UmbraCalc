@@ -1,0 +1,3 @@
+[submodule "Apropos"]
+	path = Apropos
+	url = https://github.com/jberkman/Apropos.git

@@ -16,49 +16,62 @@
 import CoreData
 import UIKit
 
-class CrewDetailTableViewController: UITableViewController, ManagingObjectContext {
+class CrewDetailTableViewController: UITableViewController {
 
+    typealias Model = Crew
+
+    @IBOutlet weak var assignmentCell: UITableViewCell!
+    @IBOutlet weak var careerCell: UITableViewCell!
     @IBOutlet weak var nameTextField: UITextField!
-    @IBOutlet weak var careerLabel: UILabel!
     @IBOutlet weak var starCountLabel: UILabel!
     @IBOutlet weak var starCountStepper: UIStepper!
-    @IBOutlet weak var assignmentLabel: UILabel!
-
-    @IBOutlet weak var careerCell: UITableViewCell!
 
     private var hasAppeared = false
 
     var managedObjectContext: NSManagedObjectContext?
-    var crew: Crew? {
+
+    var model: Model? {
         didSet {
             // Prevent crew from being faulted
-            managedObjectContext = crew?.managedObjectContext
+            managedObjectContext = model?.managedObjectContext
             updateView()
         }
     }
 
     private func updateStars() {
-        guard let starCount = crew?.starCount else {
+        guard let starString = model?.starString else {
             starCountLabel.text = nil
             return
         }
-        starCountLabel.text = starCount > 0 ? String(count: Int(starCount), repeatedValue: "⭐️") : "0 Stars"
+        guard !starString.isEmpty else {
+            starCountLabel.text = "0 Stars"
+            return
+        }
+        starCountLabel.text = starString
     }
 
     private func updateView() {
         guard isViewLoaded() else { return }
 
-        nameTextField.text = crew?.name
+        nameTextField.text = model?.name
 
         updateStars()
-        starCountStepper.value = Double(crew?.starCount ?? 0)
+        starCountStepper.value = Double(model?.starCount ?? 0)
 
-        careerLabel.text = crew?.career ?? "Unemployed"
+        careerCell.textLabel!.text = model?.career ?? "Unemployed"
 
-        if let partName = crew?.part?.title, vesselName = crew?.part?.vessel?.name {
-            assignmentLabel.text = "\(vesselName) - \(partName)"
+        if let partName = model?.part?.title, vesselName = model?.part?.vessel?.name {
+            assignmentCell.accessoryType = .DetailDisclosureButton
+            assignmentCell.selectionStyle = .Default
+            assignmentCell.detailTextLabel!.text = "\(vesselName) - \(partName)"
         } else {
-            assignmentLabel.text = "Unassigned"
+            if let managedObjectContext = self.managedObjectContext where Vessel.existsInContext(managedObjectContext) {
+                assignmentCell.accessoryType = .DetailButton
+            } else {
+                assignmentCell.accessoryType = .None
+            }
+            assignmentCell.selectionStyle = .None
+            assignmentCell.detailTextLabel!.text = "Unassigned"
         }
     }
 
@@ -76,34 +89,68 @@ class CrewDetailTableViewController: UITableViewController, ManagingObjectContex
         super.viewDidAppear(animated)
         guard !hasAppeared else { return }
         hasAppeared = true
-        guard crew?.name?.isEmpty != false else { return }
+        guard model?.name?.isEmpty != false else { return }
         nameTextField.becomeFirstResponder()
     }
 
+    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+        switch identifier {
+        case Vessel.showSegueIdentifier:
+            return model?.part?.vessel != nil
+        default:
+            return true
+        }
+    }
+
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard "save" == segue.identifier else { return }
-        crew?.name = nameTextField.text
+        guard let identifier = segue.identifier else { return }
+        switch identifier {
+        case Model.saveSegueIdentifier:
+            model?.name = nameTextField.text
+
+        case Vessel.selectSegueIdentifier:
+            guard let vesselList: VesselListTableViewController = segue.destinationViewControllerWithType() else { return }
+            vesselList.managedObjectContext = managedObjectContext
+
+        case Vessel.showSegueIdentifier:
+            guard let vesselDetail: VesselDetailTableViewController = segue.destinationViewControllerWithType() else { return }
+            vesselDetail.navigationItem.leftBarButtonItem = nil
+            vesselDetail.navigationItem.rightBarButtonItem = nil
+            vesselDetail.model = model?.part?.vessel
+
+        default:
+            break
+        }
     }
 
     @IBAction func stepperDidChange(sender: UIStepper) {
-        crew?.starCount = Int16(sender.value)
+        model?.starCount = Int16(sender.value)
+        updateStars()
+    }
 
+    @IBAction func selectPart(segue: UIStoryboardSegue) {
+        model?.part = (segue.sourceViewController as? PartDetailTableViewController)?.model
     }
 
     private func presentCareerSheet() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         [ Crew.engineerTitle, Crew.pilotTitle, Crew.scientistTitle ].sort(<).forEach { career in
             alert.addAction(UIAlertAction(title: career, style: .Default) { _ in
-                self.crew?.career = career
+                self.model?.career = career
                 })
         }
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
         alert.popoverPresentationController?.sourceView = careerCell
         alert.popoverPresentationController?.sourceRect = careerCell.bounds
+        alert.popoverPresentationController?.permittedArrowDirections = [ .Down, .Up ]
         presentViewController(alert, animated: true, completion: nil)
     }
 
 }
+
+extension CrewDetailTableViewController: ManagingObjectContext { }
+
+extension CrewDetailTableViewController: ModelControlling { }
 
 extension CrewDetailTableViewController {
 
@@ -118,7 +165,7 @@ extension CrewDetailTableViewController {
 extension CrewDetailTableViewController: UITextFieldDelegate {
 
     func textFieldDidEndEditing(textField: UITextField) {
-        crew?.name = textField.text
+        model?.name = textField.text
     }
 
     func textFieldShouldReturn(textField: UITextField) -> Bool {

@@ -26,19 +26,21 @@ class AppDelegate: NSObject {
 extension AppDelegate: UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        guard let managedObjectContext = coreDataStack.managedObjectContext else { return false }
         (1 ... 10).forEach {
-            coreDataStack.insertKolony()!.withName("Kolony \($0)")
-            coreDataStack.insertStation()!.withName("Station \($0)")
+            _ = try? Kolony(insertIntoManagedObjectContext: managedObjectContext).withName("Kolony \($0)")
+            _ = try? Station(insertIntoManagedObjectContext: managedObjectContext).withName("Station \($0)")
         }
-        coreDataStack.insertCrew()!.withName("Jebediah").withCareer(Crew.pilotTitle).withStarCount(1)
-        coreDataStack.insertCrew()!.withName("Bill").withCareer(Crew.engineerTitle).withStarCount(2)
-        coreDataStack.insertCrew()!.withName("Bob").withCareer(Crew.scientistTitle).withStarCount(3)
-        coreDataStack.insertCrew()!.withName("Valentina").withCareer(Crew.pilotTitle).withStarCount(4)
+        _ = try? Crew(insertIntoManagedObjectContext: managedObjectContext).withName("Jebediah").withCareer(Crew.pilotTitle).withStarCount(1)
+        _ = try? Crew(insertIntoManagedObjectContext: managedObjectContext).withName("Bill").withCareer(Crew.engineerTitle).withStarCount(2)
+        _ = try? Crew(insertIntoManagedObjectContext: managedObjectContext).withName("Bob").withCareer(Crew.scientistTitle).withStarCount(3)
+        _ = try? Crew(insertIntoManagedObjectContext: managedObjectContext).withName("Valentina").withCareer(Crew.pilotTitle).withStarCount(4)
 
         guard let split = window?.rootViewController as? UISplitViewController,
             navigationController = split.viewControllers.first as? UINavigationController,
             master = navigationController.viewControllers.first as? UISplitViewControllerDelegate else { return false }
 
+        split.preferredDisplayMode = .AllVisible
         split.delegate = master
         split.setManagingObjectContext(coreDataStack)
         return true

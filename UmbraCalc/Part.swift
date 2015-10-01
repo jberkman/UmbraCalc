@@ -76,18 +76,6 @@ extension Part: SegueableType, Segueable {
 
 }
 
-extension ManagingObjectContext {
-
-    func insertPartWithPartName(partName: String) -> Part? {
-        guard let managedObjectContext = managedObjectContext,
-            entity = NSEntityDescription.entityForName(Part.segueTypeNoun, inManagedObjectContext: managedObjectContext) else { return nil }
-        let part = Part(entity: entity, insertIntoManagedObjectContext: managedObjectContext)
-        part.partName = partName
-        return part.withCount(1)
-    }
-
-}
-
 extension Crew {
 
     var careerFactor: Double {

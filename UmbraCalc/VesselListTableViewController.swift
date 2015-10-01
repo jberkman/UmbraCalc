@@ -1,5 +1,5 @@
 //
-//  PartListTableViewController.swift
+//  VesselListTableViewController.swift
 //  UmbraCalc
 //
 //  Created by jacob berkman on 2015-09-27.
@@ -16,25 +16,25 @@
 import CoreData
 import UIKit
 
-class PartListTableViewController: UITableViewController {
+class VesselListTableViewController: UITableViewController {
 
-    private class DataSource: FetchedDataSource<Part, UITableViewCell> {
+    private class DataSource: FetchedDataSource<Vessel, UITableViewCell> {
 
         private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
 
-        override func configureCell(cell: UITableViewCell, forModel part: Part) {
-            cell.textLabel?.text = part.title
-            cell.detailTextLabel?.text = "Installed: \(part.count) Crew: \(part.crew?.count ?? 0) Efficiency: \(percentFormatter.stringFromNumber(part.efficiency)!)"
+        override func configureCell(cell: UITableViewCell, forModel vessel: Vessel) {
+            cell.textLabel?.text = vessel.name
+//            cell.detailTextLabel?.text = "Installed: \(vessel.count) Crew: \(vessel.crew?.count ?? 0) Efficiency: \(percentFormatter.stringFromNumber(vessel.efficiency)!)"
         }
 
     }
 
-    private(set) var dataSource: FetchedDataSource<Part, UITableViewCell> = DataSource()
+    private(set) var dataSource: FetchedDataSource<Vessel, UITableViewCell> = DataSource()
 
-    var vessel: Vessel? {
+    var kolony: Kolony? {
         didSet {
-            managedObjectContext = vessel?.managedObjectContext
-            predicate = vessel == nil ? nil : NSPredicate(format: "vessel = %@", vessel!)
+            managedObjectContext = kolony?.managedObjectContext
+            predicate = kolony == nil ? nil : NSPredicate(format: "kolony = %@", kolony!)
             guard isViewLoaded() else { return }
             dataSource.reloadData()
         }
@@ -42,7 +42,7 @@ class PartListTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSource.fetchRequest.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        dataSource.fetchRequest.sortDescriptors = [NamedEntity.nameSortDescriptor]
         dataSource.tableView = tableView
     }
 
@@ -54,7 +54,7 @@ class PartListTableViewController: UITableViewController {
 
 }
 
-extension PartListTableViewController: MutableManagingObjectContext {
+extension VesselListTableViewController: MutableManagingObjectContext {
 
     var managedObjectContext: NSManagedObjectContext? {
         get { return dataSource.managedObjectContext }
@@ -63,7 +63,7 @@ extension PartListTableViewController: MutableManagingObjectContext {
     
 }
 
-extension PartListTableViewController: Predicating {
+extension VesselListTableViewController: MutablePredicating {
 
     var predicate: NSPredicate? {
         get { return dataSource.fetchRequest.predicate }
@@ -72,7 +72,7 @@ extension PartListTableViewController: Predicating {
 
 }
 
-extension PartListTableViewController: ManagingObjectContextContainer {
+extension VesselListTableViewController: ManagingObjectContextContainer {
 
     func setManagingObjectContext(managingObjectContext: ManagingObjectContext) {
         dataSource.managedObjectContext = managingObjectContext.managedObjectContext

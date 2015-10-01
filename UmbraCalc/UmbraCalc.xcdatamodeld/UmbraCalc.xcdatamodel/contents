@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="8195" systemVersion="14F27" minimumToolsVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="8195" systemVersion="15A284" minimumToolsVersion="Automatic">
     <entity name="Base" representedClassName=".Base" parentEntity="Vessel" syncable="YES">
         <relationship name="kolony" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Kolony" inverseName="bases" inverseEntity="Kolony" syncable="YES"/>
     </entity>
@@ -15,7 +15,7 @@
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Part" representedClassName=".Part" syncable="YES">
-        <attribute name="count" attributeType="Integer 16" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <attribute name="count" attributeType="Integer 16" minValueString="0" defaultValueString="1" syncable="YES"/>
         <attribute name="partName" attributeType="String" syncable="YES"/>
         <relationship name="crew" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Crew" inverseName="part" inverseEntity="Crew" syncable="YES"/>
         <relationship name="vessel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Vessel" inverseName="parts" inverseEntity="Vessel" syncable="YES"/>
@@ -28,9 +28,9 @@
         <element name="Base" positionX="0" positionY="90" width="128" height="60"/>
         <element name="Crew" positionX="-36" positionY="9" width="128" height="90"/>
         <element name="Kolony" positionX="-27" positionY="72" width="128" height="60"/>
+        <element name="NamedEntity" positionX="-36" positionY="54" width="128" height="60"/>
         <element name="Part" positionX="-54" positionY="-9" width="128" height="105"/>
         <element name="Station" positionX="-18" positionY="81" width="128" height="45"/>
         <element name="Vessel" positionX="-63" positionY="-18" width="128" height="60"/>
-        <element name="NamedEntity" positionX="-36" positionY="54" width="128" height="60"/>
     </elements>
 </model>

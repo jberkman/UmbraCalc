@@ -13,9 +13,12 @@
 //  http://creativecommons.org/licenses/by-nc/4.0/.
 //
 
+import CoreData
 import UIKit
 
-class PartDetailTableViewController: DetailTableViewController {
+class PartDetailTableViewController: UITableViewController {
+
+    typealias Model = Part
 
     @IBOutlet weak var countLabel: UILabel!
     @IBOutlet weak var crewCapacityLabel: UILabel!
@@ -30,99 +33,61 @@ class PartDetailTableViewController: DetailTableViewController {
 
     @IBOutlet weak var countStepper: UIStepper!
 
-    private let countContext = ObserverContext(keyPath: "count")
-    private let crewContext = ObserverContext(keyPath: "crew")
     private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
 
-    func forEachContext(@noescape body: (ObserverContext) -> Void) {
-        [ countContext, crewContext ].forEach(body)
-    }
+    var managedObjectContext: NSManagedObjectContext?
 
-    var part: Part? {
+    var model: Model? {
         didSet {
-            managedObjectContext = part?.managedObjectContext
-            navigationItem.title = part?.title
-            forEachContext {
-                oldValue?.removeObserver(self, context: $0)
-                part?.addObserver(self, context: $0)
-                observerContextDidChange($0)
-            }
+            managedObjectContext = model?.managedObjectContext
+            updateView()
         }
-    }
-
-    deinit {
-        forEachContext { part?.removeObserver(self, context: $0) }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        forEachContext { observerContextDidChange($0) }
         countStepper.addTarget(self, action: "countStepperDidChange:", forControlEvents: .ValueChanged)
     }
-/*
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.segueIdentifier, part = part else { return }
-        switch identifier {
-        case .Edit, .View:
-            guard let crewList = segue.destinationViewController as? CrewSelectionTableViewController else { return }
-            crewList.dataSource.selectedEntities = part.crew as? Set<Crew>
-            crewList.dataSource.maxCount = part.crewCapacity
-            crewList.editing = editing
-            if !editing {
-                crewList.dataSource.fetchRequest.predicate = NSPredicate(format: "part = %@", part)
-            }
 
-        default:
-            break
-        }
-
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        updateView()
     }
-*/
-    override func contextDidChange(context: UnsafeMutablePointer<Void>) -> Bool {
-        switch context {
-        case &countContext.context:
-            guard isViewLoaded() else { return true }
-            let partCount = part?.count ?? 0
-            if !ignoreContextChanges {
-                countStepper.value = Double(partCount)
-            }
-            countLabel.text = "\(partCount) Installed"
 
-        case &crewContext.context:
-            guard isViewLoaded() else { return true }
-            let count = part?.crew?.count ?? 0
-            crewCountLabel.text = String(count)
-            countStepper.minimumValue = Double(count)
+    private func updateCountLabel() {
+        let partCount = model?.count ?? 0
+        countLabel.text = "\(partCount) Installed"
+    }
 
-        default:
-            return false
-        }
+    private func updateView() {
+        guard isViewLoaded() else { return }
+        navigationItem.title = model?.title
 
-        crewCapacityLabel.text = String(part?.crewCapacity ?? 0)
-        livingSpaceCountLabel.text = String(part?.livingSpaceCount ?? 0)
-        workspaceCountLabel.text = String(part?.workspaceCount ?? 0)
-        careerFactorLabel.text = percentFormatter.stringFromNumber(part?.crewCareerFactor ?? 0)
-        crewEfficiencyLabel.text = percentFormatter.stringFromNumber(part?.crewEfficiency ?? 0)
-        efficiencyPartsCount.text = String(part?.efficiencyParts?.count ?? 0)
-        partsEfficiencyLabel.text = percentFormatter.stringFromNumber(part?.partsEfficiency ?? 0)
-        efficiencyLabel.text = percentFormatter.stringFromNumber(part?.efficiency ?? 0)
+        updateCountLabel()
 
-        return true
+        countStepper.value = Double(model?.count ?? 0)
+
+        let count = model?.crew?.count ?? 0
+        crewCountLabel.text = String(count)
+        countStepper.minimumValue = Double(count)
+
+        crewCapacityLabel.text = String(model?.crewCapacity ?? 0)
+        livingSpaceCountLabel.text = String(model?.livingSpaceCount ?? 0)
+        workspaceCountLabel.text = String(model?.workspaceCount ?? 0)
+        careerFactorLabel.text = percentFormatter.stringFromNumber(model?.crewCareerFactor ?? 0)
+        crewEfficiencyLabel.text = percentFormatter.stringFromNumber(model?.crewEfficiency ?? 0)
+        efficiencyPartsCount.text = String(model?.efficiencyParts?.count ?? 0)
+        partsEfficiencyLabel.text = percentFormatter.stringFromNumber(model?.partsEfficiency ?? 0)
+        efficiencyLabel.text = percentFormatter.stringFromNumber(model?.efficiency ?? 0)
     }
 
     @objc private func countStepperDidChange(stepper: UIStepper) {
-        withIgnoredChanges {
-            part?.count = Int16(stepper.value)
-        }
+        model?.count = Int16(stepper.value)
+        updateCountLabel()
     }
 
 }
-/*
-extension PartDetailTableViewController: ViewControllerDelegate {
 
-    func viewControllerDidFinish<ViewController : UIViewController>(viewController: ViewController) {
-        part?.crew = (viewController as? CrewSelectionTableViewController)?.dataSource.selectedEntities
-    }
+extension PartDetailTableViewController: ManagingObjectContext { }
 
-}
-*/
+extension PartDetailTableViewController: ModelControlling { }

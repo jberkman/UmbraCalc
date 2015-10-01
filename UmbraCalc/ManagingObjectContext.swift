@@ -15,7 +15,7 @@
 
 import CoreData
 
-protocol ManagingObjectContext: class {
+protocol ManagingObjectContext {
     var managedObjectContext: NSManagedObjectContext? { get }
 }
 
@@ -23,42 +23,14 @@ protocol MutableManagingObjectContext: ManagingObjectContext {
     var managedObjectContext: NSManagedObjectContext? { get set }
 }
 
-protocol ManagingObjectContextContainer: class {
+protocol ManagingObjectContextContainer {
     func setManagingObjectContext(managingObjectContext: ManagingObjectContext)
 }
 
 extension ManagingObjectContextContainer where Self: MutableManagingObjectContext {
 
-    func setManagingObjectContext(managingObjectContext: ManagingObjectContext) {
+    mutating func setManagingObjectContext(managingObjectContext: ManagingObjectContext) {
         managedObjectContext = managingObjectContext.managedObjectContext
-    }
-
-}
-
-class ScratchContext: NSObject, ManagingObjectContext {
-
-    let managedObjectContext: NSManagedObjectContext?
-
-    init(parent: ManagingObjectContext, concurrencyType: NSManagedObjectContextConcurrencyType = .MainQueueConcurrencyType) {
-        managedObjectContext = NSManagedObjectContext(concurrencyType: concurrencyType)
-        managedObjectContext!.parentContext = parent.managedObjectContext
-    }
-
-}
-
-extension NSManagedObject {
-
-    func saveToParentContext<Entity: NSManagedObject>(completion: (Entity?) -> Void) throws {
-        guard let parentContext = managedObjectContext?.parentContext else {
-            completion(nil)
-            return
-        }
-        try managedObjectContext?.obtainPermanentIDsForObjects([self])
-        try managedObjectContext?.save()
-        let ID = objectID
-        parentContext.performBlock {
-            completion(parentContext.objectWithID(ID) as? Entity)
-        }
     }
 
 }

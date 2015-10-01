@@ -52,18 +52,8 @@ class Kolony: NamedEntity {
 
 }
 
-extension Kolony: SegueableType, Segueable {
-    class var segueTypeNoun: String { return "Kolony" }
-}
-
-extension ManagingObjectContext {
-
-    func insertKolony() -> Kolony? {
-        guard let managedObjectContext = managedObjectContext,
-            entity = NSEntityDescription.entityForName(Kolony.segueTypeNoun, inManagedObjectContext: managedObjectContext) else { return nil }
-        return Kolony(entity: entity, insertIntoManagedObjectContext: managedObjectContext)
-    }
-
+extension Kolony: ModelNaming, SegueableType, Segueable {
+    class var modelName: String { return "Kolony" }
 }
 
 extension Base {

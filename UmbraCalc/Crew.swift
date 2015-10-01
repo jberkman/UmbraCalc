@@ -13,14 +13,18 @@
 //  http://creativecommons.org/licenses/by-nc/4.0/.
 //
 
-import Foundation
 import CoreData
+import Foundation
 
 class Crew: NamedEntity {
 
     static let engineerTitle = "Engineer"
     static let scientistTitle = "Scientist"
     static let pilotTitle = "Pilot"
+
+    var starString: String {
+        return String(count: Int(starCount), repeatedValue: "⭐️")
+    }
 
     func withCareer(career: String) -> Self {
         return withValue(career, forKey: "career")
@@ -40,21 +44,11 @@ class Crew: NamedEntity {
 
 }
 
-extension Crew: SegueableType, Segueable {
-    class var segueTypeNoun: String { return "Crew" }
+extension Crew: ModelNaming, SegueableType, Segueable {
+    class var modelName: String { return "Crew" }
 }
 
-extension ManagingObjectContext {
-
-    func insertCrew() -> Crew? {
-        guard let managedObjectContext = managedObjectContext,
-            entity = NSEntityDescription.entityForName(Crew.segueTypeNoun, inManagedObjectContext: managedObjectContext) else { return nil }
-        return Crew(entity: entity, insertIntoManagedObjectContext: managedObjectContext)
-    }
-
-}
-
-extension ManagedDataSourceType {
+extension FetchableDataSource {
 
     func configureCell(cell: Cell, forCrew crew: Crew) {
         cell.textLabel?.text = (crew.name ?? "") + String(count: Int(crew.starCount), repeatedValue: "⭐️")

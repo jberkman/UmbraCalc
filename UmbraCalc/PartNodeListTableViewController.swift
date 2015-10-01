@@ -15,15 +15,7 @@
 
 import UIKit
 
-@objc protocol PartNodeListTableViewControllerDelegate: NSObjectProtocol {
-
-    optional func partNodeListTableViewController(partNodeListTableViewController: PartNodeListTableViewController, didSelectPartNode partNode: PartNode)
-
-}
-
 class PartNodeListTableViewController: UITableViewController {
-
-    weak var delegate: PartNodeListTableViewControllerDelegate?
 
     private lazy var partNodes: [PartNode] = NSBundle.mainBundle().partNodes
         .filter { !$0.title.lowercaseString.containsString("legacy") }
@@ -51,7 +43,7 @@ class PartNodeListTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
         let partNode = partNodeForRowAtIndexPath(indexPath)
         cell.textLabel?.text = partNode.title
-        var details = [String]()
+        var details: [String] = []
         if partNode.crewCapacity > 0 {
             details.append("Crew Capacity: \(partNode.crewCapacity)")
         }
@@ -69,15 +61,10 @@ class PartNodeListTableViewController: UITableViewController {
         let partNode = partNodeForRowAtIndexPath(indexPath)
         let alert = UIAlertController(title: partNode.title, message: partNode.descriptionText, preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Add", style: .Default) { _ in
-            self.delegate?.partNodeListTableViewController?(self, didSelectPartNode: partNode)
+            self.performSegueWithIdentifier(Part.saveSegueIdentifier, sender: indexPath)
             })
         alert.addAction(UIAlertAction(title: "Dismiss", style: .Cancel, handler: nil))
         presentViewController(alert, animated: true, completion: nil)
-    }
-
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        delegate?.partNodeListTableViewController?(self, didSelectPartNode: partNodeForRowAtIndexPath(indexPath))
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
 
 }
