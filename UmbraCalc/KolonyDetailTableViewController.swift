@@ -80,7 +80,7 @@ class KolonyDetailTableViewController: UITableViewController {
 
 extension KolonyDetailTableViewController: ManagingObjectContext { }
 
-extension KolonyDetailTableViewController: ModelControlling { }
+extension KolonyDetailTableViewController: MutableModelControlling { }
 
 extension KolonyDetailTableViewController: UITextFieldDelegate {
 

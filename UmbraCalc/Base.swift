@@ -16,10 +16,17 @@
 import Foundation
 import CoreData
 
+private let defaultParts = [ "MKV_AgModule", "MKV_HabModule", "MKV_Lander", "MKV_Pod", "MKV_PowerPack", "MKV_Workshop" ]
+
 class Base: Vessel {
 
     func withKolony(kolony: Kolony?) -> Self {
         return withValue(kolony, forKey: "kolony")
+    }
+
+    func withDefaultParts() throws -> Self {
+        guard let managedObjectContext = managedObjectContext else { return self }
+        return try withParts(defaultParts.map { try Part(insertIntoManagedObjectContext: managedObjectContext).withPartName($0) })
     }
 
 }

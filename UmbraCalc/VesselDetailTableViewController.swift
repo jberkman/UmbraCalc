@@ -58,7 +58,7 @@ class VesselDetailTableViewController: UITableViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         guard let identifier = segue.identifier else { return }
         switch identifier {
-        case Model.saveSegueIdentifier:
+        case Vessel.saveSegueIdentifier, Model.saveSegueIdentifier:
             model?.name = nameTextField.text
 
         default:
@@ -84,7 +84,7 @@ class VesselDetailTableViewController: UITableViewController {
 
 extension VesselDetailTableViewController: ManagingObjectContext { }
 
-extension VesselDetailTableViewController: ModelControlling { }
+extension VesselDetailTableViewController: MutableModelControlling { }
 
 extension VesselDetailTableViewController: UITextFieldDelegate {
 

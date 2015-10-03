@@ -27,14 +27,18 @@ extension AppDelegate: UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         guard let managedObjectContext = coreDataStack.managedObjectContext else { return false }
-        (1 ... 10).forEach {
-            _ = try? Kolony(insertIntoManagedObjectContext: managedObjectContext).withName("Kolony \($0)")
-            _ = try? Station(insertIntoManagedObjectContext: managedObjectContext).withName("Station \($0)")
+//        (1 ... 10).forEach {
+//            _ = try? Kolony(insertIntoManagedObjectContext: managedObjectContext).withName("Kolony \($0)")
+//            _ = try? Station(insertIntoManagedObjectContext: managedObjectContext).withName("Station \($0)")
+//        }
+        [
+            ("Jebediah", Crew.pilotTitle, 1),
+            ("Bill", Crew.engineerTitle, 2),
+            ("Bob", Crew.scientistTitle, 3),
+            ("Valentina", Crew.pilotTitle, 4)
+            ].forEach {
+                _ = try? Crew(insertIntoManagedObjectContext: managedObjectContext).withName($0.0).withCareer($0.1).withStarCount($0.2)
         }
-        _ = try? Crew(insertIntoManagedObjectContext: managedObjectContext).withName("Jebediah").withCareer(Crew.pilotTitle).withStarCount(1)
-        _ = try? Crew(insertIntoManagedObjectContext: managedObjectContext).withName("Bill").withCareer(Crew.engineerTitle).withStarCount(2)
-        _ = try? Crew(insertIntoManagedObjectContext: managedObjectContext).withName("Bob").withCareer(Crew.scientistTitle).withStarCount(3)
-        _ = try? Crew(insertIntoManagedObjectContext: managedObjectContext).withName("Valentina").withCareer(Crew.pilotTitle).withStarCount(4)
 
         guard let split = window?.rootViewController as? UISplitViewController,
             navigationController = split.viewControllers.first as? UINavigationController,

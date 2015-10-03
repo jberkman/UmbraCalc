@@ -43,6 +43,10 @@ class Part: NSManagedObject {
         return withValue(Set(crew), forKey: "crew")
     }
 
+    func withPartName(partName: String?) -> Self {
+        return withValue(partName, forKey: "partName")
+    }
+
     var name: String? { return partNode?.name }
     var title: String? { return partNode?.title }
     var crewCapacity: Int { return Int(count) * (partNode?.crewCapacity ?? 0) }
@@ -70,9 +74,9 @@ class Part: NSManagedObject {
 
 extension Part: NamedType { }
 
-extension Part: SegueableType, Segueable {
+extension Part: ModelNaming, SegueableType, Segueable {
 
-    class var segueTypeNoun: String { return "Part" }
+    class var modelName: String { return "Part" }
 
 }
 

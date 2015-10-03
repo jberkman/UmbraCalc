@@ -16,9 +16,14 @@
 import Foundation
 import CoreData
 
+private let defaultParts = [ "OKS_Aeroponics", "OKS_ColonyHub", "OKS_HabRing", "OKS_Kerbitat", "OKS_Workspace" ]
+
 class Station: Vessel {
 
-// Insert code here to add functionality to your managed object subclass
+    func withDefaultParts() throws -> Self {
+        guard let managedObjectContext = managedObjectContext else { return self }
+        return try withParts(defaultParts.map { try Part(insertIntoManagedObjectContext: managedObjectContext).withPartName($0) })
+    }
 
 }
 

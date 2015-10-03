@@ -18,6 +18,8 @@ import UIKit
 
 class PartListTableViewController: UITableViewController {
 
+    typealias Model = Part
+
     private class DataSource: FetchedDataSource<Part, UITableViewCell> {
 
         private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
@@ -28,6 +30,8 @@ class PartListTableViewController: UITableViewController {
         }
 
     }
+
+    private(set) var selectedModel: Model?
 
     private(set) var dataSource: FetchedDataSource<Part, UITableViewCell> = DataSource()
 
@@ -62,6 +66,8 @@ extension PartListTableViewController: MutableManagingObjectContext {
     }
     
 }
+
+extension PartListTableViewController: ModelSelecting { }
 
 extension PartListTableViewController: Predicating {
 

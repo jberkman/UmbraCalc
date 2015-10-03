@@ -46,7 +46,7 @@ class CrewSelectionTableViewController: UITableViewController {
 
 }
 
-extension CrewSelectionTableViewController: ModelMultipleSelecting {
+extension CrewSelectionTableViewController: MutableModelMultipleSelecting {
 
     var selectedModels: Set<Model> {
         get { return dataSource.selectedModels }

@@ -150,7 +150,7 @@ class CrewDetailTableViewController: UITableViewController {
 
 extension CrewDetailTableViewController: ManagingObjectContext { }
 
-extension CrewDetailTableViewController: ModelControlling { }
+extension CrewDetailTableViewController: MutableModelControlling { }
 
 extension CrewDetailTableViewController {
 

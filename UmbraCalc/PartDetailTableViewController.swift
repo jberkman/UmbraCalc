@@ -90,4 +90,4 @@ class PartDetailTableViewController: UITableViewController {
 
 extension PartDetailTableViewController: ManagingObjectContext { }
 
-extension PartDetailTableViewController: ModelControlling { }
+extension PartDetailTableViewController: MutableModelControlling { }

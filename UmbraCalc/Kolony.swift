@@ -35,7 +35,7 @@ class Kolony: NamedEntity {
     }
 
     var crewCount: Int {
-        return baseSum { $0.crewCapacity }
+        return baseSum { $0.crewCount }
     }
 
     var livingSpaceCount: Int {
