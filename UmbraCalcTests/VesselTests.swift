@@ -18,73 +18,81 @@ import XCTest
 
 @testable import UmbraCalc
 
+extension CoreDataStackTestCase {
+
+    func vessel() -> Vessel {
+        return try! Vessel(insertIntoManagedObjectContext: managedObjectContext!)
+    }
+
+}
+
 class VesselTests: CoreDataStackTestCase {
 
     func testEmptyVessel() {
-        let vessel = insertVessel()!
-        XCTAssertEqual(vessel.workspaceCount, 0)
-        XCTAssertEqual(vessel.crewCapacity, 0)
-        XCTAssertEqual(vessel.livingSpaceCount, 0)
-        XCTAssertEqual(vessel.crewCount, 0)
-        XCTAssertEqual(vessel.crewCareerFactor, 0)
-        XCTAssertEqual(vessel.happinessCrewCapacity, 0)
-        XCTAssertEqual(vessel.happinessCrewCount, 0)
-        XCTAssertEqual(vessel.happinessLivingSpaceCount, 0)
-        XCTAssertEqual(vessel.efficiencyWorkspaceCount, 0)
-        XCTAssertEqual(vessel.efficiencyParts.count, 0)
-        XCTAssertEqual(vessel.crewHappiness, 0)
+        let subject = vessel()
+        XCTAssertEqual(subject.workspaceCount, 0)
+        XCTAssertEqual(subject.crewCapacity, 0)
+        XCTAssertEqual(subject.livingSpaceCount, 0)
+        XCTAssertEqual(subject.crewCount, 0)
+        XCTAssertEqual(subject.crewCareerFactor, 0)
+        XCTAssertEqual(subject.happinessCrewCapacity, 0)
+        XCTAssertEqual(subject.happinessCrewCount, 0)
+        XCTAssertEqual(subject.happinessLivingSpaceCount, 0)
+        XCTAssertEqual(subject.efficiencyWorkspaceCount, 0)
+        XCTAssertEqual(subject.efficiencyParts.count, 0)
+        XCTAssertEqual(subject.crewHappiness, 0)
     }
 
     func testHabRing() {
         let accuracy = 0.005
 
-        let vessel = insertVessel()!
-        let habRing = insertHabRingPart().withVessel(vessel)
-        XCTAssertEqual(vessel.workspaceCount, 0)
-        XCTAssertEqual(vessel.crewCapacity, 10)
-        XCTAssertEqual(vessel.livingSpaceCount, 10)
-        XCTAssertEqual(vessel.crewCount, 0)
-        XCTAssertEqual(vessel.crewCareerFactor, 0)
-        XCTAssertEqual(vessel.happinessCrewCapacity, 10)
-        XCTAssertEqual(vessel.happinessCrewCount, 0)
-        XCTAssertEqual(vessel.happinessLivingSpaceCount, 10)
-        XCTAssertEqual(vessel.efficiencyWorkspaceCount, 0)
-        XCTAssertEqual(vessel.efficiencyParts.count, 1)
-        XCTAssertEqual(vessel.crewHappiness, 0)
+        let subject = vessel()
+        let hab = habRing().withVessel(subject)
+        XCTAssertEqual(subject.workspaceCount, 0)
+        XCTAssertEqual(subject.crewCapacity, 10)
+        XCTAssertEqual(subject.livingSpaceCount, 10)
+        XCTAssertEqual(subject.crewCount, 0)
+        XCTAssertEqual(subject.crewCareerFactor, 0)
+        XCTAssertEqual(subject.happinessCrewCapacity, 10)
+        XCTAssertEqual(subject.happinessCrewCount, 0)
+        XCTAssertEqual(subject.happinessLivingSpaceCount, 10)
+        XCTAssertEqual(subject.efficiencyWorkspaceCount, 0)
+        XCTAssertEqual(subject.efficiencyParts.count, 1)
+        XCTAssertEqual(subject.crewHappiness, 0)
 
-        habRing.count = 2
-        XCTAssertEqual(vessel.workspaceCount, 0)
-        XCTAssertEqual(vessel.crewCapacity, 20)
-        XCTAssertEqual(vessel.livingSpaceCount, 20)
-        XCTAssertEqual(vessel.crewCount, 0)
-        XCTAssertEqual(vessel.crewCareerFactor, 0)
-        XCTAssertEqual(vessel.happinessCrewCapacity, 20)
-        XCTAssertEqual(vessel.happinessCrewCount, 0)
-        XCTAssertEqual(vessel.happinessLivingSpaceCount, 20)
-        XCTAssertEqual(vessel.efficiencyWorkspaceCount, 0)
-        XCTAssertEqual(vessel.crewHappiness, 0)
+        hab.count = 2
+        XCTAssertEqual(subject.workspaceCount, 0)
+        XCTAssertEqual(subject.crewCapacity, 20)
+        XCTAssertEqual(subject.livingSpaceCount, 20)
+        XCTAssertEqual(subject.crewCount, 0)
+        XCTAssertEqual(subject.crewCareerFactor, 0)
+        XCTAssertEqual(subject.happinessCrewCapacity, 20)
+        XCTAssertEqual(subject.happinessCrewCount, 0)
+        XCTAssertEqual(subject.happinessLivingSpaceCount, 20)
+        XCTAssertEqual(subject.efficiencyWorkspaceCount, 0)
+        XCTAssertEqual(subject.crewHappiness, 0)
 
-        habRing.withCount(1).withCrew([insertPilotWithStarCount(4)])
-        XCTAssertEqual(vessel.crewCount, 1)
-        XCTAssertEqual(vessel.crewCareerFactor, 1)
-        XCTAssertEqual(vessel.happinessCrewCount, 1)
-        XCTAssertEqualWithAccuracy(vessel.crewHappiness, 1.5 * 0.2, accuracy: accuracy)
-        // XCTAssertEqualWithAccuracy(vessel.crewEfficiency, 0.825, accuracy: accuracy)
+        hab.withCount(1).withCrew([pilot().withStarCount(4)])
+        XCTAssertEqual(subject.crewCount, 1)
+        XCTAssertEqual(subject.crewCareerFactor, 1)
+        XCTAssertEqual(subject.happinessCrewCount, 1)
+        XCTAssertEqualWithAccuracy(subject.crewHappiness, 1.5 * 0.2, accuracy: accuracy)
+        // XCTAssertEqualWithAccuracy(subject.crewEfficiency, 0.825, accuracy: accuracy)
     }
 
     func testCrewHappiness() {
         let accuracy = 0.005
 
-        let vessel = insertVessel()!
-        let habRing = insertHabRingPart().withVessel(vessel).withCrew((0 ..< 4).map { _ in self.insertCrew()! })
-        XCTAssertEqualWithAccuracy(vessel.crewHappiness, 1.5 * 0.8, accuracy: accuracy)
+        let subject = vessel()
+        let hab = habRing().withVessel(subject).withCrew((0 ..< 4).map { _ in self.crew() })
+        XCTAssertEqualWithAccuracy(subject.crewHappiness, 1.5 * 0.8, accuracy: accuracy)
 
-        (0 ..< 4).forEach { _ in self.insertCrew()!.withPart(habRing) }
-        XCTAssertEqualWithAccuracy(vessel.crewHappiness, 1.25 * 1.1, accuracy: accuracy)
-        habRing.vessel = nil
+        (0 ..< 4).forEach { _ in self.crew().withPart(hab) }
+        XCTAssertEqualWithAccuracy(subject.crewHappiness, 1.25 * 1.1, accuracy: accuracy)
+        hab.vessel = nil
 
-        insertHabitationModulePart().withVessel(vessel).withCrew((0 ..< 7).map { _ in self.insertCrew()! })
-        XCTAssertEqualWithAccuracy(vessel.crewHappiness, 0.63 /* ??? */, accuracy: accuracy)
+        habitationModule().withVessel(subject).withCrew((0 ..< 7).map { _ in self.crew() })
+        XCTAssertEqualWithAccuracy(subject.crewHappiness, 0.63 /* ??? */, accuracy: accuracy)
     }
 }
 
@@ -92,19 +100,19 @@ extension PartTests {
 
     func testSimplePartsEfficiency() {
         let accuracy = 0.005
-        let vessel = insertVessel()!
+        let subject = vessel()
 
-        let kerbitat = insertKerbitatPart().withVessel(vessel)
-        XCTAssertEqualWithAccuracy(kerbitat.partsEfficiency, 0, accuracy: accuracy)
+        let kerb = kerbitat().withVessel(subject)
+        XCTAssertEqualWithAccuracy(kerb.partsEfficiency, 0, accuracy: accuracy)
 
-        let habitationModule = insertHabitationModulePart().withVessel(vessel)
-        XCTAssertEqualWithAccuracy(kerbitat.partsEfficiency, 2, accuracy: accuracy)
+        let hab = habitationModule().withVessel(subject)
+        XCTAssertEqualWithAccuracy(kerb.partsEfficiency, 2, accuracy: accuracy)
 
-        habitationModule.count = 2
-        XCTAssertEqualWithAccuracy(kerbitat.partsEfficiency, 4, accuracy: accuracy)
+        hab.count = 2
+        XCTAssertEqualWithAccuracy(kerb.partsEfficiency, 4, accuracy: accuracy)
 
-        habitationModule.count = 100
-        XCTAssertEqualWithAccuracy(kerbitat.partsEfficiency, 200, accuracy: accuracy)
+        hab.count = 100
+        XCTAssertEqualWithAccuracy(kerb.partsEfficiency, 200, accuracy: accuracy)
     }
 
 }

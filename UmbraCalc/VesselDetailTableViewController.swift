@@ -68,8 +68,7 @@ class VesselDetailTableViewController: UITableViewController {
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.identifier else { return }
-        switch identifier {
+        switch segue.identifier! {
         case Crew.showListSegueIdentifier:
             let crewSelection = segue.destinationViewController as! CrewSelectionTableViewController
             crewSelection.setManagingObjectContext(self)

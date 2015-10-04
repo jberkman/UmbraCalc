@@ -29,7 +29,7 @@ class VesselListTableViewController: UITableViewController {
 
     }
 
-    private(set) var dataSource: FetchedDataSource<Vessel, UITableViewCell> = DataSource()
+    private(set) var dataSource: FetchedDataSource<DataSource.Model, DataSource.Cell> = DataSource()
 
     var kolony: Kolony? {
         didSet {
@@ -54,8 +54,7 @@ class VesselListTableViewController: UITableViewController {
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.identifier else { return }
-        switch identifier {
+        switch segue.identifier! {
         case Part.showListSegueIdentifier:
             let cell = sender as! UITableViewCell
             let indexPath = tableView.indexPathForCell(cell)!

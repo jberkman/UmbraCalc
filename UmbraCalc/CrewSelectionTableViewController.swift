@@ -18,8 +18,6 @@ import UIKit
 
 class CrewSelectionTableViewController: UITableViewController {
 
-    typealias Model = Crew
-
     private class DataSource: SelectionDataSource<Crew, UITableViewCell> {
 
         override func configureCell(cell: UITableViewCell, forModel crew: Crew) {
@@ -30,10 +28,12 @@ class CrewSelectionTableViewController: UITableViewController {
 
     }
 
+    typealias Model = DataSource.Model
+
     @IBOutlet weak var addButtonItem: UIBarButtonItem!
     @IBOutlet weak var doneButtonItem: UIBarButtonItem!
     
-    private(set) lazy var dataSource: SelectionDataSource<Crew, UITableViewCell> = DataSource()
+    private(set) lazy var dataSource: SelectionDataSource<DataSource.Model, DataSource.Cell> = DataSource()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,8 +49,7 @@ class CrewSelectionTableViewController: UITableViewController {
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.identifier else { return }
-        switch identifier {
+        switch segue.identifier! {
         case Crew.addSegueIdentifier:
             guard let scratchContext = ScratchContext(parentContext: dataSource).managedObjectContext else { return }
             let navigationController = segue.destinationViewController as! UINavigationController

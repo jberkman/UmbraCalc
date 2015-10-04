@@ -18,8 +18,6 @@ import UIKit
 
 class MasterTableViewController: UITableViewController {
 
-    typealias Model = NamedEntity
-
     private class DataSource: FetchedDataSource<NamedEntity, UITableViewCell> {
 
         weak var viewController: UIViewController?
@@ -49,10 +47,12 @@ class MasterTableViewController: UITableViewController {
 
     }
 
+    typealias Model = DataSource.Model
+
     @IBOutlet weak var entitySegmentedControl: UISegmentedControl?
     @IBOutlet weak var addButton: UIBarButtonItem?
 
-    private(set) lazy var dataSource: FetchedDataSource<Model, UITableViewCell> = DataSource(viewController: self)
+    private(set) lazy var dataSource: FetchedDataSource<DataSource.Model, DataSource.Cell> = DataSource(viewController: self)
 
     var selectedModel: Model? {
         didSet {
@@ -123,10 +123,9 @@ class MasterTableViewController: UITableViewController {
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.identifier else { return }
         let destinationViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first
 
-        switch identifier {
+        switch segue.identifier! {
         case Crew.addSegueIdentifier:
             guard let scratchContext = ScratchContext(parentContext: dataSource).managedObjectContext else { return }
             let controller = destinationViewController as! CrewDetailTableViewController
@@ -168,7 +167,6 @@ class MasterTableViewController: UITableViewController {
 
         default:
             break
-            
         }
     }
 

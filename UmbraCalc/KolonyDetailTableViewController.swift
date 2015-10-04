@@ -64,8 +64,7 @@ class KolonyDetailTableViewController: UITableViewController {
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.identifier else { return }
-        switch identifier {
+        switch segue.identifier! {
         case Crew.showListSegueIdentifier:
             let crewSelection = segue.destinationViewController as! CrewSelectionTableViewController
             crewSelection.setManagingObjectContext(self)
@@ -74,7 +73,7 @@ class KolonyDetailTableViewController: UITableViewController {
             crewSelection.predicate = NSPredicate(format: "part.vessel.kolony = %@", kolony)
             crewSelection.navigationItem.title = "\(kolony.displayName) Crew"
 
-        case Model.saveSegueIdentifier:
+        case Kolony.saveSegueIdentifier:
             model?.name = nameTextField.text
 
         case Vessel.showListSegueIdentifier:

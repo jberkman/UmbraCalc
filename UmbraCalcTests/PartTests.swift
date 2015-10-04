@@ -21,7 +21,7 @@ import XCTest
 class PartTests: CoreDataStackTestCase {
 
     func testInitWithConfigNode() {
-        let part = insertHabitationModulePart()
+        let part = habitationModule()
 
         XCTAssertEqual(part.partName, "Habitation Module")
         XCTAssertEqual(part.name, "Habitation Module")
@@ -36,8 +36,8 @@ class PartTests: CoreDataStackTestCase {
     func testCrewCareerFactor() {
         let accuracy = 0.0001
 
-        XCTAssertEqualWithAccuracy(insertHabitationModulePart().withCrew([insertEngineerWithStarCount(5)]).crewCareerFactor, 3.75, accuracy: accuracy)
-        XCTAssertEqualWithAccuracy(insertHabitationModulePart().withCrew([insertScientistWithStarCount(3), insertPilotWithStarCount(4)]).crewCareerFactor, 2.5, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(habitationModule().withCrew([engineer().withStarCount(5)]).crewCareerFactor, 3.75, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(habitationModule().withCrew([scientist().withStarCount(3), pilot().withStarCount(4)]).crewCareerFactor, 2.5, accuracy: accuracy)
     }
 
 }
@@ -56,18 +56,18 @@ extension CrewTests {
     // Level 5 engineer:    3.75
     func testCareerFactor() {
         let accuracy = 0.005
-        XCTAssertEqualWithAccuracy(insertPilotWithStarCount(0).withPart(insertKerbitatPart()).careerFactor, 0.05, accuracy: accuracy)
-        XCTAssertEqualWithAccuracy(insertEngineerWithStarCount(0).withPart(insertKerbitatPart()).careerFactor, 0.15, accuracy: accuracy)
-        XCTAssertEqualWithAccuracy(insertPilotWithStarCount(1).withPart(insertKerbitatPart()).careerFactor, 0.25, accuracy: accuracy)
-        XCTAssertEqualWithAccuracy(insertEngineerWithStarCount(1).withPart(insertKerbitatPart()).careerFactor, 0.75, accuracy: accuracy)
-        XCTAssertEqualWithAccuracy(insertPilotWithStarCount(2).withPart(insertKerbitatPart()).careerFactor, 0.50, accuracy: accuracy)
-        XCTAssertEqualWithAccuracy(insertEngineerWithStarCount(2).withPart(insertKerbitatPart()).careerFactor, 1.50, accuracy: accuracy)
-        XCTAssertEqualWithAccuracy(insertScientistWithStarCount(3).withPart(insertKerbitatPart()).careerFactor, 1.50, accuracy: accuracy)
-        XCTAssertEqualWithAccuracy(insertPilotWithStarCount(4).withPart(insertKerbitatPart()).careerFactor, 1.0, accuracy: accuracy)
-        XCTAssertEqualWithAccuracy(insertPilotWithStarCount(5).withPart(insertKerbitatPart()).careerFactor, 1.25, accuracy: accuracy)
-        XCTAssertEqualWithAccuracy(insertEngineerWithStarCount(5).withPart(insertKerbitatPart()).careerFactor, 3.75, accuracy: accuracy)
-        XCTAssertEqualWithAccuracy(insertTouristWithStarCount(0).withPart(insertKerbitatPart()).careerFactor, 0.05, accuracy: accuracy)
-        XCTAssertEqualWithAccuracy(insertTouristWithStarCount(5).withPart(insertKerbitatPart()).careerFactor, 1.25, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(pilot().withStarCount(0).withPart(kerbitat()).careerFactor, 0.05, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(engineer().withStarCount(0).withPart(kerbitat()).careerFactor, 0.15, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(pilot().withStarCount(1).withPart(kerbitat()).careerFactor, 0.25, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(engineer().withStarCount(1).withPart(kerbitat()).careerFactor, 0.75, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(pilot().withStarCount(2).withPart(kerbitat()).careerFactor, 0.50, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(engineer().withStarCount(2).withPart(kerbitat()).careerFactor, 1.50, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(scientist().withStarCount(3).withPart(kerbitat()).careerFactor, 1.50, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(pilot().withStarCount(4).withPart(kerbitat()).careerFactor, 1.0, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(pilot().withStarCount(5).withPart(kerbitat()).careerFactor, 1.25, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(engineer().withStarCount(5).withPart(kerbitat()).careerFactor, 3.75, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(tourist().withStarCount(0).withPart(kerbitat()).careerFactor, 0.05, accuracy: accuracy)
+        XCTAssertEqualWithAccuracy(tourist().withStarCount(5).withPart(kerbitat()).careerFactor, 1.25, accuracy: accuracy)
     }
 
 }

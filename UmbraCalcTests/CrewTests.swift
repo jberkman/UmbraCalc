@@ -23,60 +23,64 @@ private let names = [ "Jebediah", "Bill", "Bob", "Valentina" ]
 
 extension CoreDataStackTestCase {
 
-    func insertPilotWithStarCount(starCount: Int) -> Crew {
-        return insertCrew()!.withCareer(Crew.pilotTitle).withStarCount(starCount)
+    func crew() -> Crew {
+        return try! Crew(insertIntoManagedObjectContext: managedObjectContext!)
     }
 
-    func insertEngineerWithStarCount(starCount: Int) -> Crew {
-        return insertCrew()!.withCareer(Crew.engineerTitle).withStarCount(starCount)
+    func pilot() -> Crew {
+        return crew().withCareer(Crew.pilotTitle)
     }
 
-    func insertScientistWithStarCount(starCount: Int) -> Crew {
-        return insertCrew()!.withCareer(Crew.scientistTitle).withStarCount(starCount)
+    func engineer() -> Crew {
+        return crew().withCareer(Crew.engineerTitle)
     }
 
-    func insertTouristWithStarCount(starCount: Int) -> Crew {
-        return insertCrew()!.withCareer("Tourist").withStarCount(starCount)
+    func scientist() -> Crew {
+        return crew().withCareer(Crew.scientistTitle)
+    }
+
+    func tourist() -> Crew {
+        return crew().withCareer("Tourist")
     }
 
 }
 
 class CrewTests: CoreDataStackTestCase {
 
-    func testInsertCrewWithCareer() {
+    func testCrewWithCareer() {
         careers.forEach {
-            XCTAssertEqual(insertCrew()!.withCareer($0).career, $0)
+            XCTAssertEqual(crew().withCareer($0).career, $0)
         }
     }
 
     func testWithCareer() {
-        let crew = insertCrew()!
+        let subject = crew()
         careers.forEach {
-            XCTAssertEqual(crew.withCareer($0).career, $0)
+            XCTAssertEqual(subject.withCareer($0).career, $0)
         }
     }
 
     func testWithName() {
-        let crew = insertCrew()!
-        XCTAssertNil(crew.name)
+        let subject = crew()
+        XCTAssertNil(subject.name)
         names.forEach {
-            XCTAssertEqual(crew.withName($0).name, $0)
+            XCTAssertEqual(subject.withName($0).name, $0)
         }
     }
 
     func testWithPart() {
-        let crew = insertCrew()!
-        XCTAssertNil(crew.part)
-        [ insertHabitationModulePart(), insertHabRingPart(), insertCommandPodPart() ].forEach {
-            XCTAssertEqual(crew.withPart($0).part, $0)
+        let subject = crew()
+        XCTAssertNil(subject.part)
+        [ habitationModule(), habRing(), commandPod() ].forEach {
+            XCTAssertEqual(subject.withPart($0).part, $0)
         }
     }
 
     func testWithStarCount() {
-        let crew = insertCrew()!
-        XCTAssertEqual(crew.starCount, 0)
+        let subject = crew()
+        XCTAssertEqual(subject.starCount, 0)
         (0 ... 5).forEach {
-            XCTAssertEqual(crew.withStarCount($0).starCount, Int16($0))
+            XCTAssertEqual(subject.withStarCount($0).starCount, Int16($0))
         }
     }
 

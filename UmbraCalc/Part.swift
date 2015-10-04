@@ -19,7 +19,7 @@ import CoreData
 class Part: NSManagedObject {
 
     private dynamic var cachedPartNode: PartNode?
-    private var partNode: PartNode? {
+    var partNode: PartNode? {
         guard let name = partName else { return nil }
         if cachedPartNode?.name != name {
             cachedPartNode = PartNode(named: name)
@@ -56,7 +56,7 @@ class Part: NSManagedObject {
     var livingSpaceCount: Int { return Int(count) * (partNode?.livingSpaceCount ?? 0) }
     var primarySkill: String? { return partNode?.primarySkill }
     var secondarySkill: String? { return partNode?.secondarySkill }
-    var efficiencyParts: [String: Int]? { return partNode?.efficiencyParts ?? [:] }
+    var efficiencyParts: [String: Int] { return partNode?.efficiencyParts ?? [:] }
 
     private func crewSum(transform: (Crew) -> Int) -> Int {
         return (crew as? Set<Crew>)?.map(transform).reduce(0, combine: +) ?? 0

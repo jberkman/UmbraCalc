@@ -20,8 +20,6 @@ class PartDetailTableViewController: UITableViewController {
 
     typealias Model = Part
 
-    @IBOutlet weak var countLabel: UILabel!
-    @IBOutlet weak var countStepper: UIStepper!
     @IBOutlet weak var careerFactorLabel: UILabel!
     @IBOutlet weak var crewCell: UITableViewCell!
     @IBOutlet weak var crewEfficiencyLabel: UILabel!
@@ -42,19 +40,13 @@ class PartDetailTableViewController: UITableViewController {
         }
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        countStepper.addTarget(self, action: "countStepperDidChange:", forControlEvents: .ValueChanged)
-    }
-
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         updateView()
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.identifier else { return }
-        switch identifier {
+        switch segue.identifier! {
         case Crew.showListSegueIdentifier:
             let segueNavigationController = segue.destinationViewController as! UINavigationController
             let crewSelection = segueNavigationController.viewControllers.first as! CrewSelectionTableViewController
@@ -90,38 +82,23 @@ class PartDetailTableViewController: UITableViewController {
         updateView()
     }
 
-    private func updateCountLabel() {
-        countLabel.text = "Installed: \(model?.count ?? 0)"
-    }
-
     private func updateView() {
         guard isViewLoaded() else { return }
         navigationItem.title = model?.title
 
-        updateCountLabel()
-
-        countStepper.value = Double(model?.count ?? 0)
-
         let count = model?.crew?.count ?? 0
         let capacity = model?.crewCapacity ?? 0
+
         crewCell.detailTextLabel?.text = capacity > 0 ? "\(count) of \(capacity)" : "Uncrewed"
         crewCell.accessoryType = capacity > 0 ? .DetailButton : .None
-
-        // MARK: FIXME!!!! crew / capacity
-        countStepper.minimumValue = Double(count)
 
         livingSpaceCountLabel.text = String(model?.livingSpaceCount ?? 0)
         workspaceCountLabel.text = String(model?.workspaceCount ?? 0)
         careerFactorLabel.text = percentFormatter.stringFromNumber(model?.crewCareerFactor ?? 0)
         crewEfficiencyLabel.text = percentFormatter.stringFromNumber(model?.crewEfficiency ?? 0)
-        efficiencyPartsCount.text = String(model?.efficiencyParts?.count ?? 0)
+        efficiencyPartsCount.text = String(model?.efficiencyParts.count ?? 0)
         partsEfficiencyLabel.text = percentFormatter.stringFromNumber(model?.partsEfficiency ?? 0)
         efficiencyLabel.text = percentFormatter.stringFromNumber(model?.efficiency ?? 0)
-    }
-
-    @objc private func countStepperDidChange(stepper: UIStepper) {
-        model?.count = Int16(stepper.value)
-        updateCountLabel()
     }
 
 }

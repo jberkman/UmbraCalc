@@ -44,77 +44,77 @@ class PartFixtures: NSObject {
 
 }
 
-extension ManagingObjectContext {
+extension CoreDataStackTestCase {
 
-    func insertPartWithName(name: String, crewCapacity: Int, livingSpaces: Int, workspaces: Int, efficiencyParts: [String: Int] = [:]) -> Part {
+    func part(name: String, crewCapacity: Int, livingSpaces: Int, workspaces: Int, efficiencyParts: [String: Int] = [:]) -> Part {
         let partNode = PartFixtures.partNodeWithName(name, title: name, crewCapacity: crewCapacity, livingSpaces: livingSpaces, workspaces: workspaces, efficiencyParts: efficiencyParts)
-        return insertPartWithPartName(name)!.withValue(partNode, forKey: "cachedPartNode")
+        return try! Part(insertIntoManagedObjectContext: managedObjectContext!).withPartName(name).withValue(partNode, forKey: "cachedPartNode")
     }
 
-    func insertAeroponicsPart() -> Part {
-        return insertPartWithName("Aeroponics", crewCapacity: 2, livingSpaces: 0, workspaces: 1)
+    func aeroponics() -> Part {
+        return part("Aeroponics", crewCapacity: 2, livingSpaces: 0, workspaces: 1)
     }
 
-    func insertHabRingPart() -> Part {
-        return insertPartWithName("Hab Ring", crewCapacity: 10, livingSpaces: 10, workspaces: 0)
+    func habRing() -> Part {
+        return part("Hab Ring", crewCapacity: 10, livingSpaces: 10, workspaces: 0)
     }
 
-    func insertKerbitatPart() -> Part {
-        return insertPartWithName("Kerbitat", crewCapacity: 2, livingSpaces: 0, workspaces: 1, efficiencyParts: [
+    func kerbitat() -> Part {
+        return part("Kerbitat", crewCapacity: 2, livingSpaces: 0, workspaces: 1, efficiencyParts: [
             "Habitation Module": 2
             ])
     }
 
-    func insertSurfaceWorkspacePart() -> Part {
-        return insertPartWithName("MKS Workspace", crewCapacity: 1, livingSpaces: 0, workspaces: 2)
+    func surfaceWorkspace() -> Part {
+        return part("MKS Workspace", crewCapacity: 1, livingSpaces: 0, workspaces: 2)
     }
 
-    func insertOrbitalWorkspacePart() -> Part {
-        return insertPartWithName("OKS Workspace", crewCapacity: 0, livingSpaces: 0, workspaces: 4)
+    func orbitalWorkspace() -> Part {
+        return part("OKS Workspace", crewCapacity: 0, livingSpaces: 0, workspaces: 4)
     }
 
-    func insertPDUPart() -> Part {
-        return insertPartWithName("PDU", crewCapacity: 2, livingSpaces: 0, workspaces: 0)
+    func PDU() -> Part {
+        return part("PDU", crewCapacity: 2, livingSpaces: 0, workspaces: 0)
     }
 
-    func insertPioneerPart() -> Part {
-        return insertPartWithName("Pioneer", crewCapacity: 2, livingSpaces: 0, workspaces: 1)
+    func pioneer() -> Part {
+        return part("Pioneer", crewCapacity: 2, livingSpaces: 0, workspaces: 1)
     }
 
-    func insertMobileRefineryPart() -> Part {
-        return insertPartWithName("Mobile Refinery", crewCapacity: 4, livingSpaces: 0, workspaces: 5)
+    func mobileRefinery() -> Part {
+        return part("Mobile Refinery", crewCapacity: 4, livingSpaces: 0, workspaces: 5)
     }
 
-    func insertTrainingAkademyPart() -> Part {
-        return insertPartWithName("Training Akademy", crewCapacity: 12, livingSpaces: 0, workspaces: 5)
+    func trainingAkademy() -> Part {
+        return part("Training Akademy", crewCapacity: 12, livingSpaces: 0, workspaces: 5)
     }
 
-    func insertAuxiliaryControlModulePart() -> Part {
-        return insertPartWithName("Auxiliary Control Module", crewCapacity: 1, livingSpaces: 0, workspaces: 0)
+    func auxiliaryControlModule() -> Part {
+        return part("Auxiliary Control Module", crewCapacity: 1, livingSpaces: 0, workspaces: 0)
     }
 
-    func insertAirlockPart() -> Part {
-        return insertPartWithName("Airlock", crewCapacity: 1, livingSpaces: 0, workspaces: 0)
+    func airlock() -> Part {
+        return part("Airlock", crewCapacity: 1, livingSpaces: 0, workspaces: 0)
     }
 
-    func insertColonyHubPart() -> Part {
-        return insertPartWithName("Colony Hub", crewCapacity: 0, livingSpaces: 0, workspaces: 1)
+    func colonyHub() -> Part {
+        return part("Colony Hub", crewCapacity: 0, livingSpaces: 0, workspaces: 1)
     }
 
-    func insertCommLabPart() -> Part {
-        return insertPartWithName("Comm Lab", crewCapacity: 1, livingSpaces: 0, workspaces: 0)
+    func commLab() -> Part {
+        return part("Comm Lab", crewCapacity: 1, livingSpaces: 0, workspaces: 0)
     }
 
-    func insertCommandPodPart() -> Part {
-        return insertPartWithName("Command Pod", crewCapacity: 2, livingSpaces: 0, workspaces: 1)
+    func commandPod() -> Part {
+        return part("Command Pod", crewCapacity: 2, livingSpaces: 0, workspaces: 1)
     }
 
-    func insertHabitationModulePart() -> Part {
-        return insertPartWithName("Habitation Module", crewCapacity: 4, livingSpaces: 4, workspaces: 0)
+    func habitationModule() -> Part {
+        return part("Habitation Module", crewCapacity: 4, livingSpaces: 4, workspaces: 0)
     }
 
-    func insertWorkshopModule() -> Part {
-        return insertPartWithName("Workshop", crewCapacity: 4, livingSpaces: 0, workspaces: 4)
+    func workshopModule() -> Part {
+        return part("Workshop", crewCapacity: 4, livingSpaces: 0, workspaces: 4)
     }
 
 }

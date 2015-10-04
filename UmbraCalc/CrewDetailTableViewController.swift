@@ -105,9 +105,8 @@ class CrewDetailTableViewController: UITableViewController {
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.identifier else { return }
-        switch identifier {
-        case Model.saveSegueIdentifier:
+        switch segue.identifier! {
+        case Crew.saveSegueIdentifier:
             model?.name = nameTextField.text
 
         case Vessel.showListSegueIdentifier:

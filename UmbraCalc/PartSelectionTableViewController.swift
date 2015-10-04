@@ -56,8 +56,7 @@ class PartSelectionTableViewController: UITableViewController {
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.identifier else { return }
-        switch identifier {
+        switch segue.identifier! {
         case Part.saveSegueIdentifier:
             selectedModel = partForRowAtIndexPath(tableView.indexPathForCell(sender as! UITableViewCell)!)
 

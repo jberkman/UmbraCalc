@@ -109,11 +109,11 @@ extension Vessel: ModelNaming, SegueableType, Segueable {
 extension Part {
 
     var partsEfficiency: Double {
-        guard efficiencyParts?.isEmpty != true else { return 0 }
+        guard efficiencyParts.isEmpty != true else { return 0 }
         guard let vessel = vessel else { return 0 }
         return Double(vessel.efficiencyParts
-            .filter { $0.name != nil && efficiencyParts![$0.name!] != nil }
-            .map { Int($0.count) * efficiencyParts![$0.name!]! }
+            .filter { $0.name != nil && efficiencyParts[$0.name!] != nil }
+            .map { Int($0.count) * efficiencyParts[$0.name!]! }
             .reduce(0, combine: +))
     }
 
@@ -129,7 +129,7 @@ extension Part {
 
     var efficiency: Double {
         let minEfficiency = 0.25
-        return efficiencyParts?.isEmpty != false ? crewEfficiency : min(minEfficiency, crewEfficiency + partsEfficiency)
+        return efficiencyParts.isEmpty != false ? crewEfficiency : min(minEfficiency, crewEfficiency + partsEfficiency)
     }
 
 }

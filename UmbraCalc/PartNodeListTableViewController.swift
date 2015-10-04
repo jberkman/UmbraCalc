@@ -17,6 +17,12 @@ import UIKit
 
 class PartNodeListTableViewController: UITableViewController {
 
+    typealias Model = PartNode
+
+    @IBOutlet weak var cancelButtonItem: UIBarButtonItem!
+
+    private(set) var selectedModel: Model?
+
     private lazy var partNodes: [PartNode] = NSBundle.mainBundle().partNodes
         .filter { !$0.title.lowercaseString.containsString("legacy") }
         .sort {
@@ -67,4 +73,21 @@ class PartNodeListTableViewController: UITableViewController {
         presentViewController(alert, animated: true, completion: nil)
     }
 
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        guard segue.identifier == Part.saveSegueIdentifier else { return }
+        switch segue.identifier! {
+        case Part.saveSegueIdentifier:
+            if let cell = sender as? UITableViewCell, indexPath = tableView.indexPathForCell(cell) {
+                selectedModel = partNodeForRowAtIndexPath(indexPath)
+            } else if let indexPath = sender as? NSIndexPath {
+                selectedModel = partNodeForRowAtIndexPath(indexPath)
+            }
+
+        default:
+            break
+        }
+    }
+
 }
+
+extension PartNodeListTableViewController: ModelSelecting { }
