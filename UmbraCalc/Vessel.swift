@@ -16,15 +16,14 @@
 import Foundation
 import CoreData
 
-private let minEfficiency = 0.25
-private let maxEfficiency = 2.5
-
 class Vessel: NamedEntity {
 
+    @warn_unused_result
     func withName(name: String) -> Self {
         return withValue(name, forKey: "name")
     }
 
+    @warn_unused_result
     func withParts<S: SequenceType where S.Generator.Element == Part>(parts: S) -> Self {
         return withValue(Set(parts), forKey: "parts")
     }
@@ -77,6 +76,14 @@ class Vessel: NamedEntity {
         return livingSpaceCount
     }
 
+    var activeResourceConverterCount: Int {
+        return partSum { $0.activeResourceConverterCount }
+    }
+
+    var efficiencyActiveResourceConverterCount: Int {
+        return activeResourceConverterCount
+    }
+
     var efficiencyWorkspaceCount: Int {
         return workspaceCount
     }
@@ -103,33 +110,5 @@ class Vessel: NamedEntity {
 extension Vessel: ModelNaming, SegueableType, Segueable {
 
     class var modelName: String { return "Vessel" }
-
-}
-
-extension Part {
-
-    var partsEfficiency: Double {
-        guard efficiencyParts.isEmpty != true else { return 0 }
-        guard let vessel = vessel else { return 0 }
-        return Double(vessel.efficiencyParts
-            .filter { $0.name != nil && efficiencyParts[$0.name!] != nil }
-            .map { Int($0.count) * efficiencyParts[$0.name!]! }
-            .reduce(0, combine: +))
-    }
-
-    var crewEfficiency: Double {
-        guard let vessel = vessel else { return 0 }
-        guard vessel.crewCount > 0 else { return 0 }
-        let maxWorkspaceRatio = 3.0
-        let workspaces = Double(vessel.efficiencyWorkspaceCount) + Double(vessel.crewCapacity) / 4
-        let workspaceRatio = min(maxWorkspaceRatio, workspaces / Double(vessel.crewCount))
-        let unboundedEfficiency = workspaceRatio * vessel.crewHappiness * (vessel.crewCareerFactor + Double(vessel.crewCount) * crewBonus)
-        return min(maxEfficiency, max(minEfficiency, unboundedEfficiency))
-    }
-
-    var efficiency: Double {
-        let minEfficiency = 0.25
-        return efficiencyParts.isEmpty != false ? crewEfficiency : min(minEfficiency, crewEfficiency + partsEfficiency)
-    }
 
 }

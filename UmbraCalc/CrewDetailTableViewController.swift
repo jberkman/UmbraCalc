@@ -18,30 +18,26 @@ import UIKit
 
 class CrewDetailTableViewController: UITableViewController {
 
-    typealias Model = Crew
-
     @IBOutlet weak var assignmentCell: UITableViewCell!
     @IBOutlet weak var careerCell: UITableViewCell!
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var starCountLabel: UILabel!
     @IBOutlet weak var starCountStepper: UIStepper!
-    @IBOutlet weak var cancelButtonItem: UIBarButtonItem!
-    @IBOutlet weak var saveButtonItem: UIBarButtonItem!
 
     private var hasAppeared = false
 
     var managedObjectContext: NSManagedObjectContext?
 
-    var model: Model? {
+    var crew: Crew? {
         didSet {
             // Prevent crew from being faulted
-            managedObjectContext = model?.managedObjectContext
+            managedObjectContext = crew?.managedObjectContext
             updateView()
         }
     }
 
     private func updateStars() {
-        guard let starString = model?.starString else {
+        guard let starString = crew?.starString else {
             starCountLabel.text = nil
             return
         }
@@ -55,14 +51,14 @@ class CrewDetailTableViewController: UITableViewController {
     private func updateView() {
         guard isViewLoaded() else { return }
 
-        nameTextField.text = model?.name
+        nameTextField.text = crew?.name
 
         updateStars()
-        starCountStepper.value = Double(model?.starCount ?? 0)
+        starCountStepper.value = Double(crew?.starCount ?? 0)
 
-        careerCell.textLabel!.text = model?.career
+        careerCell.textLabel!.text = crew?.career
 
-        if let partName = model?.part?.title, vesselName = model?.part?.vessel?.displayName {
+        if let partName = crew?.part?.title, vesselName = crew?.part?.vessel?.displayName {
             assignmentCell.accessoryType = .DetailDisclosureButton
             assignmentCell.selectionStyle = .Default
             assignmentCell.detailTextLabel!.text = "\(vesselName) - \(partName)"
@@ -91,14 +87,14 @@ class CrewDetailTableViewController: UITableViewController {
         super.viewDidAppear(animated)
         guard !hasAppeared else { return }
         hasAppeared = true
-        guard model?.name?.isEmpty != false else { return }
+        guard crew?.name?.isEmpty != false else { return }
         nameTextField.becomeFirstResponder()
     }
 
     override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
         switch identifier {
         case Vessel.showSegueIdentifier:
-            return model?.part?.vessel != nil
+            return crew?.part?.vessel != nil
         default:
             return true
         }
@@ -106,17 +102,13 @@ class CrewDetailTableViewController: UITableViewController {
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
-        case Crew.saveSegueIdentifier:
-            model?.name = nameTextField.text
-
         case Vessel.showListSegueIdentifier:
-            let destinationNavigationController = segue.destinationViewController as! UINavigationController
-            let vesselList = destinationNavigationController.viewControllers.first as! VesselListTableViewController
+            let vesselList = segue.destinationViewController as! VesselListTableViewController
             vesselList.managedObjectContext = managedObjectContext
 
         case Vessel.showSegueIdentifier:
             let vesselDetail: VesselDetailTableViewController = segue.destinationViewController as! VesselDetailTableViewController
-            vesselDetail.model = model?.part?.vessel
+            vesselDetail.vessel = crew?.part?.vessel
 
         default:
             break
@@ -124,22 +116,20 @@ class CrewDetailTableViewController: UITableViewController {
     }
 
     @IBAction func stepperDidChange(sender: UIStepper) {
-        model?.starCount = Int16(sender.value)
+        crew?.starCount = Int16(sender.value)
         updateStars()
     }
 
     @IBAction func savePart(segue: UIStoryboardSegue) {
-        model?.part = (segue.sourceViewController as! PartSelectionTableViewController).selectedModel
+        crew?.part = (segue.sourceViewController as! PartSelectionTableViewController).selectedPart
         updateView()
     }
-
-    @IBAction func cancelVessel(segue: UIStoryboardSegue) { }
 
     private func presentCareerSheet() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         [ Crew.engineerTitle, Crew.pilotTitle, Crew.scientistTitle ].sort(<).forEach { career in
             alert.addAction(UIAlertAction(title: career, style: .Default) { _ in
-                self.model?.career = career
+                self.crew?.career = career
                 })
         }
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
@@ -150,10 +140,6 @@ class CrewDetailTableViewController: UITableViewController {
     }
 
 }
-
-extension CrewDetailTableViewController: ManagingObjectContext { }
-
-extension CrewDetailTableViewController: MutableModelControlling { }
 
 extension CrewDetailTableViewController {
 
@@ -168,7 +154,7 @@ extension CrewDetailTableViewController {
 extension CrewDetailTableViewController: UITextFieldDelegate {
 
     func textFieldDidEndEditing(textField: UITextField) {
-        model?.name = textField.text
+        crew?.name = textField.text
     }
 
     func textFieldShouldReturn(textField: UITextField) -> Bool {

@@ -48,6 +48,22 @@ class PartNodeTests: XCTestCase {
         XCTAssert(partNode.efficiencyParts.isEmpty)
     }
 
+    func testRangerHabMod() {
+        let partNode: PartNode! = PartNode(named: "MKV_HabModule")
+
+        XCTAssertNotNil(partNode)
+        guard partNode != nil else { return }
+
+        XCTAssertEqual(partNode.name, "MKV_HabModule")
+        XCTAssertEqual(partNode.title, "MK-V Habitation Module")
+        XCTAssertEqual(partNode.crewCapacity, 4)
+        XCTAssertEqual(partNode.workspaceCount, 0)
+        XCTAssertEqual(partNode.livingSpaceCount, 4)
+        XCTAssertEqualWithAccuracy(partNode.crewBonus, 0.5, accuracy: 0.01)
+        XCTAssertEqualWithAccuracy(partNode.maxEfficiency, 1, accuracy: 0.01)
+        XCTAssert(partNode.efficiencyParts.isEmpty)
+    }
+
     func testBundledPartNames() {
         XCTAssertEqual(NSBundle.mainBundle().partNodes.count, 67)
     }

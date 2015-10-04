@@ -17,8 +17,8 @@ import CoreData
 import UIKit
 
 class StepperCell: UITableViewCell {
-    @IBOutlet weak var stepperTextLabel: UILabel!
 
+    @IBOutlet weak var stepperTextLabel: UILabel!
     @IBOutlet weak var stepperDetailTextLabel: UILabel!
 
     private var minimumValue = 0.0
@@ -69,26 +69,26 @@ class PartListTableViewController: UITableViewController {
         }
 
         @objc private func countStepperValueDidChange(sender: UIStepper) {
-            func superCell(view: UIView) -> UITableViewCell? {
-                guard let superView = view.superview else { return nil }
-                guard let cell = superView as? UITableViewCell else { return superCell(superView) }
-                return cell
-            }
-            guard let cell = superCell(sender), indexPath = tableView.indexPathForCell(cell) else { return }
+            guard let indexPath = tableView.indexPathForCellSubview(sender) else { return }
             modelAtIndexPath(indexPath).count = Int16(sender.value)
-        }
 
+            guard let indexPaths = tableView.indexPathsForVisibleRows else { return }
+            tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
+        }
     }
 
-    typealias Model = DataSource.Model
+    private(set) var selectedPart: DataSource.Model?
 
-    private(set) var selectedModel: Model?
+    private var dataSource = DataSource()
 
-    private(set) var dataSource: FetchedDataSource<DataSource.Model, DataSource.Cell> = DataSource()
+    var predicate: NSPredicate? {
+        get { return dataSource.fetchRequest.predicate }
+        set { dataSource.fetchRequest.predicate = newValue }
+    }
 
     var vessel: Vessel? {
         didSet {
-            managedObjectContext = vessel?.managedObjectContext
+            dataSource.managedObjectContext = vessel?.managedObjectContext
             predicate = vessel == nil ? nil : NSPredicate(format: "vessel = %@", vessel!)
             navigationItem.title = vessel?.displayName ?? "Parts"
             guard isViewLoaded() else { return }
@@ -104,7 +104,11 @@ class PartListTableViewController: UITableViewController {
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        guard dataSource.fetchedResultsController == nil else { return }
+        guard dataSource.fetchedResultsController == nil else {
+            guard let indexPaths = tableView.indexPathsForVisibleRows else { return }
+            tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
+            return
+        }
         dataSource.reloadData()
     }
 
@@ -115,25 +119,25 @@ class PartListTableViewController: UITableViewController {
             partNodeList.navigationItem.leftBarButtonItem = partNodeList.cancelButtonItem
 
         case Part.showSegueIdentifier:
-            let indexPath = tableView.indexPathForCell(sender as! UITableViewCell)!
+            let indexPath = sender as? NSIndexPath ?? tableView.indexPathForCell(sender as! UITableViewCell)!
             let partDetail = segue.destinationViewController as! PartDetailTableViewController
-            partDetail.model = dataSource.modelAtIndexPath(indexPath)
+            partDetail.part = dataSource.modelAtIndexPath(indexPath)
 
         default:
             break
         }
     }
 
-    private func showDetailForPart(part: Part) {
-        guard let indexPath = dataSource.indexPathForModel(part) else { return }
-        performSegueWithIdentifier(Part.showSegueIdentifier, sender: indexPath)
-    }
-
     @IBAction func cancelPart(segue: UIStoryboardSegue) { }
 
     @IBAction func savePart(segue: UIStoryboardSegue) {
+        func showDetailForPart(part: Part) {
+            guard let indexPath = dataSource.indexPathForModel(part) else { return }
+            performSegueWithIdentifier(Part.showSegueIdentifier, sender: indexPath)
+        }
+        
         let partNodeList = segue.sourceViewController as! PartNodeListTableViewController
-        guard let partNode = partNodeList.selectedModel else { return }
+        guard let partNode = partNodeList.selectedPartNode else { return }
 
         if partNode.crewCapacity == 0, let existingPart = (vessel?.parts as? Set<Part>)?.lazy.filter({ $0.partName == partNode.name }).first {
             ++existingPart.count
@@ -141,38 +145,11 @@ class PartListTableViewController: UITableViewController {
             return
         }
 
-        guard let managedObjectContext = vessel?.managedObjectContext,
-            part = try? Part(insertIntoManagedObjectContext: managedObjectContext).withPartName(partNode.name).withVessel(vessel!) else { return }
-        managedObjectContext.processPendingChanges()
-        showDetailForPart(part)
+        guard let managedObjectContext = vessel?.managedObjectContext else { return }
+        _ = try? Part(insertIntoManagedObjectContext: managedObjectContext).withPartName(partNode.name).withVessel(vessel!)
+
+        guard let indexPaths = tableView.indexPathsForVisibleRows else { return }
+        tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
     }
 
-}
-
-extension PartListTableViewController: MutableManagingObjectContext {
-
-    var managedObjectContext: NSManagedObjectContext? {
-        get { return dataSource.managedObjectContext }
-        set { dataSource.managedObjectContext = newValue }
-    }
-    
-}
-
-extension PartListTableViewController: ModelSelecting { }
-
-extension PartListTableViewController: Predicating {
-
-    var predicate: NSPredicate? {
-        get { return dataSource.fetchRequest.predicate }
-        set { dataSource.fetchRequest.predicate = newValue }
-    }
-
-}
-
-extension PartListTableViewController: ManagingObjectContextContainer {
-
-    func setManagingObjectContext(managingObjectContext: ManagingObjectContext) {
-        dataSource.managedObjectContext = managingObjectContext.managedObjectContext
-    }
-    
 }

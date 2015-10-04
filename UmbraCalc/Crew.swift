@@ -30,20 +30,31 @@ class Crew: NamedEntity {
         return String(count: Int(starCount), repeatedValue: "⭐️")
     }
 
+    @warn_unused_result
     func withCareer(career: String) -> Self {
         return withValue(career, forKey: "career")
     }
 
+    @warn_unused_result
     func withName(name: String) -> Self {
         return withValue(name, forKey: "name")
     }
 
+    @warn_unused_result
     func withPart(part: Part?) -> Self {
         return withValue(part, forKey: "part")
     }
 
+    @warn_unused_result
     func withStarCount(starCount: Int) -> Self {
         return withValue(starCount, forKey: "starCount")
+    }
+
+    var careerFactor: Double {
+        guard let part = part else { return 0 }
+        let starFactor = max(0.1, Double(starCount) / 2)
+        let careerMultiplier = career == part.primarySkill ? 1.5 : career == part.secondarySkill ? 1 : 0.5
+        return starFactor * careerMultiplier
     }
 
 }

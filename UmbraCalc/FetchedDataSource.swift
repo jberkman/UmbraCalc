@@ -16,18 +16,21 @@
 import CoreData
 import UIKit
 
-class FetchedDataSource<Model: NSManagedObject, Cell: UITableViewCell>: NSObject, FetchableDataSource, ManagingObjectContext, NSFetchedResultsControllerDelegate, UITableViewDataSource {
+class FetchedDataSource<Model: NSManagedObject, Cell: UITableViewCell>: NSObject, FetchableDataSource, OffsettableDataSource, NSFetchedResultsControllerDelegate, UITableViewDataSource {
 
     let fetchRequest = NSFetchRequest()
     var reuseIdentifier = "reuseIdentifier"
     var sectionNameKeyPath: String?
     var cacheName: String?
 
-    var tableView: UITableView! {
-        didSet {
-            oldValue?.dataSource = nil
-            tableView?.dataSource = self
-        }
+    var tableView: UITableView!
+
+    let sectionOffset: Int
+
+    init(sectionOffset: Int = 0) {
+        assert(sectionOffset >= 0)
+        self.sectionOffset = sectionOffset
+        super.init()
     }
 
     var fetchedResultsController: NSFetchedResultsController? {
@@ -38,16 +41,29 @@ class FetchedDataSource<Model: NSManagedObject, Cell: UITableViewCell>: NSObject
 
     var managedObjectContext: NSManagedObjectContext?
 
+    func modelAtIndexPath(indexPath: NSIndexPath) -> Model {
+        return fetchedResultsController!.objectAtIndexPath(indexPath.insetSectionBy(sectionOffset)) as! Model
+    }
+
+    func indexPathForModel(model: Model) -> NSIndexPath? {
+        return fetchedResultsController?.indexPathForObject(model)?.offsetSectionBy(sectionOffset)
+    }
+
+    func reloadTableView() {
+        // tableView.reloadSections(NSIndexSet(index: sectionOffset), withRowAnimation: .Fade)
+        tableView.reloadData()
+    }
+
     func configureCell(cell: Cell, forModel model: Model) { }
 
     // extension UITableViewDataSource where Self: FetchableDataSource {
 
     @objc func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return fetchedResultsController?.sections?.count ?? 0
+        return (fetchedResultsController?.sections?.count ?? 0) + sectionOffset
     }
 
     @objc func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return fetchedResultsController!.sections![section].numberOfObjects
+        return fetchedResultsController?.sections![section - sectionOffset].numberOfObjects ?? 0
     }
 
     @objc func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -57,7 +73,7 @@ class FetchedDataSource<Model: NSManagedObject, Cell: UITableViewCell>: NSObject
     }
 
     @objc func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return fetchedResultsController!.sections![section].name
+        return fetchedResultsController!.sections![section - sectionOffset].name
     }
 
     @objc func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
@@ -65,7 +81,7 @@ class FetchedDataSource<Model: NSManagedObject, Cell: UITableViewCell>: NSObject
     }
 
     @objc func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
-        return fetchedResultsController!.sectionForSectionIndexTitle(title, atIndex: index)
+        return fetchedResultsController!.sectionForSectionIndexTitle(title, atIndex: index - sectionOffset)
     }
 
     @objc func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -87,10 +103,10 @@ class FetchedDataSource<Model: NSManagedObject, Cell: UITableViewCell>: NSObject
     @objc func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
         switch type {
         case .Insert:
-            tableView.insertSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+            tableView.insertSections(NSIndexSet(index: sectionIndex + sectionOffset), withRowAnimation: .Fade)
 
         case .Delete:
-            tableView.deleteSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+            tableView.deleteSections(NSIndexSet(index: sectionIndex + sectionOffset), withRowAnimation: .Fade)
 
         default:
             break
@@ -100,18 +116,18 @@ class FetchedDataSource<Model: NSManagedObject, Cell: UITableViewCell>: NSObject
     @objc func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         switch type {
         case .Insert:
-            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
+            tableView.insertRowsAtIndexPaths([newIndexPath!.offsetSectionBy(sectionOffset)], withRowAnimation: .Fade)
 
         case .Delete:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
+            tableView.deleteRowsAtIndexPaths([indexPath!.offsetSectionBy(sectionOffset)], withRowAnimation: .Fade)
 
         case .Update:
-            guard let cell = tableView.cellForRowAtIndexPath(indexPath!) as? Cell else { break }
-            configureCell(cell, forModel: modelAtIndexPath(indexPath!))
+            guard let cell = tableView.cellForRowAtIndexPath(indexPath!.offsetSectionBy(sectionOffset)) as? Cell else { break }
+            configureCell(cell, forModel: anObject as! Model)
 
         case .Move:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
-            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
+            tableView.deleteRowsAtIndexPaths([indexPath!.offsetSectionBy(sectionOffset)], withRowAnimation: .Fade)
+            tableView.insertRowsAtIndexPaths([newIndexPath!.offsetSectionBy(sectionOffset)], withRowAnimation: .Fade)
         }
     }
     

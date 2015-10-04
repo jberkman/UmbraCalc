@@ -42,5 +42,3 @@ extension NSManagedObject {
     }
 
 }
-
-extension NSManagedObject: ManagingObjectContext { }

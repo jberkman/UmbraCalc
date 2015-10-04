@@ -18,7 +18,13 @@
         <attribute name="count" attributeType="Integer 16" minValueString="0" defaultValueString="1" syncable="YES"/>
         <attribute name="partName" attributeType="String" syncable="YES"/>
         <relationship name="crew" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Crew" inverseName="part" inverseEntity="Crew" syncable="YES"/>
+        <relationship name="resourceConverters" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ResourceConverter" inverseName="part" inverseEntity="ResourceConverter" syncable="YES"/>
         <relationship name="vessel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Vessel" inverseName="parts" inverseEntity="Vessel" syncable="YES"/>
+    </entity>
+    <entity name="ResourceConverter" representedClassName=".ResourceConverter" syncable="YES">
+        <attribute name="activeCount" attributeType="Integer 16" defaultValueString="NO" syncable="YES"/>
+        <attribute name="tag" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="part" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Part" inverseName="resourceConverters" inverseEntity="Part" syncable="YES"/>
     </entity>
     <entity name="Station" representedClassName=".Station" parentEntity="Vessel" syncable="YES"/>
     <entity name="Vessel" representedClassName=".Vessel" isAbstract="YES" parentEntity="NamedEntity" syncable="YES">
@@ -29,8 +35,9 @@
         <element name="Crew" positionX="-36" positionY="9" width="128" height="90"/>
         <element name="Kolony" positionX="-27" positionY="72" width="128" height="60"/>
         <element name="NamedEntity" positionX="-36" positionY="54" width="128" height="60"/>
-        <element name="Part" positionX="-54" positionY="-9" width="128" height="105"/>
+        <element name="Part" positionX="-54" positionY="-9" width="128" height="120"/>
         <element name="Station" positionX="-18" positionY="81" width="128" height="45"/>
         <element name="Vessel" positionX="-63" positionY="-18" width="128" height="60"/>
+        <element name="ResourceConverter" positionX="-36" positionY="54" width="128" height="90"/>
     </elements>
 </model>

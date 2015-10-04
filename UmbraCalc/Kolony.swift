@@ -18,16 +18,22 @@ import CoreData
 
 class Kolony: NamedEntity {
 
+    @warn_unused_result
     func withName(name: String) -> Self {
         return withValue(name, forKey: "name")
     }
 
+    @warn_unused_result
     func withBases<S: SequenceType where S.Generator.Element == Base>(bases: S) -> Self {
         return withValue(Set(bases), forKey: "bases")
     }
 
     private func baseSum(transform: (Base) -> Int) -> Int {
         return (bases as? Set<Base>)?.map(transform).reduce(0, combine: +) ?? 0
+    }
+
+    var activeResourceConverterCount: Int {
+        return baseSum { $0.activeResourceConverterCount }
     }
 
     var crewCapacity: Int {
@@ -57,29 +63,7 @@ class Kolony: NamedEntity {
 }
 
 extension Kolony: ModelNaming, SegueableType, Segueable {
+
     class var modelName: String { return "Kolony" }
-}
-
-extension Base {
-    
-    override var happinessCrewCapacity: Int {
-        return kolony?.crewCapacity ?? crewCapacity
-    }
-
-    override var happinessCrewCount: Int {
-        return kolony?.crewCount ?? crewCount
-    }
-
-    override var happinessLivingSpaceCount: Int {
-        return kolony?.livingSpaceCount ?? livingSpaceCount
-    }
-
-    override var efficiencyWorkspaceCount: Int {
-        return kolony?.workspaceCount ?? workspaceCount
-    }
-
-    override var efficiencyParts: Set<Part> {
-        return kolony?.parts ?? parts as? Set<Part> ?? Set()
-    }
 
 }

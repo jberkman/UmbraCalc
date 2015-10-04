@@ -16,43 +16,52 @@
 import CoreData
 import UIKit
 
-extension UINavigationController: ManagingObjectContextContainer {
-
-    func setManagingObjectContext(managingObjectContext: ManagingObjectContext) {
-        (topViewController as? ManagingObjectContextContainer)?.setManagingObjectContext(managingObjectContext)
-    }
-
-}
-
-extension UITabBarController: ManagingObjectContextContainer {
-
-    func setManagingObjectContext(managingObjectContext: ManagingObjectContext) {
-        viewControllers?.forEach { ($0 as? ManagingObjectContextContainer)?.setManagingObjectContext(managingObjectContext) }
-    }
-
-}
-
-extension UISplitViewController: ManagingObjectContextContainer {
-
-    func setManagingObjectContext(managingObjectContext: ManagingObjectContext) {
-        viewControllers.forEach { ($0 as? ManagingObjectContextContainer)?.setManagingObjectContext(managingObjectContext) }
-    }
-
-}
-
-extension UIStoryboardSegue {
-
-    func destinationViewControllerWithType<ViewController: UIViewController>() -> ViewController? {
-        return destinationViewController as? ViewController ??
-            (destinationViewController as? UINavigationController)?.viewControllers.first as? ViewController
-    }
-
-}
-
 extension UITableView {
 
     func indexPathForSegueSender(sender: AnyObject?) -> NSIndexPath? {
         return sender is UITableViewCell ? indexPathForCell(sender as! UITableViewCell) : sender as? NSIndexPath
+    }
+
+    func indexPathForCellSubview(subview: UIView) -> NSIndexPath? {
+        guard let superView = subview.superview else { return nil }
+        guard let cell = superView as? UITableViewCell else { return indexPathForCellSubview(superView) }
+        return indexPathForCell(cell)
+    }
+
+}
+
+class Value1TableViewCell: UITableViewCell {
+
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+
+}
+
+class Value2TableViewCell: UITableViewCell {
+
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: .Value2, reuseIdentifier: reuseIdentifier)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+}
+
+class SubtitleTableViewCell: UITableViewCell {
+
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: .Subtitle, reuseIdentifier: reuseIdentifier)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
     }
 
 }

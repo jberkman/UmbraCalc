@@ -27,6 +27,7 @@ private let efficiencyPartListKey = "efficiencyPart"
 private let livingSpaceKey = "livingSpace"
 private let maxEfficencyKey = "MaxEfficiency"
 private let moduleKey = "MODULE"
+private let moduleResourceConverterKey = "ModuleResourceConverter"
 private let nameKey = "name"
 private let partKey = "PART"
 private let primarySkillKey = "PrimarySkill"
@@ -69,6 +70,7 @@ class PartNode: NSObject {
     let livingSpaceCount: Int
     let primarySkill: String
     let secondarySkill: String
+    let resourceConverters: [String: ResourceConverterNode]
     let efficiencyParts: [String: Int]
 
     init?(configNode: [NSObject: AnyObject]) {
@@ -83,6 +85,7 @@ class PartNode: NSObject {
             self.livingSpaceCount = 0
             self.primarySkill = ""
             self.secondarySkill = ""
+            self.resourceConverters = [:]
             self.efficiencyParts = [:]
             super.init()
             return nil
@@ -119,8 +122,14 @@ class PartNode: NSObject {
         var primarySkill = defaultPrimarySkill
         var secondarySkill = defaultSecondarySkill
         var efficiencyPartList: String?
+        var resourceConverters = [String: ResourceConverterNode]()
 
         for module in modules {
+            guard module[nameKey] as? String != moduleResourceConverterKey else {
+                let resourceConverter = ResourceConverterNode(configNode: module)
+                resourceConverters[resourceConverter.tag] = resourceConverter
+                continue
+            }
             guard module[nameKey] as? String == MKSModuleValue else { continue }
             workspaceCount = intWithValue(module[workSpaceKey])
             livingSpaceCount = intWithValue(module[livingSpaceKey])
@@ -137,11 +146,13 @@ class PartNode: NSObject {
         self.maxEfficiency = maxEfficiency
         self.primarySkill = primarySkill
         self.secondarySkill = secondarySkill
+        self.resourceConverters = resourceConverters
+
+        print(name, resourceConverters)
 
         if let partList = efficiencyPartList {
             let elements = partList.characters.split { String($0) == efficiencyPartDelimiter }.map { String($0) }
-            efficiencyParts = 0
-                .stride(to: elements.count, by: 2)
+            efficiencyParts = 0.stride(to: elements.count, by: 2)
                 .map { (elements[$0], Int(elements[$0 + 1]) ?? 0) }
                 .reduce([:]) {
                     var ret = $0

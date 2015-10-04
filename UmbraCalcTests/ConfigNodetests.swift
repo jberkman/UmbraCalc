@@ -41,6 +41,10 @@ private let drillFileName = "MKS_Drill_01"
 private let drillName = "MKS_DRILL_01"
 private let drillTitle = "MEU-500 Drill [MetallicOre/Substrate/Uraninite]"
 
+private let habModuleFileName = "MKV_HabModule"
+private let habModuleName = "MKV_HabModule"
+private let habModuleTitle = "MK-V Habitation Module"
+
 private let MKSModuleName = "MKSModule"
 
 @testable import UmbraCalc
@@ -155,6 +159,28 @@ class ConfigNodeTests: XCTestCase {
 
         guard let modules = part[moduleString] as? [[NSObject: AnyObject]] else { return }
         XCTAssertEqual(modules.count, 5)
+    }
+
+    func testHabModule() {
+        let URL: NSURL! = NSBundle.mainBundle().URLForResource(habModuleFileName, withExtension: partsExtension, subdirectory: partsSubdirectory)
+        XCTAssertNotNil(URL)
+
+        guard URL != nil else { return }
+        let data: NSData! = NSData(contentsOfURL: URL)
+        XCTAssertNotNil(data)
+
+        guard data != nil else { return }
+        let node = ConfigNode.configNodeWithData(data)
+        XCTAssertEqual(node.count, 1)
+        XCTAssert(node[partString] is [NSObject: AnyObject])
+
+        guard let part = node[partString] as? [NSObject: AnyObject] else { return }
+        XCTAssertEqual(part[nameString] as? String, habModuleName)
+        XCTAssertEqual(part[titleString] as? String, habModuleTitle)
+        XCTAssert(part[moduleString] is [[NSObject: AnyObject]])
+
+        guard let modules = part[moduleString] as? [[NSObject: AnyObject]] else { return }
+        XCTAssertEqual(modules.count, 8)
     }
 
 }

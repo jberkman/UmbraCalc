@@ -20,26 +20,59 @@ class CrewSelectionTableViewController: UITableViewController {
 
     private class DataSource: SelectionDataSource<Crew, UITableViewCell> {
 
-        override func configureCell(cell: UITableViewCell, forModel crew: Crew) {
-            super.configureCell(cell, forModel: crew)
-            cell.textLabel?.text = crew.displayName
-            cell.detailTextLabel?.text = crew.career
+        var part: Part? {
+            didSet {
+                maximumSelectionCount = part?.crewCapacity ?? Int.max
+                managedObjectContext = part?.managedObjectContext
+            }
+        }
+
+        override var selectedModels: Set<DataSource.Model> {
+            get { return part?.crew as? Set<Crew> ?? Set() }
+            set { part?.crew = newValue }
+        }
+
+        override init(sectionOffset: Int = 0) {
+            super.init(sectionOffset: sectionOffset)
+        }
+
+        override func configureCell(cell: UITableViewCell, forModel model: DataSource.Model) {
+            super.configureCell(cell, forModel: model)
+            cell.textLabel?.text = model.displayName
+            cell.detailTextLabel?.text = model.career
+        }
+
+        private override func selectModel(model: Model) {
+            model.part = part
+        }
+
+        private override func deselectModel(model: Model) {
+            model.part = nil
         }
 
     }
 
-    typealias Model = DataSource.Model
+    private lazy var dataSource = DataSource()
 
-    @IBOutlet weak var addButtonItem: UIBarButtonItem!
-    @IBOutlet weak var doneButtonItem: UIBarButtonItem!
-    
-    private(set) lazy var dataSource: SelectionDataSource<DataSource.Model, DataSource.Cell> = DataSource()
+    var part: Part? {
+        set {
+            dataSource.part = newValue
+            guard isViewLoaded(), let indexPaths = tableView.indexPathsForVisibleRows else { return }
+            tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
+        }
+        get {
+            return dataSource.part
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSource.tableViewDelegate = self
+
         dataSource.fetchRequest.sortDescriptors = [NamedEntity.nameSortDescriptor]
         dataSource.tableView = tableView
+
+        tableView.dataSource = dataSource
+        tableView.delegate = dataSource
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -51,65 +84,13 @@ class CrewSelectionTableViewController: UITableViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
         case Crew.addSegueIdentifier:
-            guard let scratchContext = ScratchContext(parentContext: dataSource).managedObjectContext else { return }
-            let navigationController = segue.destinationViewController as! UINavigationController
-            let crewDetail = navigationController.viewControllers.first as! CrewDetailTableViewController
-            crewDetail.model = try? Crew(insertIntoManagedObjectContext: scratchContext).withCareer(Crew.pilotTitle)
-            crewDetail.navigationItem.leftBarButtonItem = crewDetail.cancelButtonItem
-            crewDetail.navigationItem.rightBarButtonItem = crewDetail.saveButtonItem
+            guard let managedObjectContext = dataSource.managedObjectContext else { break }
+            let crewDetail = segue.destinationViewController as! CrewDetailTableViewController
+            crewDetail.crew = try? Crew(insertIntoManagedObjectContext: managedObjectContext).withCareer(Crew.pilotTitle)
 
         default:
             break
         }
-    }
-
-    override func setEditing(editing: Bool, animated: Bool) {
-        super.setEditing(editing, animated: animated)
-        navigationItem.setRightBarButtonItem(editing ? addButtonItem : nil, animated: animated)
-    }
-
-    @IBAction func cancelCrew(segue: UIStoryboardSegue) { }
-
-    @IBAction func saveCrew(segue: UIStoryboardSegue) {
-        let crewDetail = segue.sourceViewController as! CrewDetailTableViewController
-        _ = try? crewDetail.model?.saveToParentContext {
-            guard let crew = $0 as? Crew where self.selectedModels.count < self.maximumSelectionCount else { return }
-            self.selectedModels.insert(crew)
-
-            guard let indexPath = self.dataSource.indexPathForModel(crew) else { return }
-            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-        }
-    }
-
-}
-
-extension CrewSelectionTableViewController: MutableModelMultipleSelecting {
-
-    var selectedModels: Set<Model> {
-        get { return dataSource.selectedModels }
-        set { dataSource.selectedModels = newValue }
-    }
-
-    var maximumSelectionCount: Int {
-        get { return dataSource.maximumSelectionCount }
-        set { dataSource.maximumSelectionCount = newValue }
-    }
-
-}
-
-extension CrewSelectionTableViewController: MutablePredicating {
-
-    var predicate: NSPredicate? {
-        get { return dataSource.fetchRequest.predicate }
-        set { dataSource.fetchRequest.predicate = newValue }
-    }
-
-}
-
-extension CrewSelectionTableViewController: ManagingObjectContextContainer {
-
-    func setManagingObjectContext(managingObjectContext: ManagingObjectContext) {
-        dataSource.managedObjectContext = managingObjectContext.managedObjectContext
     }
 
 }

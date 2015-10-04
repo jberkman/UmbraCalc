@@ -17,20 +17,22 @@ import UIKit
 
 class PartNodeListTableViewController: UITableViewController {
 
-    typealias Model = PartNode
-
     @IBOutlet weak var cancelButtonItem: UIBarButtonItem!
 
-    private(set) var selectedModel: Model?
+    private(set) var selectedPartNode: PartNode?
 
-    private lazy var partNodes: [PartNode] = NSBundle.mainBundle().partNodes
-        .filter { !$0.title.lowercaseString.containsString("legacy") }
-        .sort {
-            func awesomeness(partNode: PartNode) -> Int {
-                return partNode.crewCapacity + partNode.livingSpaceCount + partNode.workspaceCount
-            }
-            let (lhs, rhs) = (awesomeness($0), awesomeness($1))
-            return lhs > rhs || (lhs == rhs && $0.title < $1.title)
+    lazy var partNodes: [PartNode] = bundledPartNodes
+
+    static var bundledPartNodes: [PartNode] {
+        return NSBundle.mainBundle().partNodes
+            .filter { !$0.title.lowercaseString.containsString("legacy") }
+            .sort {
+                func awesomeness(partNode: PartNode) -> Int {
+                    return partNode.crewCapacity + partNode.livingSpaceCount + partNode.workspaceCount
+                }
+                let (lhs, rhs) = (awesomeness($0) > 0, awesomeness($1) > 0)
+                return (lhs && !rhs) || (lhs == rhs && $0.title < $1.title)
+        }
     }
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -41,7 +43,7 @@ class PartNodeListTableViewController: UITableViewController {
         return partNodes.count
     }
 
-    private func partNodeForRowAtIndexPath(indexPath: NSIndexPath) -> PartNode {
+    func partNodeForRowAtIndexPath(indexPath: NSIndexPath) -> PartNode {
         return partNodes[indexPath.row]
     }
 
@@ -78,9 +80,9 @@ class PartNodeListTableViewController: UITableViewController {
         switch segue.identifier! {
         case Part.saveSegueIdentifier:
             if let cell = sender as? UITableViewCell, indexPath = tableView.indexPathForCell(cell) {
-                selectedModel = partNodeForRowAtIndexPath(indexPath)
+                selectedPartNode = partNodeForRowAtIndexPath(indexPath)
             } else if let indexPath = sender as? NSIndexPath {
-                selectedModel = partNodeForRowAtIndexPath(indexPath)
+                selectedPartNode = partNodeForRowAtIndexPath(indexPath)
             }
 
         default:
@@ -89,5 +91,3 @@ class PartNodeListTableViewController: UITableViewController {
     }
 
 }
-
-extension PartNodeListTableViewController: ModelSelecting { }

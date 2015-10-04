@@ -20,13 +20,39 @@ private let defaultParts = [ "MKV_AgModule", "MKV_HabModule", "MKV_Lander", "MKV
 
 class Base: Vessel {
 
+    @warn_unused_result
     func withKolony(kolony: Kolony?) -> Self {
         return withValue(kolony, forKey: "kolony")
     }
 
+    @warn_unused_result
     func withDefaultParts() throws -> Self {
         guard let managedObjectContext = managedObjectContext else { return self }
         return try withParts(defaultParts.map { try Part(insertIntoManagedObjectContext: managedObjectContext).withPartName($0) })
+    }
+
+    override var happinessCrewCapacity: Int {
+        return kolony?.crewCapacity ?? crewCapacity
+    }
+
+    override var happinessCrewCount: Int {
+        return kolony?.crewCount ?? crewCount
+    }
+
+    override var happinessLivingSpaceCount: Int {
+        return kolony?.livingSpaceCount ?? livingSpaceCount
+    }
+
+    override var efficiencyActiveResourceConverterCount: Int {
+        return kolony?.activeResourceConverterCount ?? activeResourceConverterCount
+    }
+
+    override var efficiencyWorkspaceCount: Int {
+        return kolony?.workspaceCount ?? workspaceCount
+    }
+
+    override var efficiencyParts: Set<Part> {
+        return kolony?.parts ?? parts as? Set<Part> ?? Set()
     }
 
 }

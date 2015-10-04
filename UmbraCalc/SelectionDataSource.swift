@@ -20,18 +20,13 @@ class SelectionDataSource<Model: NSManagedObject, Cell: UITableViewCell>: Fetche
 
     var selectedModels = Set<Model>()
     var maximumSelectionCount = Int.max
-    weak var tableViewDelegate: UITableViewDelegate?
 
-    override var tableView: UITableView! {
-        didSet {
-            oldValue?.delegate = nil
-            tableView?.delegate = self
-            super.tableView = tableView
-        }
+    override init(sectionOffset: Int = 0) {
+        super.init(sectionOffset: sectionOffset)
     }
 
     override func configureCell(cell: Cell, forModel model: Model) {
-        cell.editingAccessoryType = selectedModels.contains(model) ? .Checkmark : .None
+        cell.accessoryType = selectedModels.contains(model) ? .Checkmark : .None
     }
 
     override func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
@@ -41,32 +36,27 @@ class SelectionDataSource<Model: NSManagedObject, Cell: UITableViewCell>: Fetche
     }
 
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        guard tableView.editing else { return false }
         return selectedModels.contains(modelAtIndexPath(indexPath)) == true || selectedModels.count < maximumSelectionCount
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard tableView.editing else {
-            tableViewDelegate?.tableView?(tableView, didSelectRowAtIndexPath: indexPath)
-            return
-        }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         let model = modelAtIndexPath(indexPath)
         if selectedModels.contains(model) == true {
-            selectedModels.remove(model)
+            deselectModel(model)
         } else {
-            selectedModels.insert(model)
+            selectModel(model)
         }
         guard let cell = tableView.cellForRowAtIndexPath(indexPath) as? Cell else { return }
         configureCell(cell, forModel: model)
     }
 
-    func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-        return .None
+    func selectModel(model: Model) {
+        selectedModels.insert(model)
     }
 
-    func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return false
+    func deselectModel(model: Model) {
+        selectedModels.remove(model)
     }
 
 }

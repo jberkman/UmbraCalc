@@ -17,13 +17,11 @@ import UIKit
 
 class PartSelectionTableViewController: UITableViewController {
 
-    typealias Model = Part
-
-    var selectedModel: Model?
+    var selectedPart: Part?
 
     private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
 
-    private var parts: [Model] = [] {
+    private var parts: [Part] = [] {
         didSet {
             guard isViewLoaded() else { return }
             tableView.reloadData()
@@ -58,7 +56,7 @@ class PartSelectionTableViewController: UITableViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
         case Part.saveSegueIdentifier:
-            selectedModel = partForRowAtIndexPath(tableView.indexPathForCell(sender as! UITableViewCell)!)
+            selectedPart = partForRowAtIndexPath(tableView.indexPathForCell(sender as! UITableViewCell)!)
 
         default:
             break

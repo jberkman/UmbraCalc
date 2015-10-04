@@ -15,7 +15,7 @@
 
 import CoreData
 
-class CoreDataStack: NSObject, ManagingObjectContext {
+class CoreDataStack: NSObject {
 
     private let persistentStoreType: String
 

@@ -1,8 +1,8 @@
 //
-//  Part+CoreDataProperties.swift
+//  ResourceConverter+CoreDataProperties.swift
 //  UmbraCalc
 //
-//  Created by jacob berkman on 2015-10-05.
+//  Created by jacob berkman on 2015-10-06.
 //  Copyright © 2015 jacob berkman.
 //
 //  Based on and includes portions of Moduler Kolonization System by RoverDude
@@ -19,12 +19,10 @@
 import Foundation
 import CoreData
 
-extension Part {
+extension ResourceConverter {
 
-    @NSManaged var count: Int16
-    @NSManaged var partName: String?
-    @NSManaged var crew: NSSet?
-    @NSManaged var vessel: Vessel?
-    @NSManaged var resourceConverters: NSSet?
+    @NSManaged var tag: String?
+    @NSManaged var activeCount: Int16
+    @NSManaged var part: Part?
 
 }

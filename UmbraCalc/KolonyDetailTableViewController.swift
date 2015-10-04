@@ -18,67 +18,116 @@ import UIKit
 
 class KolonyDetailTableViewController: UITableViewController {
 
-    typealias Model = Kolony
+    private class BaseDataSource: FetchedDataSource<Base, UITableViewCell> {
 
-    @IBOutlet weak var nameTextField: UITextField!
-    @IBOutlet weak var baseCountLabel: UILabel!
-    @IBOutlet weak var crewCell: UITableViewCell!
+        var kolony: Kolony? {
+            didSet {
+                managedObjectContext = kolony?.managedObjectContext
+                fetchRequest.predicate = kolony == nil ? nil : NSPredicate(format: "kolony = %@", kolony!)
+            }
+        }
+
+        private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
+
+        override init(sectionOffset: Int) {
+            super.init(sectionOffset: sectionOffset)
+            reuseIdentifier = "baseCell"
+            fetchRequest.sortDescriptors = [Kolony.nameSortDescriptor]
+        }
+
+        private override func configureCell(cell: BaseDataSource.Cell, forModel model: BaseDataSource.Model) {
+            cell.textLabel?.text = model.displayName
+            cell.detailTextLabel?.text = "Crew: \(model.crewCount) of \(model.crewCapacity) Happiness: \(percentFormatter.stringFromNumber(model.crewHappiness)!) Parts: \(model.partCount)"
+            cell.accessoryType = .DisclosureIndicator
+        }
+    }
+
+    private class CrewDataSource: FetchedDataSource<Crew, UITableViewCell> {
+
+        var kolony: Kolony? {
+            didSet {
+                managedObjectContext = kolony?.managedObjectContext
+                fetchRequest.predicate = kolony == nil ? nil : NSPredicate(format: "part.vessel.kolony == %@", kolony!)
+            }
+        }
+
+        override init(sectionOffset: Int = 0) {
+            super.init(sectionOffset: sectionOffset)
+            reuseIdentifier = "crewCell"
+            fetchRequest.sortDescriptors = [Crew.nameSortDescriptor]
+        }
+
+        override func configureCell(cell: UITableViewCell, forModel crew: Crew) {
+            cell.textLabel?.text = crew.displayName
+            cell.detailTextLabel?.text = crew.part?.vessel?.displayName
+        }
+        
+    }
+    
+    @IBOutlet weak var crewCapacityLabel: UILabel!
     @IBOutlet weak var livingSpacesLabel: UILabel!
+    @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var workspacesLabel: UILabel!
-    @IBOutlet weak var cancelButtonItem: UIBarButtonItem!
-    @IBOutlet weak var saveButtonItem: UIBarButtonItem!
 
     private var hasAppeared = false
 
-    var managedObjectContext: NSManagedObjectContext?
+    private lazy var dataSource: StoryboardDelegatedDataSource = StoryboardDelegatedDataSource(dataSource: self)
+    private lazy var baseDataSource = BaseDataSource(sectionOffset: 1)
+    private lazy var crewDataSource = CrewDataSource(sectionOffset: 2)
 
-    var model: Model? {
+    var kolony: Kolony? {
         didSet {
-            // Prevent vessel from being faulted
-            managedObjectContext = model?.managedObjectContext
+            baseDataSource.kolony = kolony
+            crewDataSource.kolony = kolony
             updateView()
         }
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: baseDataSource.reuseIdentifier)
+        dataSource.registerDataSource(baseDataSource)
+        baseDataSource.tableView = tableView
+
+        tableView.registerClass(Value1TableViewCell.self, forCellReuseIdentifier: crewDataSource.reuseIdentifier)
+        dataSource.registerDataSource(crewDataSource)
+        crewDataSource.tableView = tableView
+
+        tableView.dataSource = dataSource
     }
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         updateView()
+        if baseDataSource.fetchedResultsController == nil {
+            baseDataSource.reloadData()
+        }
+        if crewDataSource.fetchedResultsController == nil {
+            crewDataSource.reloadData()
+        }
     }
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         guard !hasAppeared else { return }
         hasAppeared = true
-        guard model?.name?.isEmpty != false else { return }
+        guard kolony?.name?.isEmpty != false else { return }
         nameTextField.becomeFirstResponder()
-    }
-
-    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
-        switch identifier {
-        case Crew.showListSegueIdentifier:
-            return model?.crewCount > 0
-
-        default:
-            return true
-        }
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
-        case Crew.showListSegueIdentifier:
-            let crewSelection = segue.destinationViewController as! CrewSelectionTableViewController
-            crewSelection.setManagingObjectContext(self)
+        case Base.addSegueIdentifier:
+            guard let managedObjectContext = baseDataSource.managedObjectContext where kolony != nil else { return }
+            let baseDetail = segue.destinationViewController as! VesselDetailTableViewController
+            baseDetail.vessel = try? Base(insertIntoManagedObjectContext: managedObjectContext).withKolony(kolony) //.withDefaultParts()
 
-            guard let kolony = model else { return }
-            crewSelection.predicate = NSPredicate(format: "part.vessel.kolony = %@", kolony)
-            crewSelection.navigationItem.title = "\(kolony.displayName) Crew"
-
-        case Kolony.saveSegueIdentifier:
-            model?.name = nameTextField.text
-
-        case Vessel.showListSegueIdentifier:
-            let vesselList = segue.destinationViewController as! VesselListTableViewController
-            vesselList.kolony = model
+        case Base.showSegueIdentifier:
+            let cell = sender as! UITableViewCell
+            let indexPath = tableView.indexPathForCell(cell)!
+            let vesselDetail = segue.destinationViewController as! VesselDetailTableViewController
+            vesselDetail.vessel = baseDataSource.modelAtIndexPath(indexPath)
 
         default:
             break
@@ -88,29 +137,47 @@ class KolonyDetailTableViewController: UITableViewController {
     private func updateView() {
         guard isViewLoaded() else { return }
 
-        nameTextField.text = model?.name
+        nameTextField.text = kolony?.name
 
-        baseCountLabel.text = String(model?.bases?.count ?? 0)
-
-        let crewCount = model?.crewCount ?? 0
-        crewCell.detailTextLabel?.text = "\(crewCount) of \(model?.crewCapacity ?? 0)"
-        crewCell.accessoryType = crewCount > 0 ? .DisclosureIndicator : .None
-        crewCell.selectionStyle = crewCount > 0 ? .Default : .None
-
-        livingSpacesLabel.text = String(model?.livingSpaceCount ?? 0)
-        workspacesLabel.text = String(model?.workspaceCount ?? 0)
+        crewCapacityLabel.text = String(kolony?.crewCapacity ?? 0)
+        livingSpacesLabel.text = String(kolony?.livingSpaceCount ?? 0)
+        workspacesLabel.text = String(kolony?.workspaceCount ?? 0)
     }
 
 }
 
-extension KolonyDetailTableViewController: ManagingObjectContext { }
+extension KolonyDetailTableViewController {
 
-extension KolonyDetailTableViewController: MutableModelControlling { }
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        switch indexPath.section {
+        case baseDataSource.sectionOffset:
+            performSegueWithIdentifier(Base.showSegueIdentifier, sender: tableView.cellForRowAtIndexPath(indexPath))
+
+        default:
+            break
+        }
+    }
+
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        switch indexPath.section {
+        case baseDataSource.sectionOffset, crewDataSource.sectionOffset:
+            return 44
+
+        default:
+            return super.tableView(tableView, heightForRowAtIndexPath: indexPath)
+        }
+    }
+
+    override func tableView(tableView: UITableView, indentationLevelForRowAtIndexPath indexPath: NSIndexPath) -> Int {
+        return 0 // super.tableView(tableView, indentationLevelForRowAtIndexPath: storyboardIndexPath(indexPath))
+    }
+
+}
 
 extension KolonyDetailTableViewController: UITextFieldDelegate {
 
     func textFieldDidEndEditing(textField: UITextField) {
-        model?.name = textField.text
+        kolony?.name = textField.text
     }
 
     func textFieldShouldReturn(textField: UITextField) -> Bool {

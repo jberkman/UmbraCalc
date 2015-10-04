@@ -20,8 +20,12 @@ class VesselListTableViewController: UITableViewController {
 
     private class DataSource: FetchedDataSource<Vessel, UITableViewCell> {
 
-        private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
+        let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
 
+        override init(sectionOffset: Int = 0) {
+            super.init(sectionOffset: sectionOffset)
+        }
+        
         override func configureCell(cell: UITableViewCell, forModel vessel: Vessel) {
             cell.textLabel?.text = vessel.displayName
             cell.detailTextLabel?.text = "Crew: \(vessel.crewCount) of \(vessel.crewCapacity) Happiness: \(percentFormatter.stringFromNumber(vessel.crewHappiness)!) Parts: \(vessel.partCount)"
@@ -29,12 +33,22 @@ class VesselListTableViewController: UITableViewController {
 
     }
 
-    private(set) var dataSource: FetchedDataSource<DataSource.Model, DataSource.Cell> = DataSource()
+    private lazy var dataSource = DataSource()
+
+    var managedObjectContext: NSManagedObjectContext? {
+        get { return dataSource.managedObjectContext }
+        set { dataSource.managedObjectContext = newValue }
+    }
 
     var kolony: Kolony? {
         didSet {
             managedObjectContext = kolony?.managedObjectContext
-            predicate = kolony == nil ? nil : NSPredicate(format: "kolony = %@", kolony!)
+            if let managedObjectContext = managedObjectContext {
+                dataSource.fetchRequest.entity = NSEntityDescription.entityForName(Base.modelName, inManagedObjectContext: managedObjectContext)
+            } else {
+                dataSource.fetchRequest.entity = nil
+            }
+            dataSource.fetchRequest.predicate = kolony == nil ? nil : NSPredicate(format: "kolony = %@", kolony!)
             navigationItem.title = kolony?.displayName
             guard isViewLoaded() else { return }
             dataSource.reloadData()
@@ -43,59 +57,45 @@ class VesselListTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         dataSource.fetchRequest.sortDescriptors = [NamedEntity.nameSortDescriptor]
         dataSource.tableView = tableView
+        
+        tableView.dataSource = dataSource
     }
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        guard dataSource.fetchedResultsController == nil else { return }
+        guard dataSource.fetchedResultsController == nil else {
+            guard let indexPaths = tableView.indexPathsForVisibleRows else { return }
+            tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
+            return
+        }
         dataSource.reloadData()
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
+        case Base.addSegueIdentifier:
+            guard let managedObjectContext = managedObjectContext where kolony != nil else { return }
+            let baseDetail = segue.destinationViewController as! VesselDetailTableViewController
+            baseDetail.vessel = try? Base(insertIntoManagedObjectContext: managedObjectContext).withKolony(kolony) //.withDefaultParts()
+
+        case Base.showSegueIdentifier:
+            let cell = sender as! UITableViewCell
+            let indexPath = tableView.indexPathForCell(cell)!
+            let vesselDetail = segue.destinationViewController as! VesselDetailTableViewController
+            vesselDetail.vessel = dataSource.modelAtIndexPath(indexPath)
+
         case Part.showListSegueIdentifier:
             let cell = sender as! UITableViewCell
             let indexPath = tableView.indexPathForCell(cell)!
             let partList = segue.destinationViewController as! PartSelectionTableViewController
             partList.vessel = dataSource.modelAtIndexPath(indexPath)
 
-        case Vessel.showSegueIdentifier:
-            let cell = sender as! UITableViewCell
-            let indexPath = tableView.indexPathForCell(cell)!
-            let vesselDetail = segue.destinationViewController as! VesselDetailTableViewController
-            vesselDetail.model = dataSource.modelAtIndexPath(indexPath)
-
         default:
             break
         }
     }
 
-}
-
-extension VesselListTableViewController: MutableManagingObjectContext {
-
-    var managedObjectContext: NSManagedObjectContext? {
-        get { return dataSource.managedObjectContext }
-        set { dataSource.managedObjectContext = newValue }
-    }
-    
-}
-
-extension VesselListTableViewController: MutablePredicating {
-
-    var predicate: NSPredicate? {
-        get { return dataSource.fetchRequest.predicate }
-        set { dataSource.fetchRequest.predicate = newValue }
-    }
-
-}
-
-extension VesselListTableViewController: ManagingObjectContextContainer {
-
-    func setManagingObjectContext(managingObjectContext: ManagingObjectContext) {
-        dataSource.managedObjectContext = managingObjectContext.managedObjectContext
-    }
-    
 }

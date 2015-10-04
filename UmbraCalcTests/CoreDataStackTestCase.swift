@@ -21,6 +21,7 @@ import XCTest
 class CoreDataStackTestCase: XCTestCase {
 
     var coreDataStack: CoreDataStack!
+    var managedObjectContext: NSManagedObjectContext? { return coreDataStack.managedObjectContext }
 
     override func setUp() {
         super.setUp()
@@ -31,11 +32,5 @@ class CoreDataStackTestCase: XCTestCase {
         coreDataStack = nil
         super.tearDown()
     }
-
-}
-
-extension CoreDataStackTestCase: ManagingObjectContext {
-
-    var managedObjectContext: NSManagedObjectContext? { return coreDataStack.managedObjectContext }
 
 }

@@ -34,3 +34,12 @@ protocol MutableNamedType: NamedType {
     var name: String? { get set }
 
 }
+
+extension ModelNaming where Self: NamedType {
+
+    var displayName: String {
+        guard name?.isEmpty == false else { return "Unnamed \(modelName)" }
+        return name!
+    }
+    
+}

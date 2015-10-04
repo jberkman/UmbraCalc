@@ -31,7 +31,7 @@ class MasterTableViewController: UITableViewController {
             super.init()
         }
 
-        override func configureCell(cell: UITableViewCell, forModel model: Model) {
+        override func configureCell(cell: UITableViewCell, forModel model: DataSource.Model) {
             if let kolony = model as? Kolony {
                 cell.textLabel?.text = kolony.displayName
                 cell.detailTextLabel?.text = "\(kolony.crewCount) Crew"
@@ -47,20 +47,23 @@ class MasterTableViewController: UITableViewController {
 
     }
 
-    typealias Model = DataSource.Model
-
     @IBOutlet weak var entitySegmentedControl: UISegmentedControl?
     @IBOutlet weak var addButton: UIBarButtonItem?
 
-    private(set) lazy var dataSource: FetchedDataSource<DataSource.Model, DataSource.Cell> = DataSource(viewController: self)
+    private lazy var dataSource: DataSource = { return DataSource(viewController: self) }()
 
-    var selectedModel: Model? {
+    var managedObjectContext: NSManagedObjectContext? {
+        get { return dataSource.managedObjectContext }
+        set { dataSource.managedObjectContext = newValue }
+    }
+
+    var selectedEntity: DataSource.Model? {
         didSet {
             if oldValue != nil {
                 NSNotificationCenter.defaultCenter().removeObserver(self, name: willDeleteEntityNotification, object: oldValue!)
             }
-            if selectedModel != nil {
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: "willDeleteEntityWithNotification:", name: willDeleteEntityNotification, object: selectedModel!)
+            if selectedEntity != nil {
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: "willDeleteEntityWithNotification:", name: willDeleteEntityNotification, object: selectedEntity!)
             }
         }
     }
@@ -94,8 +97,9 @@ class MasterTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.leftBarButtonItem = editButtonItem()
-        dataSource.fetchRequest.sortDescriptors = [NamedEntity.nameSortDescriptor]
+        dataSource.fetchRequest.sortDescriptors = [DataSource.Model.nameSortDescriptor]
         dataSource.tableView = tableView
+        tableView.dataSource = dataSource
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -109,7 +113,7 @@ class MasterTableViewController: UITableViewController {
 
         updateDetailView()
 
-        let accessoryType = (dataSource as! DataSource).splitAccessoryType
+        let accessoryType = dataSource.splitAccessoryType
         clearsSelectionOnViewWillAppear = splitViewController?.delegate === self || splitViewController?.collapsed != false
         tableView.visibleCells.forEach {
             $0.accessoryType = accessoryType
@@ -126,44 +130,23 @@ class MasterTableViewController: UITableViewController {
         let destinationViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first
 
         switch segue.identifier! {
-        case Crew.addSegueIdentifier:
-            guard let scratchContext = ScratchContext(parentContext: dataSource).managedObjectContext else { return }
-            let controller = destinationViewController as! CrewDetailTableViewController
-            controller.model = try? Crew(insertIntoManagedObjectContext: scratchContext).withCareer(Crew.engineerTitle)
-            controller.navigationItem.leftBarButtonItem = controller.cancelButtonItem
-            controller.navigationItem.rightBarButtonItem = controller.saveButtonItem
-
         case Crew.showSegueIdentifier:
             guard let indexPath = tableView.indexPathForSegueSender(sender) else { return }
             let controller = destinationViewController as! CrewDetailTableViewController
-            controller.model = dataSource.modelAtIndexPath(indexPath) as? Crew
-            selectedModel = controller.model
-
-        case Kolony.addSegueIdentifier:
-            guard let scratchContext = ScratchContext(parentContext: dataSource).managedObjectContext else { return }
-            let controller = destinationViewController as! KolonyDetailTableViewController
-                controller.model = try? Kolony(insertIntoManagedObjectContext: scratchContext)
-                    .withBases([Base(insertIntoManagedObjectContext: scratchContext).withDefaultParts()])
-            controller.navigationItem.leftBarButtonItem = controller.cancelButtonItem
-            controller.navigationItem.rightBarButtonItem = controller.saveButtonItem
+            controller.crew = dataSource.modelAtIndexPath(indexPath) as? Crew
+            selectedEntity = controller.crew
 
         case Kolony.showSegueIdentifier:
             guard let indexPath = tableView.indexPathForSegueSender(sender) else { return }
             let controller = destinationViewController as! KolonyDetailTableViewController
-            controller.model = dataSource.modelAtIndexPath(indexPath) as? Kolony
-            selectedModel = controller.model
-
-        case Station.addSegueIdentifier:
-            guard let scratchContext = ScratchContext(parentContext: dataSource).managedObjectContext else { return }
-            let controller = destinationViewController as! VesselDetailTableViewController
-            controller.model = try? Station(insertIntoManagedObjectContext: scratchContext).withDefaultParts()
-            controller.navigationItem.leftBarButtonItem = controller.cancelButtonItem
-            controller.navigationItem.rightBarButtonItem = controller.saveButtonItem
+            controller.kolony = dataSource.modelAtIndexPath(indexPath) as? Kolony
+            selectedEntity = controller.kolony
 
         case Station.showSegueIdentifier:
             guard let indexPath = tableView.indexPathForSegueSender(sender) else { return }
             let controller = destinationViewController as! VesselDetailTableViewController
-            controller.model = dataSource.modelAtIndexPath(indexPath) as? Vessel
+            controller.vessel = dataSource.modelAtIndexPath(indexPath) as? Vessel
+            selectedEntity = controller.vessel
 
         default:
             break
@@ -192,19 +175,41 @@ class MasterTableViewController: UITableViewController {
 
 extension MasterTableViewController {
 
-    @IBAction func addItem(sender: UIBarButtonItem) {
-        performSegueWithIdentifier(displayedEntityName.addSegueIdentifier, sender: sender)
-    }
+    @IBAction func addModel(sender: UIBarButtonItem) {
+        guard let managedObjectContext = managedObjectContext else { return }
+        let model: DataSource.Model!
 
+        switch displayedEntityName {
+        case Crew.modelName:
+            model = try? Crew(insertIntoManagedObjectContext: managedObjectContext).withCareer(Crew.engineerTitle)
+
+        case Kolony.modelName:
+            model = try? Kolony(insertIntoManagedObjectContext: managedObjectContext).withBases([Base(insertIntoManagedObjectContext: managedObjectContext).withDefaultParts()])
+
+        case Station.modelName:
+            model = try? Station(insertIntoManagedObjectContext: managedObjectContext).withDefaultParts()
+
+        default:
+            fatalError("Unhandled model: \(displayedEntityName)")
+        }
+
+        guard model != nil else { return }
+        managedObjectContext.processPendingChanges()
+
+        guard let indexPath = dataSource.indexPathForModel(model) else { return }
+        tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
+        performSegueWithIdentifier(displayedEntityName.showSegueIdentifier, sender: indexPath)
+    }
+    
     @objc private func willDeleteEntityWithNotification(notification: NSNotification) {
         guard splitViewController?.collapsed == false else {
-            selectedModel = nil
+            selectedEntity = nil
             return
         }
 
-        guard let model = dataSource.fetchedModels?.lazy.filter({ $0 != self.selectedModel }).first,
+        guard let model = dataSource.fetchedModels?.lazy.filter({ $0 != self.selectedEntity }).first,
             indexPath = dataSource.indexPathForModel(model) else {
-                selectedModel = nil
+                selectedEntity = nil
                 guard let viewController = emptyDetailViewController else { return }
                 showDetailViewController(viewController, sender: self)
                 return
@@ -214,28 +219,6 @@ extension MasterTableViewController {
         tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
     }
 
-    private func selectModel(model: Model?) {
-        guard let model = model, indexPath = dataSource.indexPathForModel(model) else { return }
-        tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
-        guard let segue = (model as? Segueable)?.showSegueIdentifier else { return }
-        performSegueWithIdentifier(segue, sender: indexPath)
-    }
-
-    @IBAction func cancelCrew(segue: UIStoryboardSegue) { }
-    @IBAction func saveCrew(segue: UIStoryboardSegue) {
-        _ = try? (segue.sourceViewController as! CrewDetailTableViewController).model?.saveToParentContext(selectModel)
-    }
-
-    @IBAction func cancelKolony(segue: UIStoryboardSegue) { }
-    @IBAction func saveKolony(segue: UIStoryboardSegue) {
-        _ = try? (segue.sourceViewController as! KolonyDetailTableViewController).model?.saveToParentContext(selectModel)
-    }
-
-    @IBAction func cancelVessel(segue: UIStoryboardSegue) { }
-    @IBAction func saveVessel(segue: UIStoryboardSegue) {
-        _ = try? (segue.sourceViewController as! VesselDetailTableViewController).model?.saveToParentContext(selectModel)
-    }
-
     @IBAction func segmentDidChange(sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
         case 0: displayedEntityName = Kolony.modelName
@@ -243,25 +226,6 @@ extension MasterTableViewController {
         case 2: displayedEntityName = Crew.modelName
         default: break
         }
-    }
-
-}
-
-extension MasterTableViewController: MutableModelSelecting { }
-
-extension MasterTableViewController: MutableManagingObjectContext {
-
-    var managedObjectContext: NSManagedObjectContext? {
-        get { return dataSource.managedObjectContext }
-        set { dataSource.managedObjectContext = newValue }
-    }
-
-}
-
-extension MasterTableViewController: ManagingObjectContextContainer {
-
-    func setManagingObjectContext(managingObjectContext: ManagingObjectContext) {
-        dataSource.managedObjectContext = managingObjectContext.managedObjectContext
     }
 
 }

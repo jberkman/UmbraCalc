@@ -17,16 +17,19 @@ import Foundation
 
 extension NSObject {
 
+    @warn_unused_result
     func withValue(value: AnyObject?, forKey key: String) -> Self {
         setValue(value, forKey: key)
         return self
     }
 
+    @warn_unused_result
     func withValue(value: AnyObject?, forKeyPath keyPath: String) -> Self {
         setValue(value, forKeyPath: keyPath)
         return self
     }
 
+    @warn_unused_result
     func withValuesAndKeys(valuesAndKeys: [String: AnyObject]) -> Self {
         setValuesForKeysWithDictionary(valuesAndKeys)
         return self
@@ -54,4 +57,16 @@ extension NSObject {
         removeObserver(observer, forKeyPath: context.keyPath, context: &context.context)
     }
     
+}
+
+extension NSIndexPath {
+
+    func offsetSectionBy(sectionOffset: Int) -> NSIndexPath {
+        return NSIndexPath(forRow: row, inSection: section + sectionOffset)
+    }
+
+    func insetSectionBy(sectionInset: Int) -> NSIndexPath {
+        return NSIndexPath(forRow: row, inSection: section - sectionInset)
+    }
+
 }

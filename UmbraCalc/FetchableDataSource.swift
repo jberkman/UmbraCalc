@@ -26,11 +26,12 @@ protocol FetchableDataSource {
     var sectionNameKeyPath: String? { get }
     var cacheName: String? { get }
 
+    var managedObjectContext: NSManagedObjectContext? { get }
+    var fetchedResultsController: NSFetchedResultsController? { get set }
     var tableView: UITableView! { get }
 
-    var fetchedResultsController: NSFetchedResultsController? { get set }
-
     func configureCell(cell: Cell, forModel model: Model)
+    func reloadTableView()
 
 }
 
@@ -46,10 +47,6 @@ extension FetchableDataSource {
         return fetchedResultsController?.indexPathForObject(model)
     }
 
-}
-
-extension FetchableDataSource where Self: ManagingObjectContext {
-
     mutating func reloadData() {
         guard let managedObjectContext = managedObjectContext else { return }
         if fetchRequest.entity == nil {
@@ -60,11 +57,21 @@ extension FetchableDataSource where Self: ManagingObjectContext {
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: sectionNameKeyPath, cacheName: cacheName)
         do {
             try fetchedResultsController?.performFetch()
-            tableView.reloadData()
+            reloadTableView()
         } catch let error as NSError {
             NSLog("Could not perform fetch: %@", error)
             fetchedResultsController = nil
         }
     }
+
+    func reloadTableView() {
+        tableView.reloadData()
+    }
     
+}
+
+protocol OffsettableDataSource: UITableViewDataSource {
+
+    var sectionOffset: Int { get }
+
 }
