@@ -22,6 +22,10 @@ class Crew: NamedEntity {
     static let scientistTitle = "Scientist"
     static let pilotTitle = "Pilot"
 
+    var displayName: String {
+        return (name?.isEmpty == false ? name! : "Unnamed Crew") + starString
+    }
+
     var starString: String {
         return String(count: Int(starCount), repeatedValue: "⭐️")
     }
@@ -46,12 +50,4 @@ class Crew: NamedEntity {
 
 extension Crew: ModelNaming, SegueableType, Segueable {
     class var modelName: String { return "Crew" }
-}
-
-extension FetchableDataSource {
-
-    func configureCell(cell: Cell, forCrew crew: Crew) {
-        cell.textLabel?.text = (crew.name ?? "") + String(count: Int(crew.starCount), repeatedValue: "⭐️")
-    }
-
 }

@@ -35,13 +35,13 @@ class MasterTableViewController: UITableViewController {
 
         override func configureCell(cell: UITableViewCell, forModel model: Model) {
             if let kolony = model as? Kolony {
-                configureCell(cell, forNamedEntity: kolony)
+                cell.textLabel?.text = kolony.displayName
                 cell.detailTextLabel?.text = "\(kolony.crewCount) Crew"
-            } else if let vessel = model as? Vessel {
-                configureCell(cell, forNamedEntity: vessel)
+            } else if let vessel = model as? Station {
+                cell.textLabel?.text = vessel.displayName
                 cell.detailTextLabel?.text = "\(vessel.crewCount) Crew"
             } else if let crew = model as? Crew {
-                configureCell(cell, forCrew: crew)
+                cell.textLabel?.text = crew.displayName
                 cell.detailTextLabel?.text = crew.career
             }
             cell.accessoryType = splitAccessoryType
@@ -122,13 +122,6 @@ class MasterTableViewController: UITableViewController {
         performSegueWithIdentifier(displayedEntityName.showSegueIdentifier, sender: cell)
     }
 
-    private func prepareForShowSegueWithController<Controller: MutableModelControlling where Controller.Model: Model, Controller: UIViewController>(var controller: Controller, model: Controller.Model?) {
-        controller.navigationItem.leftBarButtonItem = nil
-        controller.navigationItem.rightBarButtonItem = nil
-        controller.model = model
-        selectedModel = model
-    }
-
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         guard let identifier = segue.identifier else { return }
         let destinationViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first
@@ -136,34 +129,42 @@ class MasterTableViewController: UITableViewController {
         switch identifier {
         case Crew.addSegueIdentifier:
             guard let scratchContext = ScratchContext(parentContext: dataSource).managedObjectContext else { return }
-            (destinationViewController as! CrewDetailTableViewController).model =
-                try? Crew(insertIntoManagedObjectContext: scratchContext).withCareer(Crew.engineerTitle)
+            let controller = destinationViewController as! CrewDetailTableViewController
+            controller.model = try? Crew(insertIntoManagedObjectContext: scratchContext).withCareer(Crew.engineerTitle)
+            controller.navigationItem.leftBarButtonItem = controller.cancelButtonItem
+            controller.navigationItem.rightBarButtonItem = controller.saveButtonItem
 
         case Crew.showSegueIdentifier:
             guard let indexPath = tableView.indexPathForSegueSender(sender) else { return }
-            prepareForShowSegueWithController(destinationViewController as! CrewDetailTableViewController,
-                model: dataSource.modelAtIndexPath(indexPath) as? Crew)
+            let controller = destinationViewController as! CrewDetailTableViewController
+            controller.model = dataSource.modelAtIndexPath(indexPath) as? Crew
+            selectedModel = controller.model
 
         case Kolony.addSegueIdentifier:
             guard let scratchContext = ScratchContext(parentContext: dataSource).managedObjectContext else { return }
-            (destinationViewController as! KolonyDetailTableViewController).model =
-                try? Kolony(insertIntoManagedObjectContext: scratchContext)
+            let controller = destinationViewController as! KolonyDetailTableViewController
+                controller.model = try? Kolony(insertIntoManagedObjectContext: scratchContext)
                     .withBases([Base(insertIntoManagedObjectContext: scratchContext).withDefaultParts()])
+            controller.navigationItem.leftBarButtonItem = controller.cancelButtonItem
+            controller.navigationItem.rightBarButtonItem = controller.saveButtonItem
 
         case Kolony.showSegueIdentifier:
             guard let indexPath = tableView.indexPathForSegueSender(sender) else { return }
-            prepareForShowSegueWithController(destinationViewController as! KolonyDetailTableViewController,
-                model: dataSource.modelAtIndexPath(indexPath) as? Kolony)
+            let controller = destinationViewController as! KolonyDetailTableViewController
+            controller.model = dataSource.modelAtIndexPath(indexPath) as? Kolony
+            selectedModel = controller.model
 
         case Station.addSegueIdentifier:
             guard let scratchContext = ScratchContext(parentContext: dataSource).managedObjectContext else { return }
-            (destinationViewController as! VesselDetailTableViewController).model =
-                try? Station(insertIntoManagedObjectContext: scratchContext).withDefaultParts()
+            let controller = destinationViewController as! VesselDetailTableViewController
+            controller.model = try? Station(insertIntoManagedObjectContext: scratchContext).withDefaultParts()
+            controller.navigationItem.leftBarButtonItem = controller.cancelButtonItem
+            controller.navigationItem.rightBarButtonItem = controller.saveButtonItem
 
         case Station.showSegueIdentifier:
             guard let indexPath = tableView.indexPathForSegueSender(sender) else { return }
-            prepareForShowSegueWithController(destinationViewController as! VesselDetailTableViewController,
-                model: dataSource.modelAtIndexPath(indexPath) as? Vessel)
+            let controller = destinationViewController as! VesselDetailTableViewController
+            controller.model = dataSource.modelAtIndexPath(indexPath) as? Vessel
 
         default:
             break

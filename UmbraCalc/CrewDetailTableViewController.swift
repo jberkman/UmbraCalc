@@ -25,6 +25,8 @@ class CrewDetailTableViewController: UITableViewController {
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var starCountLabel: UILabel!
     @IBOutlet weak var starCountStepper: UIStepper!
+    @IBOutlet weak var cancelButtonItem: UIBarButtonItem!
+    @IBOutlet weak var saveButtonItem: UIBarButtonItem!
 
     private var hasAppeared = false
 
@@ -58,9 +60,9 @@ class CrewDetailTableViewController: UITableViewController {
         updateStars()
         starCountStepper.value = Double(model?.starCount ?? 0)
 
-        careerCell.textLabel!.text = model?.career ?? "Unemployed"
+        careerCell.textLabel!.text = model?.career
 
-        if let partName = model?.part?.title, vesselName = model?.part?.vessel?.name {
+        if let partName = model?.part?.title, vesselName = model?.part?.vessel?.displayName {
             assignmentCell.accessoryType = .DetailDisclosureButton
             assignmentCell.selectionStyle = .Default
             assignmentCell.detailTextLabel!.text = "\(vesselName) - \(partName)"
@@ -108,14 +110,13 @@ class CrewDetailTableViewController: UITableViewController {
         case Model.saveSegueIdentifier:
             model?.name = nameTextField.text
 
-        case Vessel.selectSegueIdentifier:
-            guard let vesselList: VesselListTableViewController = segue.destinationViewControllerWithType() else { return }
+        case Vessel.showListSegueIdentifier:
+            let destinationNavigationController = segue.destinationViewController as! UINavigationController
+            let vesselList = destinationNavigationController.viewControllers.first as! VesselListTableViewController
             vesselList.managedObjectContext = managedObjectContext
 
         case Vessel.showSegueIdentifier:
-            guard let vesselDetail: VesselDetailTableViewController = segue.destinationViewControllerWithType() else { return }
-            vesselDetail.navigationItem.leftBarButtonItem = nil
-            vesselDetail.navigationItem.rightBarButtonItem = nil
+            let vesselDetail: VesselDetailTableViewController = segue.destinationViewController as! VesselDetailTableViewController
             vesselDetail.model = model?.part?.vessel
 
         default:
@@ -128,9 +129,12 @@ class CrewDetailTableViewController: UITableViewController {
         updateStars()
     }
 
-    @IBAction func selectPart(segue: UIStoryboardSegue) {
-        model?.part = (segue.sourceViewController as? PartDetailTableViewController)?.model
+    @IBAction func savePart(segue: UIStoryboardSegue) {
+        model?.part = (segue.sourceViewController as! PartSelectionTableViewController).selectedModel
+        updateView()
     }
+
+    @IBAction func cancelVessel(segue: UIStoryboardSegue) { }
 
     private func presentCareerSheet() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)

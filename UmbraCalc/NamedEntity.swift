@@ -22,13 +22,14 @@ class NamedEntity: NSManagedObject {
 
 }
 
+extension ModelNaming where Self: NamedEntity {
+
+    var displayName: String {
+        guard name?.isEmpty == false else { return "Unnamed \(modelName)" }
+        return name!
+    }
+
+}
+
 // http://www.openradar.me/radar?id=6421938515738624
 // extension NamedEntity: MutableNamedType { }
-
-extension FetchableDataSource {
-
-    func configureCell(cell: Cell, forNamedEntity namedEntity: NamedEntity) {
-        cell.textLabel!.text = namedEntity.name
-    }
-    
-}

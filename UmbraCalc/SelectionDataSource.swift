@@ -31,8 +31,7 @@ class SelectionDataSource<Model: NSManagedObject, Cell: UITableViewCell>: Fetche
     }
 
     override func configureCell(cell: Cell, forModel model: Model) {
-        cell.editingAccessoryType = selectedModels.contains(model) ? UITableViewCellAccessoryType.Checkmark : .None
-        super.configureCell(cell, forModel: model)
+        cell.editingAccessoryType = selectedModels.contains(model) ? .Checkmark : .None
     }
 
     override func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
@@ -42,10 +41,8 @@ class SelectionDataSource<Model: NSManagedObject, Cell: UITableViewCell>: Fetche
     }
 
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        guard tableView.editing else {
-            return tableViewDelegate?.tableView?(tableView, shouldHighlightRowAtIndexPath: indexPath) != false
-        }
-        return selectedModels.contains(modelAtIndexPath(indexPath)) == true || selectedModels.count < maximumSelectionCount - 1
+        guard tableView.editing else { return false }
+        return selectedModels.contains(modelAtIndexPath(indexPath)) == true || selectedModels.count < maximumSelectionCount
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -62,6 +59,14 @@ class SelectionDataSource<Model: NSManagedObject, Cell: UITableViewCell>: Fetche
         }
         guard let cell = tableView.cellForRowAtIndexPath(indexPath) as? Cell else { return }
         configureCell(cell, forModel: model)
+    }
+
+    func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
+        return .None
+    }
+
+    func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return false
     }
 
 }

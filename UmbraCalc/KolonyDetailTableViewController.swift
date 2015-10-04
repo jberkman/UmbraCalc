@@ -22,10 +22,11 @@ class KolonyDetailTableViewController: UITableViewController {
 
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var baseCountLabel: UILabel!
-    @IBOutlet weak var crewCountLabel: UILabel!
-    @IBOutlet weak var crewCapacityLabel: UILabel!
+    @IBOutlet weak var crewCell: UITableViewCell!
     @IBOutlet weak var livingSpacesLabel: UILabel!
     @IBOutlet weak var workspacesLabel: UILabel!
+    @IBOutlet weak var cancelButtonItem: UIBarButtonItem!
+    @IBOutlet weak var saveButtonItem: UIBarButtonItem!
 
     private var hasAppeared = false
 
@@ -52,11 +53,33 @@ class KolonyDetailTableViewController: UITableViewController {
         nameTextField.becomeFirstResponder()
     }
 
+    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+        switch identifier {
+        case Crew.showListSegueIdentifier:
+            return model?.crewCount > 0
+
+        default:
+            return true
+        }
+    }
+
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         guard let identifier = segue.identifier else { return }
         switch identifier {
+        case Crew.showListSegueIdentifier:
+            let crewSelection = segue.destinationViewController as! CrewSelectionTableViewController
+            crewSelection.setManagingObjectContext(self)
+
+            guard let kolony = model else { return }
+            crewSelection.predicate = NSPredicate(format: "part.vessel.kolony = %@", kolony)
+            crewSelection.navigationItem.title = "\(kolony.displayName) Crew"
+
         case Model.saveSegueIdentifier:
             model?.name = nameTextField.text
+
+        case Vessel.showListSegueIdentifier:
+            let vesselList = segue.destinationViewController as! VesselListTableViewController
+            vesselList.kolony = model
 
         default:
             break
@@ -69,9 +92,12 @@ class KolonyDetailTableViewController: UITableViewController {
         nameTextField.text = model?.name
 
         baseCountLabel.text = String(model?.bases?.count ?? 0)
-        crewCountLabel.text = String(model?.crewCount ?? 0)
 
-        crewCapacityLabel.text = String(model?.crewCapacity ?? 0)
+        let crewCount = model?.crewCount ?? 0
+        crewCell.detailTextLabel?.text = "\(crewCount) of \(model?.crewCapacity ?? 0)"
+        crewCell.accessoryType = crewCount > 0 ? .DisclosureIndicator : .None
+        crewCell.selectionStyle = crewCount > 0 ? .Default : .None
+
         livingSpacesLabel.text = String(model?.livingSpaceCount ?? 0)
         workspacesLabel.text = String(model?.workspaceCount ?? 0)
     }

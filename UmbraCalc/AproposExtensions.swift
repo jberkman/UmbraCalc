@@ -28,7 +28,6 @@ extension SegueableType {
     static var addSegueIdentifier: String { return addVerb + segueTypeNoun }
     static var cancelSegueIdentifier: String { return cancelVerb + segueTypeNoun }
     static var saveSegueIdentifier: String { return saveVerb + segueTypeNoun }
-    static var selectSegueIdentifier: String { return selectVerb + segueTypeNoun }
     static var showSegueIdentifier: String { return showVerb + segueTypeNoun }
     static var showListSegueIdentifier: String { return showSegueIdentifier + listSuffix }
 
@@ -39,7 +38,6 @@ extension Segueable {
     var addSegueIdentifier: String { return addVerb + segueNoun }
     var cancelSegueIdentifier: String { return cancelVerb + segueNoun }
     var saveSegueIdentifier: String { return saveVerb + segueNoun }
-    var selectSegueIdentifier: String { return selectVerb + segueNoun }
     var showSegueIdentifier: String { return showVerb + segueNoun }
     var showListSegueIdentifier: String { return showSegueIdentifier + listSuffix }
 

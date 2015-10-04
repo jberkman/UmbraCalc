@@ -53,6 +53,10 @@ class Vessel: NamedEntity {
         return partSum { $0.livingSpaceCount }
     }
 
+    var crew: Set<Crew> {
+        return (parts as? Set<Part>)?.flatMap { $0.crew as? Set<Crew> }.reduce(Set()) { $0.union($1) } ?? Set()
+    }
+
     var crewCount: Int {
         return partSum { $0.crew?.count ?? 0 }
     }

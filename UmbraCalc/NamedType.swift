@@ -34,11 +34,3 @@ protocol MutableNamedType: NamedType {
     var name: String? { get set }
 
 }
-
-extension FetchableDataSource {
-
-    func configureCell(cell: Cell, forNamedType namedType: NamedType) {
-        cell.textLabel!.text = namedType.name
-    }
-    
-}

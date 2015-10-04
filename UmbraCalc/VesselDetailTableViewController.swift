@@ -20,13 +20,14 @@ class VesselDetailTableViewController: UITableViewController {
 
     typealias Model = Vessel
 
+    @IBOutlet weak var cancelButtonItem: UIBarButtonItem!
+    @IBOutlet weak var crewCell: UITableViewCell!
+    @IBOutlet weak var livingSpacesLabel: UILabel!
+    @IBOutlet weak var happinessLabel: UILabel!
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var partCountLabel: UILabel!
-    @IBOutlet weak var crewCountLabel: UILabel!
-    @IBOutlet weak var crewCapacityLabel: UILabel!
-    @IBOutlet weak var livingSpacesLabel: UILabel!
+    @IBOutlet weak var saveButtonItem: UIBarButtonItem!
     @IBOutlet weak var workspacesLabel: UILabel!
-    @IBOutlet weak var happinessLabel: UILabel!
 
     private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
 
@@ -38,6 +39,7 @@ class VesselDetailTableViewController: UITableViewController {
         didSet {
             // Prevent vessel from being faulted
             managedObjectContext = model?.managedObjectContext
+            navigationItem.title = "\(model?.dynamicType.modelName ?? Vessel.modelName) Details"
             updateView()
         }
     }
@@ -55,9 +57,31 @@ class VesselDetailTableViewController: UITableViewController {
         nameTextField.becomeFirstResponder()
     }
 
+    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+        switch identifier {
+        case Crew.showListSegueIdentifier:
+            return model?.crewCount > 0
+
+        default:
+            return true
+        }
+    }
+
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         guard let identifier = segue.identifier else { return }
         switch identifier {
+        case Crew.showListSegueIdentifier:
+            let crewSelection = segue.destinationViewController as! CrewSelectionTableViewController
+            crewSelection.setManagingObjectContext(self)
+
+            guard let vessel = model else { return }
+            crewSelection.predicate = NSPredicate(format: "part.vessel = %@", vessel)
+            crewSelection.navigationItem.title = "\(vessel.displayName) Crew"
+
+        case Part.showListSegueIdentifier:
+            let partList = segue.destinationViewController as! PartListTableViewController
+            partList.vessel = model
+
         case Vessel.saveSegueIdentifier, Model.saveSegueIdentifier:
             model?.name = nameTextField.text
 
@@ -72,9 +96,11 @@ class VesselDetailTableViewController: UITableViewController {
         nameTextField.text = model?.name
 
         partCountLabel.text = String(model?.partCount ?? 0)
-        crewCountLabel.text = String(model?.crewCount ?? 0)
+        let crewCount = model?.crewCount ?? 0
+        crewCell.detailTextLabel?.text = "\(crewCount) of \(model?.crewCapacity ?? 0)"
+        crewCell.accessoryType = crewCount > 0 ? .DisclosureIndicator : .None
+        crewCell.selectionStyle = crewCount > 0 ? .Default : .None
 
-        crewCapacityLabel.text = String(model?.crewCapacity ?? 0)
         livingSpacesLabel.text = String(model?.livingSpaceCount ?? 0)
         workspacesLabel.text = String(model?.workspaceCount ?? 0)
         happinessLabel.text = percentFormatter.stringFromNumber(model?.crewHappiness ?? 0)

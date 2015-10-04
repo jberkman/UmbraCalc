@@ -59,6 +59,7 @@
 		16FE810C1BBEDB7C00F1A56C /* KolonyDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FE810B1BBEDB7C00F1A56C /* KolonyDetailTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		16FE810E1BBEDEAF00F1A56C /* VesselListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FE810D1BBEDEAF00F1A56C /* VesselListTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		16FE813D1BBF691800F1A56C /* Balsa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FE813C1BBF691800F1A56C /* Balsa.swift */; settings = {ASSET_TAGS = (); }; };
+		16FE813F1BC0EAF500F1A56C /* PartSelectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FE813E1BC0EAF500F1A56C /* PartSelectionTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -137,6 +138,7 @@
 		16FE810B1BBEDB7C00F1A56C /* KolonyDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KolonyDetailTableViewController.swift; sourceTree = "<group>"; };
 		16FE810D1BBEDEAF00F1A56C /* VesselListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VesselListTableViewController.swift; sourceTree = "<group>"; };
 		16FE813C1BBF691800F1A56C /* Balsa.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Balsa.swift; sourceTree = "<group>"; };
+		16FE813E1BC0EAF500F1A56C /* PartSelectionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartSelectionTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -207,9 +209,10 @@
 				1699E9881BB8871F00EDBCF7 /* MasterTableViewController.swift */,
 				162EA5F41BB91A62001AFBBC /* PartDetailTableViewController.swift */,
 				1699E9991BB8FE3800EDBCF7 /* PartListTableViewController.swift */,
-				16FE810D1BBEDEAF00F1A56C /* VesselListTableViewController.swift */,
 				1699E99B1BB9030600EDBCF7 /* PartNodeListTableViewController.swift */,
+				16FE813E1BC0EAF500F1A56C /* PartSelectionTableViewController.swift */,
 				1699E98A1BB8A20300EDBCF7 /* VesselDetailTableViewController.swift */,
+				16FE810D1BBEDEAF00F1A56C /* VesselListTableViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -514,6 +517,7 @@
 				1699E9631BB7021C00EDBCF7 /* Station.swift in Sources */,
 				16B7AD031BB3AC51006DFA4E /* Crew.swift in Sources */,
 				1633604D1BBCF652003A6B5D /* Apropos.swift in Sources */,
+				16FE813F1BC0EAF500F1A56C /* PartSelectionTableViewController.swift in Sources */,
 				16B7AD071BB3BE57006DFA4E /* CoreDataStack.swift in Sources */,
 				1654A2321BBE71FE00623F50 /* VesselDetailTableViewController.swift in Sources */,
 				1654A2291BBE69FE00623F50 /* CrewDetailTableViewController.swift in Sources */,

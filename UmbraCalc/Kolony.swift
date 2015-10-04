@@ -46,8 +46,12 @@ class Kolony: NamedEntity {
         return baseSum { $0.workspaceCount }
     }
 
+    var crew: Set<Crew> {
+        return (bases as? Set<Base>)?.flatMap { $0.crew }.reduce(Set()) { $0.union($1) } ?? Set()
+    }
+
     var parts: Set<Part> {
-        return (bases as? Set<Base>)?.map { $0.parts as? Set<Part> ?? Set() }.reduce(Set()) { $0.union($1) } ?? Set()
+        return (bases as? Set<Base>)?.flatMap { $0.parts as? Set<Part> }.reduce(Set()) { $0.union($1) } ?? Set()
     }
 
 }

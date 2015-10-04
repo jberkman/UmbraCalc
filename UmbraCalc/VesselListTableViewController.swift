@@ -23,8 +23,8 @@ class VesselListTableViewController: UITableViewController {
         private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
 
         override func configureCell(cell: UITableViewCell, forModel vessel: Vessel) {
-            cell.textLabel?.text = vessel.name
-//            cell.detailTextLabel?.text = "Installed: \(vessel.count) Crew: \(vessel.crew?.count ?? 0) Efficiency: \(percentFormatter.stringFromNumber(vessel.efficiency)!)"
+            cell.textLabel?.text = vessel.displayName
+            cell.detailTextLabel?.text = "Crew: \(vessel.crewCount) of \(vessel.crewCapacity) Happiness: \(percentFormatter.stringFromNumber(vessel.crewHappiness)!) Parts: \(vessel.partCount)"
         }
 
     }
@@ -35,6 +35,7 @@ class VesselListTableViewController: UITableViewController {
         didSet {
             managedObjectContext = kolony?.managedObjectContext
             predicate = kolony == nil ? nil : NSPredicate(format: "kolony = %@", kolony!)
+            navigationItem.title = kolony?.displayName
             guard isViewLoaded() else { return }
             dataSource.reloadData()
         }
@@ -50,6 +51,26 @@ class VesselListTableViewController: UITableViewController {
         super.viewWillAppear(animated)
         guard dataSource.fetchedResultsController == nil else { return }
         dataSource.reloadData()
+    }
+
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        guard let identifier = segue.identifier else { return }
+        switch identifier {
+        case Part.showListSegueIdentifier:
+            let cell = sender as! UITableViewCell
+            let indexPath = tableView.indexPathForCell(cell)!
+            let partList = segue.destinationViewController as! PartSelectionTableViewController
+            partList.vessel = dataSource.modelAtIndexPath(indexPath)
+
+        case Vessel.showSegueIdentifier:
+            let cell = sender as! UITableViewCell
+            let indexPath = tableView.indexPathForCell(cell)!
+            let vesselDetail = segue.destinationViewController as! VesselDetailTableViewController
+            vesselDetail.model = dataSource.modelAtIndexPath(indexPath)
+
+        default:
+            break
+        }
     }
 
 }

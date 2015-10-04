@@ -23,12 +23,16 @@ class CrewSelectionTableViewController: UITableViewController {
     private class DataSource: SelectionDataSource<Crew, UITableViewCell> {
 
         override func configureCell(cell: UITableViewCell, forModel crew: Crew) {
-            configureCell(cell, forNamedEntity: crew)
-            configureCell(cell, forCrew: crew)
+            super.configureCell(cell, forModel: crew)
+            cell.textLabel?.text = crew.displayName
+            cell.detailTextLabel?.text = crew.career
         }
 
     }
 
+    @IBOutlet weak var addButtonItem: UIBarButtonItem!
+    @IBOutlet weak var doneButtonItem: UIBarButtonItem!
+    
     private(set) lazy var dataSource: SelectionDataSource<Crew, UITableViewCell> = DataSource()
 
     override func viewDidLoad() {
@@ -40,8 +44,42 @@ class CrewSelectionTableViewController: UITableViewController {
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        guard dataSource.fetchedResultsController != nil else { return }
+        guard dataSource.fetchedResultsController == nil else { return }
         dataSource.reloadData()
+    }
+
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        guard let identifier = segue.identifier else { return }
+        switch identifier {
+        case Crew.addSegueIdentifier:
+            guard let scratchContext = ScratchContext(parentContext: dataSource).managedObjectContext else { return }
+            let navigationController = segue.destinationViewController as! UINavigationController
+            let crewDetail = navigationController.viewControllers.first as! CrewDetailTableViewController
+            crewDetail.model = try? Crew(insertIntoManagedObjectContext: scratchContext).withCareer(Crew.pilotTitle)
+            crewDetail.navigationItem.leftBarButtonItem = crewDetail.cancelButtonItem
+            crewDetail.navigationItem.rightBarButtonItem = crewDetail.saveButtonItem
+
+        default:
+            break
+        }
+    }
+
+    override func setEditing(editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        navigationItem.setRightBarButtonItem(editing ? addButtonItem : nil, animated: animated)
+    }
+
+    @IBAction func cancelCrew(segue: UIStoryboardSegue) { }
+
+    @IBAction func saveCrew(segue: UIStoryboardSegue) {
+        let crewDetail = segue.sourceViewController as! CrewDetailTableViewController
+        _ = try? crewDetail.model?.saveToParentContext {
+            guard let crew = $0 as? Crew where self.selectedModels.count < self.maximumSelectionCount else { return }
+            self.selectedModels.insert(crew)
+
+            guard let indexPath = self.dataSource.indexPathForModel(crew) else { return }
+            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+        }
     }
 
 }
@@ -56,6 +94,15 @@ extension CrewSelectionTableViewController: MutableModelMultipleSelecting {
     var maximumSelectionCount: Int {
         get { return dataSource.maximumSelectionCount }
         set { dataSource.maximumSelectionCount = newValue }
+    }
+
+}
+
+extension CrewSelectionTableViewController: MutablePredicating {
+
+    var predicate: NSPredicate? {
+        get { return dataSource.fetchRequest.predicate }
+        set { dataSource.fetchRequest.predicate = newValue }
     }
 
 }
