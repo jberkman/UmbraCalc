@@ -49,9 +49,11 @@ class FetchedDataSource<Model: NSManagedObject, Cell: UITableViewCell>: NSObject
         return fetchedResultsController?.indexPathForObject(model)?.offsetSectionBy(sectionOffset)
     }
 
-    func reloadTableView() {
-        // tableView.reloadSections(NSIndexSet(index: sectionOffset), withRowAnimation: .Fade)
-        tableView.reloadData()
+    func reconfigureCells() {
+        tableView.indexPathsForVisibleRows?.filter { $0.section == sectionOffset }.forEach {
+            guard let cell = tableView.cellForRowAtIndexPath($0) as? Cell else { return }
+            configureCell(cell, forModel: modelAtIndexPath($0))
+        }
     }
 
     func configureCell(cell: Cell, forModel model: Model) { }

@@ -37,7 +37,7 @@ class KolonyDetailTableViewController: UITableViewController {
 
         private override func configureCell(cell: BaseDataSource.Cell, forModel model: BaseDataSource.Model) {
             cell.textLabel?.text = model.displayName
-            cell.detailTextLabel?.text = "Crew: \(model.crewCount) of \(model.crewCapacity) Happiness: \(percentFormatter.stringFromNumber(model.crewHappiness)!) Parts: \(model.partCount)"
+            cell.detailTextLabel?.text = "\(model.crewCount) of \(model.crewCapacity) Crew, \(percentFormatter.stringFromNumber(model.crewHappiness)!) Happiness"
             cell.accessoryType = .DisclosureIndicator
         }
     }
@@ -60,6 +60,7 @@ class KolonyDetailTableViewController: UITableViewController {
         override func configureCell(cell: UITableViewCell, forModel crew: Crew) {
             cell.textLabel?.text = crew.displayName
             cell.detailTextLabel?.text = crew.part?.vessel?.displayName
+            cell.selectionStyle = .None
         }
         
     }
@@ -170,6 +171,10 @@ extension KolonyDetailTableViewController {
 
     override func tableView(tableView: UITableView, indentationLevelForRowAtIndexPath indexPath: NSIndexPath) -> Int {
         return 0 // super.tableView(tableView, indentationLevelForRowAtIndexPath: storyboardIndexPath(indexPath))
+    }
+
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return indexPath.section == baseDataSource.sectionOffset
     }
 
 }

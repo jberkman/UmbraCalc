@@ -36,8 +36,8 @@
         <element name="Kolony" positionX="-27" positionY="72" width="128" height="60"/>
         <element name="NamedEntity" positionX="-36" positionY="54" width="128" height="60"/>
         <element name="Part" positionX="-54" positionY="-9" width="128" height="120"/>
+        <element name="ResourceConverter" positionX="-36" positionY="54" width="128" height="90"/>
         <element name="Station" positionX="-18" positionY="81" width="128" height="45"/>
         <element name="Vessel" positionX="-63" positionY="-18" width="128" height="60"/>
-        <element name="ResourceConverter" positionX="-36" positionY="54" width="128" height="90"/>
     </elements>
 </model>

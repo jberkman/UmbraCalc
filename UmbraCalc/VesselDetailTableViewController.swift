@@ -37,13 +37,11 @@ class VesselDetailTableViewController: UITableViewController {
         }
 
         override func configureCell(cell: PartDataSource.Cell, forModel part: Model) {
-            cell.textLabel?.text = part.title
-            let efficiency = "Efficiency: \(percentFormatter.stringFromNumber(part.efficiency)!)"
-            if part.partNode?.crewCapacity > 0 {
-                cell.detailTextLabel?.text = "Crew: \(part.crew?.count ?? 0) of \(part.crewCapacity) \(efficiency)"
+            cell.textLabel?.text = part.displayName
+            cell.detailTextLabel?.text = part.displaySummary
+            if part.crewed {
                 cell.stepper.hidden = true
             } else {
-                cell.detailTextLabel?.text = "Count: \(part.count) \(efficiency)"
                 cell.stepper.value = Double(part.count)
                 cell.stepper.addTarget(self, action: "countStepperValueDidChange:", forControlEvents: .ValueChanged)
             }
@@ -51,8 +49,9 @@ class VesselDetailTableViewController: UITableViewController {
 
         @objc private func countStepperValueDidChange(sender: UIStepper) {
             guard let indexPath = tableView.indexPathForCellSubview(sender) else { return }
-            modelAtIndexPath(indexPath).count = Int16(sender.value)
-            reloadTableView()
+            let part = modelAtIndexPath(indexPath)
+            part.count = Int16(sender.value)
+            (part.resourceConverters as? Set<ResourceConverter>)?.forEach { $0.activeCount = min($0.activeCount, part.count) }
         }
 
     }
@@ -75,6 +74,7 @@ class VesselDetailTableViewController: UITableViewController {
         override func configureCell(cell: UITableViewCell, forModel crew: Crew) {
             cell.textLabel?.text = crew.displayName
             cell.detailTextLabel?.text = crew.part?.displayName
+            cell.selectionStyle = .None
         }
         
     }
@@ -90,24 +90,32 @@ class VesselDetailTableViewController: UITableViewController {
     private var hasAppeared = false
 
     private lazy var dataSource: StoryboardDelegatedDataSource = StoryboardDelegatedDataSource(dataSource: self)
-    private lazy var partsDataSource = PartDataSource(sectionOffset: 1)
+    private lazy var partDataSource = PartDataSource(sectionOffset: 1)
     private lazy var crewDataSource = CrewDataSource(sectionOffset: 2)
+
+    private let partsObserver = ObserverContext(keyPath: "parts")
 
     var vessel: Vessel? {
         didSet {
-            partsDataSource.vessel = vessel
+            oldValue?.removeObserver(self, context: partsObserver)
+            vessel?.addObserver(self, context: partsObserver)
+            partDataSource.vessel = vessel
             crewDataSource.vessel = vessel
             navigationItem.title = "\(vessel?.dynamicType.modelName ?? Vessel.modelName) Details"
             updateView()
         }
     }
 
+    deinit {
+        vessel?.removeObserver(self, context: partsObserver)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.registerNib(UINib(nibName: "StepperTableViewCell", bundle: nil), forCellReuseIdentifier: partsDataSource.reuseIdentifier)
-        dataSource.registerDataSource(partsDataSource)
-        partsDataSource.tableView = tableView
+        tableView.registerNib(UINib(nibName: "StepperTableViewCell", bundle: nil), forCellReuseIdentifier: partDataSource.reuseIdentifier)
+        dataSource.registerDataSource(partDataSource)
+        partDataSource.tableView = tableView
 
         tableView.registerClass(Value1TableViewCell.self, forCellReuseIdentifier: crewDataSource.reuseIdentifier)
         dataSource.registerDataSource(crewDataSource)
@@ -118,12 +126,19 @@ class VesselDetailTableViewController: UITableViewController {
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+
         updateView()
-        if partsDataSource.fetchedResultsController == nil {
-            partsDataSource.reloadData()
+
+        if partDataSource.fetchedResultsController == nil {
+            partDataSource.reloadData()
+        } else {
+            partDataSource.reconfigureCells()
         }
+
         if crewDataSource.fetchedResultsController == nil {
             crewDataSource.reloadData()
+        } else {
+            crewDataSource.reconfigureCells()
         }
     }
 
@@ -144,10 +159,21 @@ class VesselDetailTableViewController: UITableViewController {
         case Part.showSegueIdentifier:
             let indexPath = sender as? NSIndexPath ?? tableView.indexPathForCell(sender as! UITableViewCell)!
             let partDetail = segue.destinationViewController as! PartDetailTableViewController
-            partDetail.part = partsDataSource.modelAtIndexPath(indexPath)
+            partDetail.part = partDataSource.modelAtIndexPath(indexPath)
 
         default:
             break
+        }
+    }
+
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        switch context {
+        case &partsObserver.context:
+            updateView()
+            partDataSource.reconfigureCells()
+
+        default:
+            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
         }
     }
 
@@ -155,7 +181,7 @@ class VesselDetailTableViewController: UITableViewController {
 
     @IBAction func savePart(segue: UIStoryboardSegue) {
         func showDetailForPart(part: Part) {
-            guard let indexPath = partsDataSource.indexPathForModel(part) else { return }
+            guard let indexPath = partDataSource.indexPathForModel(part) else { return }
             performSegueWithIdentifier(Part.showSegueIdentifier, sender: indexPath)
         }
 
@@ -192,7 +218,7 @@ extension VesselDetailTableViewController {
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         switch indexPath.section {
-        case partsDataSource.sectionOffset:
+        case partDataSource.sectionOffset:
             performSegueWithIdentifier(Part.showSegueIdentifier, sender: tableView.cellForRowAtIndexPath(indexPath))
 
         default:
@@ -202,7 +228,7 @@ extension VesselDetailTableViewController {
 
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         switch indexPath.section {
-        case partsDataSource.sectionOffset, crewDataSource.sectionOffset:
+        case partDataSource.sectionOffset, crewDataSource.sectionOffset:
             return 44
 
         default:
@@ -211,7 +237,11 @@ extension VesselDetailTableViewController {
     }
 
     override func tableView(tableView: UITableView, indentationLevelForRowAtIndexPath indexPath: NSIndexPath) -> Int {
-        return 0 // super.tableView(tableView, indentationLevelForRowAtIndexPath: storyboardIndexPath(indexPath))
+        return 0
+    }
+
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return indexPath.section == partDataSource.sectionOffset
     }
 
 }

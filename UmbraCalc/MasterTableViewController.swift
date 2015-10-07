@@ -34,7 +34,8 @@ class MasterTableViewController: UITableViewController {
         override func configureCell(cell: UITableViewCell, forModel model: DataSource.Model) {
             if let kolony = model as? Kolony {
                 cell.textLabel?.text = kolony.displayName
-                cell.detailTextLabel?.text = "\(kolony.crewCount) Crew"
+                let baseCount = kolony.bases?.count ?? 0
+                cell.detailTextLabel?.text = baseCount == 1 ? "\(baseCount) Base" : "\(baseCount) Bases"
             } else if let vessel = model as? Station {
                 cell.textLabel?.text = vessel.displayName
                 cell.detailTextLabel?.text = "\(vessel.crewCount) Crew"

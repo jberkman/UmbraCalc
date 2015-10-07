@@ -2,7 +2,7 @@
 //  Part+CoreDataProperties.swift
 //  UmbraCalc
 //
-//  Created by jacob berkman on 2015-10-05.
+//  Created by jacob berkman on 2015-10-07.
 //  Copyright © 2015 jacob berkman.
 //
 //  Based on and includes portions of Moduler Kolonization System by RoverDude
@@ -24,7 +24,7 @@ extension Part {
     @NSManaged var count: Int16
     @NSManaged var partName: String?
     @NSManaged var crew: NSSet?
-    @NSManaged var vessel: Vessel?
     @NSManaged var resourceConverters: NSSet?
+    @NSManaged var vessel: Vessel?
 
 }

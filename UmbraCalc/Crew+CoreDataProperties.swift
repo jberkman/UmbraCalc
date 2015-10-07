@@ -2,7 +2,7 @@
 //  Crew+CoreDataProperties.swift
 //  UmbraCalc
 //
-//  Created by jacob berkman on 2015-09-27.
+//  Created by jacob berkman on 2015-10-07.
 //  Copyright © 2015 jacob berkman.
 //
 //  Based on and includes portions of Moduler Kolonization System by RoverDude

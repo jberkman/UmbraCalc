@@ -18,6 +18,8 @@ import CoreData
 
 private let minEfficiency = 0.25
 
+private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
+
 class Part: NSManagedObject {
 
     private dynamic var cachedPartNode: PartNode? {
@@ -65,13 +67,17 @@ class Part: NSManagedObject {
 
     @warn_unused_result
     func withPartName(partName: String?) -> Self {
-        return withValue(partName, forKey: "partName")
+        let ret = withValue(partName, forKey: "partName")
+        // FIXME: how to override setting in swift?
+        _ = partNode
+        return ret
     }
 
     var name: String? { return partNode?.name }
     var title: String? { return partNode?.title }
     var crewCapacity: Int { return Int(count) * (partNode?.crewCapacity ?? 0) }
     var crewBonus: Double { return partNode?.crewBonus ?? 0 }
+    var hasGenerators: Bool { return partNode?.hasGenerators == true }
     var maxEfficiency: Double { return partNode?.maxEfficiency ?? 0 }
     var workspaceCount: Int { return Int(count) * (partNode?.workspaceCount ?? 0) }
     var livingSpaceCount: Int { return Int(count) * (partNode?.livingSpaceCount ?? 0) }
@@ -79,7 +85,21 @@ class Part: NSManagedObject {
     var secondarySkill: String? { return partNode?.secondarySkill }
     var efficiencyParts: [String: Int] { return partNode?.efficiencyParts ?? [:] }
 
-    var displayName: String { return partNode?.title ?? "Untitle Part" }
+    var crewed: Bool { return partNode?.crewed == true }
+
+    var displayName: String { return partNode?.title ?? "Untitled Part" }
+    var displaySummary: String {
+        var labels = [String]()
+        if crewed {
+            labels.append("\(crew?.count ?? 0) of \(crewCapacity) Crew")
+        } else {
+            labels.append("\(count) Installed")
+        }
+        if hasGenerators {
+            labels.append("\(percentFormatter.stringFromNumber(efficiency)!) Efficiency")
+        }
+        return labels.joinWithSeparator(", ")
+    }
 
     private func crewSum(transform: (Crew) -> Int) -> Int {
         return (crew as? Set<Crew>)?.map(transform).reduce(0, combine: +) ?? 0

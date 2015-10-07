@@ -24,6 +24,7 @@ private let crewBonusKey = "CrewBonus"
 private let crewCapacityKey = "CrewCapacity"
 private let descriptionKey = "description"
 private let efficiencyPartListKey = "efficiencyPart"
+private let hasGeneratorsKey = "hasGenerators"
 private let livingSpaceKey = "livingSpace"
 private let maxEfficencyKey = "MaxEfficiency"
 private let moduleKey = "MODULE"
@@ -40,6 +41,7 @@ private let MKSModuleValue = "MKSModule"
 private let efficiencyPartDelimiter = ","
 
 private let defaultCrewBonus = 0.1
+private let defaultHasGenerators = true
 private let defaultMaxEfficiency = 2.5
 private let defaultPrimarySkill = Crew.engineerTitle
 private let defaultSecondarySkill = Crew.scientistTitle
@@ -65,6 +67,7 @@ class PartNode: NSObject {
     let descriptionText: String
     let crewCapacity: Int
     let crewBonus: Double
+    let hasGenerators: Bool
     let maxEfficiency: Double
     let workspaceCount: Int
     let livingSpaceCount: Int
@@ -73,6 +76,8 @@ class PartNode: NSObject {
     let resourceConverters: [String: ResourceConverterNode]
     let efficiencyParts: [String: Int]
 
+    var crewed: Bool { return crewCapacity > 0 }
+
     init?(configNode: [NSObject: AnyObject]) {
         guard let part = configNode[partKey] as? [NSObject: AnyObject] else {
             name = ""
@@ -80,6 +85,7 @@ class PartNode: NSObject {
             descriptionText = ""
             crewCapacity = 0
             self.crewBonus = 0
+            self.hasGenerators = false
             self.maxEfficiency = 0
             self.workspaceCount = 0
             self.livingSpaceCount = 0
@@ -89,6 +95,10 @@ class PartNode: NSObject {
             self.efficiencyParts = [:]
             super.init()
             return nil
+        }
+
+        func boolWithValue(value: AnyObject?, defaultValue: Bool = false) -> Bool {
+            return (value as? String)?.lowercaseString.hasPrefix("t") ?? defaultValue
         }
 
         func intWithValue(value: AnyObject?, defaultValue: Int = 0) -> Int {
@@ -118,6 +128,7 @@ class PartNode: NSObject {
         var workspaceCount = 0
         var livingSpaceCount = 0
         var crewBonus = defaultCrewBonus
+        var hasGenerators = defaultHasGenerators
         var maxEfficiency = defaultMaxEfficiency
         var primarySkill = defaultPrimarySkill
         var secondarySkill = defaultSecondarySkill
@@ -134,6 +145,7 @@ class PartNode: NSObject {
             workspaceCount = intWithValue(module[workSpaceKey])
             livingSpaceCount = intWithValue(module[livingSpaceKey])
             crewBonus = doubleWithValue(module[crewBonusKey], defaultValue: defaultCrewBonus)
+            hasGenerators = boolWithValue(module[hasGeneratorsKey], defaultValue: defaultHasGenerators)
             maxEfficiency = doubleWithValue(module[maxEfficencyKey], defaultValue: defaultMaxEfficiency)
             primarySkill = module[primarySkillKey] as? String ?? defaultPrimarySkill
             secondarySkill = module[secondarySkillKey] as? String ?? defaultSecondarySkill
@@ -143,12 +155,11 @@ class PartNode: NSObject {
         self.workspaceCount = workspaceCount
         self.livingSpaceCount = livingSpaceCount
         self.crewBonus = crewBonus
+        self.hasGenerators = hasGenerators
         self.maxEfficiency = maxEfficiency
         self.primarySkill = primarySkill
         self.secondarySkill = secondarySkill
         self.resourceConverters = resourceConverters
-
-        print(name, resourceConverters)
 
         if let partList = efficiencyPartList {
             let elements = partList.characters.split { String($0) == efficiencyPartDelimiter }.map { String($0) }

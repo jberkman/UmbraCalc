@@ -48,7 +48,7 @@ class PartDetailTableViewController: UITableViewController {
             let outputs = resourceConverter.outputResources.keys.sort().joinWithSeparator(" + ")
             cell.detailTextLabel?.text = "\(inputs) -> \(outputs)"
 
-            if resourceConverter.part?.crewCapacity > 0 {
+            if resourceConverter.part?.crewed == true {
                 if !(cell.accessoryView is UISwitch) {
                     let toggle = UISwitch()
                     toggle.addTarget(self, action: "toggleDidChangeValue:", forControlEvents: .ValueChanged)
@@ -197,7 +197,7 @@ class PartDetailTableViewController: UITableViewController {
     override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
         switch identifier {
         case Crew.showListSegueIdentifier:
-            return part?.crewCapacity > 0
+            return part?.crewed == true
 
         default:
             return true
@@ -208,11 +208,10 @@ class PartDetailTableViewController: UITableViewController {
         guard isViewLoaded() else { return }
         navigationItem.title = part?.title
 
-        let crewCount = part?.crew?.count ?? 0
-        let crewCapacity = part?.crewCapacity ?? 0
-        crewCell.detailTextLabel?.text = crewCapacity > 0 ? "\(crewCount) of \(crewCapacity)" : "Uncrewed"
-        crewCell.accessoryType = crewCapacity > 0 ? .DisclosureIndicator : .None
-        crewCell.selectionStyle = crewCapacity > 0 ? .Default : .None
+        let crewed = part?.crewed == true
+        crewCell.detailTextLabel?.text = crewed ? "\(part?.crew?.count ?? 0) of \(part?.crewCapacity ?? 0)" : "Uncrewed"
+        crewCell.accessoryType = crewed ? .DisclosureIndicator : .None
+        crewCell.selectionStyle = crewed ? .Default : .None
 
         livingSpaceCountLabel.text = String(part?.livingSpaceCount ?? 0)
         workspaceCountLabel.text = String(part?.workspaceCount ?? 0)
@@ -248,6 +247,10 @@ extension PartDetailTableViewController {
 
     override func tableView(tableView: UITableView, indentationLevelForRowAtIndexPath indexPath: NSIndexPath) -> Int {
         return 0 // super.tableView(tableView, indentationLevelForRowAtIndexPath: storyboardIndexPath(indexPath))
+    }
+
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return false
     }
 
 }

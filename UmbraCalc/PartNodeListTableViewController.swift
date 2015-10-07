@@ -52,7 +52,7 @@ class PartNodeListTableViewController: UITableViewController {
         let partNode = partNodeForRowAtIndexPath(indexPath)
         cell.textLabel?.text = partNode.title
         var details: [String] = []
-        if partNode.crewCapacity > 0 {
+        if partNode.crewed {
             details.append("Crew Capacity: \(partNode.crewCapacity)")
         }
         if partNode.livingSpaceCount > 0 {
