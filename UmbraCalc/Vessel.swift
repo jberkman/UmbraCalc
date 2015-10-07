@@ -36,6 +36,10 @@ class Vessel: NamedEntity {
         return (parts as? Set<Part>)?.map(transform).reduce(0.0, combine: +) ?? 0
     }
 
+    private func partSum(transform: (Part) -> [String: Double]) -> [String: Double] {
+        return (parts as? Set<Part>)?.map(transform).reduce([:], combine: +) ?? [:]
+    }
+
     var partCount: Int {
         return partSum { Int($0.count) }
     }
@@ -103,6 +107,14 @@ class Vessel: NamedEntity {
         let livingSpaces = Double(happinessLivingSpaceCount) + Double(happinessCrewCapacity) / 10
 
         return sadness * max(minHappinessFactor, min(maxHappinessFactor, livingSpaces / crewCount))
+    }
+
+    var inputResources: [String: Double] {
+        return partSum { $0.inputResources }
+    }
+
+    var outputResources: [String: Double] {
+        return partSum { $0.outputResources }
     }
 
 }

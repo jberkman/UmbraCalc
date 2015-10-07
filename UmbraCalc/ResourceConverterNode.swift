@@ -30,7 +30,7 @@ class ResourceConverterNode: NSObject {
     let outputResources: [String: Double]
 
     private static func resourceWithNode(node: [NSObject: AnyObject]) -> (String, Double) {
-        return (node[resourceNameKey] as? String ?? "", node[ratioKey] as? Double ?? 0)
+        return (node[resourceNameKey] as? String ?? "", Double(node[ratioKey] as? String ?? "0") ?? 0)
     }
 
     private static func resourcesWithNode(node: AnyObject?) -> [String: Double] {

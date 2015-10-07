@@ -143,6 +143,9 @@ class KolonyDetailTableViewController: UITableViewController {
         crewCapacityLabel.text = String(kolony?.crewCapacity ?? 0)
         livingSpacesLabel.text = String(kolony?.livingSpaceCount ?? 0)
         workspacesLabel.text = String(kolony?.workspaceCount ?? 0)
+
+        print("inputs:", (kolony?.inputResources ?? [:]) * 60 * 60 * 6)
+        print("outputs:", (kolony?.outputResources ?? [:]) * 60 * 60 * 6)
     }
 
 }

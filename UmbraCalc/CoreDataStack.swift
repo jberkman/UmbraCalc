@@ -39,7 +39,7 @@ class CoreDataStack: NSObject {
         // Create the coordinator and store
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
         let URL = self.applicationDocumentsDirectory.URLByAppendingPathComponent("UmbraCalc.sqlite")
-        _ = try? NSFileManager.defaultManager().removeItemAtURL(URL)
+//        _ = try? NSFileManager.defaultManager().removeItemAtURL(URL)
         var failureReason = "There was an error creating or loading the application's saved data."
         do {
             try coordinator.addPersistentStoreWithType(self.persistentStoreType, configuration: nil, URL: URL, options: nil)

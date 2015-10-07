@@ -102,7 +102,7 @@ class ConfigNode: NSObject {
                 var value: NSString?
                 var node: NSDictionary?
                 if scanAssignment(&value) {
-                    accumulateValue(value!, forKey: key as! String)
+                    accumulateValue(value!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()), forKey: key as! String)
                 } else if scanNode(&node) {
                     accumulateValue(node!, forKey: key as! String)
                 } else {

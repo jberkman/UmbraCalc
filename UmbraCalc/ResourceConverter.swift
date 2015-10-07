@@ -48,11 +48,13 @@ class ResourceConverter: NSManagedObject {
     }
 
     var inputResources: [String: Double] {
-        return resourceConverterNode?.inputResources ?? [:]
+        guard let resources = resourceConverterNode?.inputResources else { return [:] }
+        return resources * (Double(activeCount) * (part?.efficiency ?? 0))
     }
 
     var outputResources: [String: Double] {
-        return resourceConverterNode?.outputResources ?? [:]
+        guard let resources = resourceConverterNode?.outputResources else { return [:] }
+        return resources * (Double(activeCount) * (part?.efficiency ?? 0))
     }
 
 }

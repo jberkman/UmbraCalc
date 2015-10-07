@@ -109,6 +109,10 @@ class Part: NSManagedObject {
         return (crew as? Set<Crew>)?.map(transform).reduce(0.0, combine: +) ?? 0
     }
 
+    private func resourceConverterSum(transform: (ResourceConverter) -> [String: Double]) -> [String: Double] {
+        return (resourceConverters as? Set<ResourceConverter>)?.map(transform).reduce([:], combine: +) ?? [:]
+    }
+
     var crewCareerFactor: Double {
         return crewSum { $0.careerFactor }
     }
@@ -136,6 +140,14 @@ class Part: NSManagedObject {
 
     var efficiency: Double {
         return efficiencyParts.isEmpty ? crewEfficiency : max(minEfficiency, crewEfficiency + partsEfficiency)
+    }
+
+    var inputResources: [String: Double] {
+        return resourceConverterSum { $0.inputResources }
+    }
+
+    var outputResources: [String: Double] {
+        return resourceConverterSum { $0.outputResources }
     }
 
 }

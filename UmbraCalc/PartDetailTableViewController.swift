@@ -219,6 +219,14 @@ class PartDetailTableViewController: UITableViewController {
         crewEfficiencyLabel.text = percentFormatter.stringFromNumber(part?.crewEfficiency ?? 0)
         partsEfficiencyLabel.text = percentFormatter.stringFromNumber(part?.partsEfficiency ?? 0)
         efficiencyLabel.text = percentFormatter.stringFromNumber(part?.efficiency ?? 0)
+
+        if let kolony = (part?.vessel as? Base)?.kolony {
+            print("inputs:", kolony.inputResources * 60 * 60 * 6)
+            print("outputs:", kolony.outputResources * 60 * 60 * 6)
+        } else {
+            print("inputs:", (part?.vessel?.inputResources ?? [:]) * 60 * 60 * 6)
+            print("outputs:", (part?.vessel?.outputResources ?? [:]) * 60 * 60 * 6)
+        }
     }
 
 }

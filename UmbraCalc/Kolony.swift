@@ -32,6 +32,10 @@ class Kolony: NamedEntity {
         return (bases as? Set<Base>)?.map(transform).reduce(0, combine: +) ?? 0
     }
 
+    private func baseSum(transform: (Base) -> [String: Double]) -> [String: Double] {
+        return (bases as? Set<Base>)?.map(transform).reduce([:], combine: +) ?? [:]
+    }
+
     var activeResourceConverterCount: Int {
         return baseSum { $0.activeResourceConverterCount }
     }
@@ -58,6 +62,14 @@ class Kolony: NamedEntity {
 
     var parts: Set<Part> {
         return (bases as? Set<Base>)?.flatMap { $0.parts as? Set<Part> }.reduce(Set()) { $0.union($1) } ?? Set()
+    }
+
+    var inputResources: [String: Double] {
+        return baseSum { $0.inputResources }
+    }
+
+    var outputResources: [String: Double] {
+        return baseSum { $0.outputResources }
     }
 
 }
