@@ -28,96 +28,41 @@ class Vessel: NamedEntity {
         return withValue(Set(parts), forKey: "parts")
     }
 
-    private func partSum(transform: (Part) -> Int) -> Int {
-        return (parts as? Set<Part>)?.map(transform).reduce(0, combine: +) ?? 0
-    }
-
-    private func partSum(transform: (Part) -> Double) -> Double {
-        return (parts as? Set<Part>)?.map(transform).reduce(0.0, combine: +) ?? 0
-    }
-
-    private func partSum(transform: (Part) -> [String: Double]) -> [String: Double] {
-        return (parts as? Set<Part>)?.map(transform).reduce([:], combine: +) ?? [:]
-    }
-
-    var partCount: Int {
-        return partSum { Int($0.count) }
-    }
-
-    var workspaceCount: Int {
-        return partSum { $0.workspaceCount }
-    }
-
-    var crewCapacity: Int {
-        return partSum { $0.crewCapacity }
-    }
-
-    var livingSpaceCount: Int {
-        return partSum { $0.livingSpaceCount }
-    }
-
-    var crew: Set<Crew> {
-        return (parts as? Set<Part>)?.flatMap { $0.crew as? Set<Crew> }.reduce(Set()) { $0.union($1) } ?? Set()
-    }
-
-    var crewCount: Int {
-        return partSum { $0.crew?.count ?? 0 }
-    }
-
-    var crewCareerFactor: Double {
-        return partSum { $0.crewCareerFactor }
-    }
-
-    var happinessCrewCapacity: Int {
-        return crewCapacity
-    }
-
-    var happinessCrewCount: Int {
-        return crewCount
-    }
-
-    var happinessLivingSpaceCount: Int {
-        return livingSpaceCount
-    }
-
-    var activeResourceConverterCount: Int {
-        return partSum { $0.activeResourceConverterCount }
-    }
-
-    var efficiencyActiveResourceConverterCount: Int {
-        return activeResourceConverterCount
-    }
-
-    var efficiencyWorkspaceCount: Int {
-        return workspaceCount
-    }
-
-    var efficiencyParts: Set<Part> {
+    private var partsSet: Set<Part> {
         return parts as? Set<Part> ?? Set()
     }
 
-    var crewHappiness: Double {
-        let minHappinessFactor = 0.5
-        let maxHappinessFactor = 1.5
-
-        let crewCount = Double(happinessCrewCount)
-        guard crewCount > 0 else { return 0 }
-        let sadness = min(5, crewCount) / 5
-
-        let livingSpaces = Double(happinessLivingSpaceCount) + Double(happinessCrewCapacity) / 10
-
-        return sadness * max(minHappinessFactor, min(maxHappinessFactor, livingSpaces / crewCount))
-    }
-
-    var inputResources: [String: Double] {
-        return partSum { $0.inputResources }
-    }
-
-    var outputResources: [String: Double] {
-        return partSum { $0.outputResources }
+    var containingKolonizingCollection: KolonizingCollectionType? {
+        return nil
     }
 
 }
+
+extension Vessel: ResourceConvertingCollectionType {
+
+    var resourceConvertingCollection: AnyForwardCollection<ResourceConverting> {
+        return AnyForwardCollection(partsSet.flatMap { $0.resourceConvertingCollection })
+    }
+
+}
+
+extension Vessel: CrewingCollectionType {
+
+    var crewingCollection: AnyForwardCollection<Crewing> {
+        return AnyForwardCollection(partsSet.flatMap { $0.crewingCollection })
+    }
+
+}
+
+extension Vessel: KolonizingCollectionType {
+
+    var kolonizingCollection: AnyForwardCollection<Kolonizing> {
+        return AnyForwardCollection(partsSet.map { $0 as Kolonizing })
+    }
+
+}
+
+extension Vessel: CrewableCollectionType { }
 
 extension Vessel: ModelNaming, SegueableType, Segueable {
 

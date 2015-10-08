@@ -40,7 +40,7 @@ class MasterTableViewController: UITableViewController {
                 cell.textLabel?.text = vessel.displayName
                 cell.detailTextLabel?.text = "\(vessel.crewCount) Crew"
             } else if let crew = model as? Crew {
-                cell.textLabel?.text = crew.displayName
+                cell.textLabel?.text = crew.crewDisplayName
                 cell.detailTextLabel?.text = crew.career
             }
             cell.accessoryType = splitAccessoryType

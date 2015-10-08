@@ -20,6 +20,9 @@
 		1654A2311BBE71FE00623F50 /* PartNodeListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E99B1BB9030600EDBCF7 /* PartNodeListTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		1654A2321BBE71FE00623F50 /* VesselDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E98A1BB8A20300EDBCF7 /* VesselDetailTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		166F0B2C1BC5A6F2000A4D3E /* SwiftExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B2B1BC5A6F1000A4D3E /* SwiftExtensions.swift */; settings = {ASSET_TAGS = (); }; };
+		166F0B321BC6101E000A4D3E /* Kolonizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B311BC6101E000A4D3E /* Kolonizing.swift */; settings = {ASSET_TAGS = (); }; };
+		166F0B341BC62F78000A4D3E /* KolonizingExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B331BC62F78000A4D3E /* KolonizingExtensions.swift */; settings = {ASSET_TAGS = (); }; };
+		166F0B381BC64D4D000A4D3E /* CrewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B371BC64D4D000A4D3E /* CrewDataSource.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9571BB6813400EDBCF7 /* VesselTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9561BB6813400EDBCF7 /* VesselTests.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9621BB7021C00EDBCF7 /* Station+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E95A1BB7021C00EDBCF7 /* Station+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9631BB7021C00EDBCF7 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E95B1BB7021C00EDBCF7 /* Station.swift */; settings = {ASSET_TAGS = (); }; };
@@ -92,6 +95,9 @@
 		1633604C1BBCF652003A6B5D /* Apropos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Apropos.swift; sourceTree = "<group>"; };
 		1633604E1BBCF867003A6B5D /* AproposExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AproposExtensions.swift; sourceTree = "<group>"; };
 		166F0B2B1BC5A6F1000A4D3E /* SwiftExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftExtensions.swift; sourceTree = "<group>"; };
+		166F0B311BC6101E000A4D3E /* Kolonizing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Kolonizing.swift; sourceTree = "<group>"; };
+		166F0B331BC62F78000A4D3E /* KolonizingExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KolonizingExtensions.swift; sourceTree = "<group>"; };
+		166F0B371BC64D4D000A4D3E /* CrewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrewDataSource.swift; sourceTree = "<group>"; };
 		1699E9561BB6813400EDBCF7 /* VesselTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VesselTests.swift; sourceTree = "<group>"; };
 		1699E95A1BB7021C00EDBCF7 /* Station+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Station+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		1699E95B1BB7021C00EDBCF7 /* Station.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
@@ -227,6 +233,7 @@
 			isa = PBXGroup;
 			children = (
 				162EA6151BBA5BF9001AFBBC /* FetchableDataSource.swift */,
+				166F0B311BC6101E000A4D3E /* Kolonizing.swift */,
 				1699E9931BB8D51000EDBCF7 /* NamedType.swift */,
 			);
 			name = Protocols;
@@ -251,6 +258,7 @@
 				16BB66801BC4DEB2009DD819 /* DelegatedDataSource.swift */,
 				162EA6171BBA5C22001AFBBC /* FetchedDataSource.swift */,
 				162EA6211BBAD81D001AFBBC /* SelectionDataSource.swift */,
+				166F0B371BC64D4D000A4D3E /* CrewDataSource.swift */,
 			);
 			name = DataSources;
 			sourceTree = "<group>";
@@ -351,6 +359,7 @@
 				1633604E1BBCF867003A6B5D /* AproposExtensions.swift */,
 				1699E9861BB8494B00EDBCF7 /* CoreDataExtensions.swift */,
 				16B7AD1E1BB5134A006DFA4E /* FoundationExtensions.swift */,
+				166F0B331BC62F78000A4D3E /* KolonizingExtensions.swift */,
 				166F0B2B1BC5A6F1000A4D3E /* SwiftExtensions.swift */,
 				16FE81421BC1C82700F1A56C /* UIKitExtensions.swift */,
 			);
@@ -518,6 +527,7 @@
 				1654A2311BBE71FE00623F50 /* PartNodeListTableViewController.swift in Sources */,
 				1654A2261BBE622400623F50 /* FetchedDataSource.swift in Sources */,
 				1699E9641BB7021C00EDBCF7 /* Part+CoreDataProperties.swift in Sources */,
+				166F0B341BC62F78000A4D3E /* KolonizingExtensions.swift in Sources */,
 				16B7ACC91BB39066006DFA4E /* UmbraCalc.xcdatamodeld in Sources */,
 				1654A22A1BBE6B5D00623F50 /* CrewSelectionTableViewController.swift in Sources */,
 				16FE810C1BBEDB7C00F1A56C /* KolonyDetailTableViewController.swift in Sources */,
@@ -541,6 +551,7 @@
 				1633604D1BBCF652003A6B5D /* Apropos.swift in Sources */,
 				16FE813F1BC0EAF500F1A56C /* PartSelectionTableViewController.swift in Sources */,
 				16B7AD071BB3BE57006DFA4E /* CoreDataStack.swift in Sources */,
+				166F0B381BC64D4D000A4D3E /* CrewDataSource.swift in Sources */,
 				1654A2321BBE71FE00623F50 /* VesselDetailTableViewController.swift in Sources */,
 				1654A2291BBE69FE00623F50 /* CrewDetailTableViewController.swift in Sources */,
 				16B7AD011BB3AC51006DFA4E /* Part.swift in Sources */,
@@ -560,6 +571,7 @@
 				16B7AD221BB526D9006DFA4E /* ConfigNode.swift in Sources */,
 				16B7AD1F1BB5134A006DFA4E /* FoundationExtensions.swift in Sources */,
 				1699E9671BB7021C00EDBCF7 /* Base+CoreDataProperties.swift in Sources */,
+				166F0B321BC6101E000A4D3E /* Kolonizing.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

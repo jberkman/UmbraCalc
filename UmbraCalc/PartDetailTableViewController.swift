@@ -98,7 +98,7 @@ class PartDetailTableViewController: UITableViewController {
 
         private var part: Part? {
             didSet {
-                partNodes = EfficiencyPartDataSource.bundledPartNodes.filter { self.part?.efficiencyParts[$0.name] != nil }
+                partNodes = EfficiencyPartDataSource.bundledPartNodes.filter { self.part?.efficiencyFactors[$0.name] != nil }
             }
         }
 
@@ -131,10 +131,10 @@ class PartDetailTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier, forIndexPath: indexPath)
             let partNode = partNodeForRowAtIndexPath(indexPath)
             cell.textLabel?.text = partNode.title
-            guard let vesselEfficiencyParts = part?.vessel?.efficiencyParts,
-                rate = part?.efficiencyParts[partNode.name],
+            guard let vesselEfficiencyParts = part?.crewableCollection?.containingKolonizingCollection?.kolonizingCollection,
+                rate = part?.efficiencyFactors[partNode.name],
                 rateString = percentFormatter.stringFromNumber(rate) else { return cell }
-            let count = vesselEfficiencyParts.map { $0.partName == partNode.name ? $0.count : 0 }.reduce(0, combine: +)
+            let count = vesselEfficiencyParts.map { $0.name == partNode.name ? ($0 as? Countable)?.count ?? 0 : 0 }.reduce(0, combine: +)
             cell.detailTextLabel?.text = "\(count) x \(rateString)"
             return cell
         }
@@ -215,9 +215,9 @@ class PartDetailTableViewController: UITableViewController {
 
         livingSpaceCountLabel.text = String(part?.livingSpaceCount ?? 0)
         workspaceCountLabel.text = String(part?.workspaceCount ?? 0)
-        careerFactorLabel.text = percentFormatter.stringFromNumber(part?.crewCareerFactor ?? 0)
-        crewEfficiencyLabel.text = percentFormatter.stringFromNumber(part?.crewEfficiency ?? 0)
-        partsEfficiencyLabel.text = percentFormatter.stringFromNumber(part?.partsEfficiency ?? 0)
+        careerFactorLabel.text = percentFormatter.stringFromNumber(part?.careerFactor ?? 0)
+        crewEfficiencyLabel.text = percentFormatter.stringFromNumber(part?.crewingEfficiency ?? 0)
+        partsEfficiencyLabel.text = percentFormatter.stringFromNumber(part?.kolonizingEfficiency ?? 0)
         efficiencyLabel.text = percentFormatter.stringFromNumber(part?.efficiency ?? 0)
 
         if let kolony = (part?.vessel as? Base)?.kolony {

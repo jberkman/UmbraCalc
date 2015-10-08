@@ -38,7 +38,7 @@ class CrewSelectionTableViewController: UITableViewController {
 
         override func configureCell(cell: UITableViewCell, forModel model: DataSource.Model) {
             super.configureCell(cell, forModel: model)
-            cell.textLabel?.text = model.displayName
+            cell.textLabel?.text = model.crewDisplayName
             cell.detailTextLabel?.text = model.career
         }
 

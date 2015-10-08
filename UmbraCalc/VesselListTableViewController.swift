@@ -28,7 +28,7 @@ class VesselListTableViewController: UITableViewController {
         
         override func configureCell(cell: UITableViewCell, forModel vessel: Vessel) {
             cell.textLabel?.text = vessel.displayName
-            cell.detailTextLabel?.text = "Crew: \(vessel.crewCount) of \(vessel.crewCapacity) Happiness: \(percentFormatter.stringFromNumber(vessel.crewHappiness)!) Parts: \(vessel.partCount)"
+            cell.detailTextLabel?.text = "\(vessel.crewCount) of \(vessel.crewCapacity) Crew, \(percentFormatter.stringFromNumber(vessel.happiness)!) Happiness"
         }
 
     }

@@ -74,7 +74,7 @@ class PartNode: NSObject {
     let primarySkill: String
     let secondarySkill: String
     let resourceConverters: [String: ResourceConverterNode]
-    let efficiencyParts: [String: Int]
+    let efficiencyParts: [String: Double]
 
     var crewed: Bool { return crewCapacity > 0 }
 
@@ -128,7 +128,7 @@ class PartNode: NSObject {
         var workspaceCount = 0
         var livingSpaceCount = 0
         var crewBonus = defaultCrewBonus
-        var hasGenerators = defaultHasGenerators
+        var hasGenerators = false
         var maxEfficiency = defaultMaxEfficiency
         var primarySkill = defaultPrimarySkill
         var secondarySkill = defaultSecondarySkill
@@ -164,7 +164,7 @@ class PartNode: NSObject {
         if let partList = efficiencyPartList {
             let elements = partList.characters.split { String($0) == efficiencyPartDelimiter }.map { String($0) }
             efficiencyParts = 0.stride(to: elements.count, by: 2)
-                .map { (elements[$0], Int(elements[$0 + 1]) ?? 0) }
+                .map { (elements[$0], Double(elements[$0 + 1]) ?? 0) }
                 .reduce([:]) {
                     var ret = $0
                     ret[$1.0] = $1.1

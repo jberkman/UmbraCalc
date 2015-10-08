@@ -73,86 +73,69 @@ class Part: NSManagedObject {
         return ret
     }
 
-    var name: String? { return partNode?.name }
     var title: String? { return partNode?.title }
-    var crewCapacity: Int { return Int(count) * (partNode?.crewCapacity ?? 0) }
-    var crewBonus: Double { return partNode?.crewBonus ?? 0 }
-    var hasGenerators: Bool { return partNode?.hasGenerators == true }
-    var maxEfficiency: Double { return partNode?.maxEfficiency ?? 0 }
-    var workspaceCount: Int { return Int(count) * (partNode?.workspaceCount ?? 0) }
-    var livingSpaceCount: Int { return Int(count) * (partNode?.livingSpaceCount ?? 0) }
-    var primarySkill: String? { return partNode?.primarySkill }
-    var secondarySkill: String? { return partNode?.secondarySkill }
-    var efficiencyParts: [String: Int] { return partNode?.efficiencyParts ?? [:] }
-
-    var crewed: Bool { return partNode?.crewed == true }
 
     var displayName: String { return partNode?.title ?? "Untitled Part" }
+
     var displaySummary: String {
         var labels = [String]()
         if crewed {
-            labels.append("\(crew?.count ?? 0) of \(crewCapacity) Crew")
+            labels.append("\(crewCount) of \(crewCapacity) Crew")
         } else {
             labels.append("\(count) Installed")
         }
-        if hasGenerators {
+        if partNode?.hasGenerators == true {
             labels.append("\(percentFormatter.stringFromNumber(efficiency)!) Efficiency")
         }
         return labels.joinWithSeparator(", ")
     }
 
-    private func crewSum(transform: (Crew) -> Int) -> Int {
-        return (crew as? Set<Crew>)?.map(transform).reduce(0, combine: +) ?? 0
-    }
+}
 
-    private func crewSum(transform: (Crew) -> Double) -> Double {
-        return (crew as? Set<Crew>)?.map(transform).reduce(0.0, combine: +) ?? 0
-    }
+extension Part: NamedType {
 
-    private func resourceConverterSum(transform: (ResourceConverter) -> [String: Double]) -> [String: Double] {
-        return (resourceConverters as? Set<ResourceConverter>)?.map(transform).reduce([:], combine: +) ?? [:]
-    }
+    var name: String? { return partNode?.name }
+    
+}
 
-    var crewCareerFactor: Double {
-        return crewSum { $0.careerFactor }
-    }
+extension Part: Countable { }
 
-    var activeResourceConverterCount: Int {
-        return (resourceConverters as? Set<ResourceConverter>)?.map { Int($0.activeCount) }.reduce(0, combine: +) ?? 0
-    }
+extension Part: ResourceConvertingCollectionType {
 
-    var partsEfficiency: Double {
-        guard !efficiencyParts.isEmpty, let vessel = vessel else { return 0 }
-        return Double(vessel.efficiencyParts
-            .filter { $0.name != nil && efficiencyParts[$0.name!] != nil }
-            .map { Int($0.count) * efficiencyParts[$0.name!]! }
-            .reduce(0, combine: +))
-    }
-
-    var crewEfficiency: Double {
-        guard let vessel = vessel where vessel.crewCount > 0 else { return 0 }
-        let maxWorkspaceRatio = 3.0
-        let workspaces = Double(vessel.efficiencyWorkspaceCount) + Double(vessel.crewCapacity) / 4
-        let workspaceRatio = min(maxWorkspaceRatio, workspaces / Double(vessel.crewCount))
-        let workUnits = workspaceRatio * vessel.crewHappiness * (crewCareerFactor + vessel.crewCareerFactor * crewBonus)
-        return min(maxEfficiency, max(minEfficiency, workUnits / Double(vessel.efficiencyActiveResourceConverterCount)))
-    }
-
-    var efficiency: Double {
-        return efficiencyParts.isEmpty ? crewEfficiency : max(minEfficiency, crewEfficiency + partsEfficiency)
-    }
-
-    var inputResources: [String: Double] {
-        return resourceConverterSum { $0.inputResources }
-    }
-
-    var outputResources: [String: Double] {
-        return resourceConverterSum { $0.outputResources }
+    var resourceConvertingCollection: AnyForwardCollection<ResourceConverting> {
+        return AnyForwardCollection((resourceConverters as? Set<ResourceConverter>)?.map { $0 as ResourceConverting } ?? [])
     }
 
 }
 
-extension Part: NamedType { }
+extension Part: CrewingCollectionType {
+
+    var crewingCollection: AnyForwardCollection<Crewing> {
+        return AnyForwardCollection((crew as? Set<Crew>)?.map { $0 as Crewing } ?? [])
+    }
+
+}
+
+extension Part: Kolonizing {
+
+    var crewCapacity: Int { return Int(count) * (partNode?.crewCapacity ?? 0) }
+    var workspaceCount: Int { return Int(count) * (partNode?.workspaceCount ?? 0) }
+    var livingSpaceCount: Int { return Int(count) * (partNode?.livingSpaceCount ?? 0) }
+
+}
+
+extension Part: Crewable {
+
+    var primarySkill: String? { return partNode?.primarySkill }
+    var secondarySkill: String? { return partNode?.secondarySkill }
+
+    var crewBonus: Double { return partNode?.crewBonus ?? 0 }
+    var efficiencyFactors: [String: Double] { return partNode?.efficiencyParts ?? [:] }
+    var maxEfficiency: Double { return partNode?.maxEfficiency ?? 0 }
+
+    var crewableCollection: CrewableCollectionType? { return vessel }
+
+}
 
 extension Part: ModelNaming, SegueableType, Segueable {
 

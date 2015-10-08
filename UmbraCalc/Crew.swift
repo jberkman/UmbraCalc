@@ -18,18 +18,6 @@ import Foundation
 
 class Crew: NamedEntity {
 
-    static let engineerTitle = "Engineer"
-    static let scientistTitle = "Scientist"
-    static let pilotTitle = "Pilot"
-
-    var displayName: String {
-        return (name?.isEmpty == false ? name! : "Unnamed Crew") + starString
-    }
-
-    var starString: String {
-        return String(count: Int(starCount), repeatedValue: "⭐️")
-    }
-
     @warn_unused_result
     func withCareer(career: String) -> Self {
         return withValue(career, forKey: "career")
@@ -50,15 +38,33 @@ class Crew: NamedEntity {
         return withValue(starCount, forKey: "starCount")
     }
 
-    var careerFactor: Double {
-        guard let part = part else { return 0 }
-        let starFactor = max(0.1, Double(starCount) / 2)
-        let careerMultiplier = career == part.primarySkill ? 1.5 : career == part.secondarySkill ? 1 : 0.5
-        return starFactor * careerMultiplier
+}
+
+extension Crew: ResourceConverting {
+
+    var inputResources: [String: Double] {
+        return [
+            "Supplies": 0.00005,
+            "ElectricCharge": 0.01
+        ]
     }
+
+    var outputResources: [String: Double] {
+        return ["Mulch": 0.00005]
+    }
+
+    var activeResourceConvertingCount: Int { return 1 }
+
+}
+
+extension Crew: Crewing {
+
+    var crewable: Crewable? { return part }
 
 }
 
 extension Crew: ModelNaming, SegueableType, Segueable {
+
     class var modelName: String { return "Crew" }
+
 }

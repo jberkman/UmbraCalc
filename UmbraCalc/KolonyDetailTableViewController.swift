@@ -37,34 +37,11 @@ class KolonyDetailTableViewController: UITableViewController {
 
         private override func configureCell(cell: BaseDataSource.Cell, forModel model: BaseDataSource.Model) {
             cell.textLabel?.text = model.displayName
-            cell.detailTextLabel?.text = "\(model.crewCount) of \(model.crewCapacity) Crew, \(percentFormatter.stringFromNumber(model.crewHappiness)!) Happiness"
+            cell.detailTextLabel?.text = "\(model.crewCount) of \(model.crewCapacity) Crew, \(percentFormatter.stringFromNumber(model.happiness)!) Happiness"
             cell.accessoryType = .DisclosureIndicator
         }
     }
 
-    private class CrewDataSource: FetchedDataSource<Crew, UITableViewCell> {
-
-        var kolony: Kolony? {
-            didSet {
-                managedObjectContext = kolony?.managedObjectContext
-                fetchRequest.predicate = kolony == nil ? nil : NSPredicate(format: "part.vessel.kolony == %@", kolony!)
-            }
-        }
-
-        override init(sectionOffset: Int = 0) {
-            super.init(sectionOffset: sectionOffset)
-            reuseIdentifier = "crewCell"
-            fetchRequest.sortDescriptors = [Crew.nameSortDescriptor]
-        }
-
-        override func configureCell(cell: UITableViewCell, forModel crew: Crew) {
-            cell.textLabel?.text = crew.displayName
-            cell.detailTextLabel?.text = crew.part?.vessel?.displayName
-            cell.selectionStyle = .None
-        }
-        
-    }
-    
     @IBOutlet weak var crewCapacityLabel: UILabel!
     @IBOutlet weak var livingSpacesLabel: UILabel!
     @IBOutlet weak var nameTextField: UITextField!
@@ -79,7 +56,8 @@ class KolonyDetailTableViewController: UITableViewController {
     var kolony: Kolony? {
         didSet {
             baseDataSource.kolony = kolony
-            crewDataSource.kolony = kolony
+            crewDataSource.managedObjectContext = kolony?.managedObjectContext
+            crewDataSource.fetchRequest.predicate = kolony == nil ? nil : NSPredicate(format: "part.vessel.kolony = %@", kolony!)
             updateView()
         }
     }
@@ -93,6 +71,7 @@ class KolonyDetailTableViewController: UITableViewController {
 
         tableView.registerClass(Value1TableViewCell.self, forCellReuseIdentifier: crewDataSource.reuseIdentifier)
         dataSource.registerDataSource(crewDataSource)
+        crewDataSource.detailType = .Vessel
         crewDataSource.tableView = tableView
 
         tableView.dataSource = dataSource

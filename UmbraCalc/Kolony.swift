@@ -28,50 +28,34 @@ class Kolony: NamedEntity {
         return withValue(Set(bases), forKey: "bases")
     }
 
-    private func baseSum(transform: (Base) -> Int) -> Int {
-        return (bases as? Set<Base>)?.map(transform).reduce(0, combine: +) ?? 0
+    private var basesSet: Set<Base> {
+        return bases as? Set<Base> ?? Set()
     }
 
-    private func baseSum(transform: (Base) -> [String: Double]) -> [String: Double] {
-        return (bases as? Set<Base>)?.map(transform).reduce([:], combine: +) ?? [:]
+}
+
+extension Kolony: ResourceConvertingCollectionType {
+
+    var resourceConvertingCollection: AnyForwardCollection<ResourceConverting> {
+        return AnyForwardCollection(basesSet.flatMap { $0.resourceConvertingCollection })
     }
 
-    var activeResourceConverterCount: Int {
-        return baseSum { $0.activeResourceConverterCount }
+}
+
+extension Kolony: CrewingCollectionType {
+
+    var crewingCollection: AnyForwardCollection<Crewing> {
+        return AnyForwardCollection(basesSet.flatMap { $0.crewingCollection })
     }
 
-    var crewCapacity: Int {
-        return baseSum { $0.crewCapacity }
-    }
+}
 
-    var crewCount: Int {
-        return baseSum { $0.crewCount }
-    }
+extension Kolony: KolonizingCollectionType {
 
-    var livingSpaceCount: Int {
-        return baseSum { $0.livingSpaceCount }
+    var kolonizingCollection: AnyForwardCollection<Kolonizing> {
+        return AnyForwardCollection(basesSet.flatMap { $0.kolonizingCollection })
     }
-
-    var workspaceCount: Int {
-        return baseSum { $0.workspaceCount }
-    }
-
-    var crew: Set<Crew> {
-        return (bases as? Set<Base>)?.flatMap { $0.crew }.reduce(Set()) { $0.union($1) } ?? Set()
-    }
-
-    var parts: Set<Part> {
-        return (bases as? Set<Base>)?.flatMap { $0.parts as? Set<Part> }.reduce(Set()) { $0.union($1) } ?? Set()
-    }
-
-    var inputResources: [String: Double] {
-        return baseSum { $0.inputResources }
-    }
-
-    var outputResources: [String: Double] {
-        return baseSum { $0.outputResources }
-    }
-
+    
 }
 
 extension Kolony: ModelNaming, SegueableType, Segueable {

@@ -31,30 +31,10 @@ class Base: Vessel {
         return try withParts(defaultParts.map { try Part(insertIntoManagedObjectContext: managedObjectContext).withPartName($0) })
     }
 
-    override var happinessCrewCapacity: Int {
-        return kolony?.crewCapacity ?? crewCapacity
+    override var containingKolonizingCollection: KolonizingCollectionType? {
+        return kolony
     }
-
-    override var happinessCrewCount: Int {
-        return kolony?.crewCount ?? crewCount
-    }
-
-    override var happinessLivingSpaceCount: Int {
-        return kolony?.livingSpaceCount ?? livingSpaceCount
-    }
-
-    override var efficiencyActiveResourceConverterCount: Int {
-        return kolony?.activeResourceConverterCount ?? activeResourceConverterCount
-    }
-
-    override var efficiencyWorkspaceCount: Int {
-        return kolony?.workspaceCount ?? workspaceCount
-    }
-
-    override var efficiencyParts: Set<Part> {
-        return kolony?.parts ?? parts as? Set<Part> ?? Set()
-    }
-
+    
 }
 
 extension Base {

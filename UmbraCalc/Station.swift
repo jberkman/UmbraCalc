@@ -26,6 +26,10 @@ class Station: Vessel {
         return try withParts(defaultParts.map { try Part(insertIntoManagedObjectContext: managedObjectContext).withPartName($0) })
     }
 
+    override var containingKolonizingCollection: KolonizingCollectionType? {
+        return self
+    }
+    
 }
 
 extension Station {

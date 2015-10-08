@@ -56,29 +56,6 @@ class VesselDetailTableViewController: UITableViewController {
 
     }
 
-    private class CrewDataSource: FetchedDataSource<Crew, UITableViewCell> {
-
-        var vessel: Vessel? {
-            didSet {
-                managedObjectContext = vessel?.managedObjectContext
-                fetchRequest.predicate = vessel == nil ? nil : NSPredicate(format: "part.vessel == %@", vessel!)
-            }
-        }
-
-        override init(sectionOffset: Int = 0) {
-            super.init(sectionOffset: sectionOffset)
-            reuseIdentifier = "crewCell"
-            fetchRequest.sortDescriptors = [Crew.nameSortDescriptor]
-        }
-
-        override func configureCell(cell: UITableViewCell, forModel crew: Crew) {
-            cell.textLabel?.text = crew.displayName
-            cell.detailTextLabel?.text = crew.part?.displayName
-            cell.selectionStyle = .None
-        }
-        
-    }
-
     @IBOutlet weak var crewCapacityLabel: UILabel!
     @IBOutlet weak var livingSpacesLabel: UILabel!
     @IBOutlet weak var happinessLabel: UILabel!
@@ -100,7 +77,10 @@ class VesselDetailTableViewController: UITableViewController {
             oldValue?.removeObserver(self, context: partsObserver)
             vessel?.addObserver(self, context: partsObserver)
             partDataSource.vessel = vessel
-            crewDataSource.vessel = vessel
+
+            crewDataSource.managedObjectContext = vessel?.managedObjectContext
+            crewDataSource.fetchRequest.predicate = vessel == nil ? nil : NSPredicate(format: "part.vessel == %@", vessel!)
+
             navigationItem.title = "\(vessel?.dynamicType.modelName ?? Vessel.modelName) Details"
             updateView()
         }
@@ -119,6 +99,7 @@ class VesselDetailTableViewController: UITableViewController {
 
         tableView.registerClass(Value1TableViewCell.self, forCellReuseIdentifier: crewDataSource.reuseIdentifier)
         dataSource.registerDataSource(crewDataSource)
+        crewDataSource.detailType = .Part
         crewDataSource.tableView = tableView
 
         tableView.dataSource = dataSource
@@ -209,7 +190,7 @@ class VesselDetailTableViewController: UITableViewController {
         crewCapacityLabel.text = String(vessel?.crewCapacity ?? 0)
         livingSpacesLabel.text = String(vessel?.livingSpaceCount ?? 0)
         workspacesLabel.text = String(vessel?.workspaceCount ?? 0)
-        happinessLabel.text = percentFormatter.stringFromNumber(vessel?.crewHappiness ?? 0)
+        happinessLabel.text = percentFormatter.stringFromNumber(vessel?.happiness ?? 0)
 
         if let kolony = (vessel as? Base)?.kolony {
             print("inputs:", kolony.inputResources * 60 * 60 * 6)

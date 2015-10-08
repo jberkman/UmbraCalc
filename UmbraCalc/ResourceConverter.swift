@@ -19,6 +19,7 @@ import CoreData
 class ResourceConverter: NSManagedObject {
 
     private dynamic var cachedResourceConverterNode: ResourceConverterNode?
+
     var resourceConverterNode: ResourceConverterNode? {
         guard let tag = tag else { return nil }
         if cachedResourceConverterNode?.tag != tag {
@@ -43,9 +44,9 @@ class ResourceConverter: NSManagedObject {
         return withValue(part, forKey: "part")
     }
 
-    var name: String? {
-        return resourceConverterNode?.converterName
-    }
+}
+
+extension ResourceConverter: ResourceConverting {
 
     var inputResources: [String: Double] {
         guard let resources = resourceConverterNode?.inputResources else { return [:] }
@@ -57,9 +58,17 @@ class ResourceConverter: NSManagedObject {
         return resources * (Double(activeCount) * (part?.efficiency ?? 0))
     }
 
+    var activeResourceConvertingCount: Int { return Int(activeCount) }
+
 }
 
-extension ResourceConverter: NamedType { }
+extension ResourceConverter: NamedType {
+
+    var name: String? {
+        return resourceConverterNode?.converterName
+    }
+
+}
 
 extension ResourceConverter: ModelNaming, SegueableType, Segueable {
 
