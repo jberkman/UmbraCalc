@@ -18,9 +18,10 @@ import UIKit
 
 class CrewDetailTableViewController: UITableViewController {
 
-    @IBOutlet weak var assignmentCell: UITableViewCell!
+    @IBOutlet weak var cancelButtonItem: UIBarButtonItem!
     @IBOutlet weak var careerCell: UITableViewCell!
     @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var saveButtonItem: UIBarButtonItem!
     @IBOutlet weak var starCountLabel: UILabel!
     @IBOutlet weak var starCountStepper: UIStepper!
 
@@ -56,21 +57,7 @@ class CrewDetailTableViewController: UITableViewController {
         updateStars()
         starCountStepper.value = Double(crew?.starCount ?? 0)
 
-        careerCell.textLabel!.text = crew?.career
-
-        if let partName = crew?.part?.title, vesselName = crew?.part?.vessel?.displayName {
-            assignmentCell.accessoryType = .DetailDisclosureButton
-            assignmentCell.selectionStyle = .Default
-            assignmentCell.detailTextLabel!.text = "\(vesselName) - \(partName)"
-        } else {
-            if let managedObjectContext = self.managedObjectContext where Vessel.existsInContext(managedObjectContext) {
-                assignmentCell.accessoryType = .DetailButton
-            } else {
-                assignmentCell.accessoryType = .None
-            }
-            assignmentCell.selectionStyle = .None
-            assignmentCell.detailTextLabel!.text = "Unassigned"
-        }
+        careerCell.detailTextLabel!.text = crew?.career
     }
 
     override func viewDidLoad() {
@@ -91,51 +78,37 @@ class CrewDetailTableViewController: UITableViewController {
         nameTextField.becomeFirstResponder()
     }
 
-    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
-        switch identifier {
-        case Vessel.showSegueIdentifier:
-            return crew?.part?.vessel != nil
-        default:
-            return true
-        }
-    }
-
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        switch segue.identifier! {
-        case Vessel.showListSegueIdentifier:
-            let vesselList = segue.destinationViewController as! VesselListTableViewController
-            vesselList.managedObjectContext = managedObjectContext
-
-        case Vessel.showSegueIdentifier:
-            let vesselDetail: VesselDetailTableViewController = segue.destinationViewController as! VesselDetailTableViewController
-            vesselDetail.vessel = crew?.part?.vessel
-
-        default:
-            break
-        }
-    }
-
     @IBAction func stepperDidChange(sender: UIStepper) {
         crew?.starCount = Int16(sender.value)
         updateStars()
     }
 
-    @IBAction func savePart(segue: UIStoryboardSegue) {
-        crew?.part = (segue.sourceViewController as! PartSelectionTableViewController).selectedPart
-        updateView()
-    }
+//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+//        guard let identifier = segue.identifier else { return }
+//        switch identifier {
+//        case Crew.saveSegueIdentifier:
+//            crew?.name = nameTextField.text
+//
+//        default:
+//            break
+//        }
+//    }
 
     private func presentCareerSheet() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+
         [ Crew.engineerTitle, Crew.pilotTitle, Crew.scientistTitle ].sort(<).forEach { career in
             alert.addAction(UIAlertAction(title: career, style: .Default) { _ in
                 self.crew?.career = career
-                })
+                self.careerCell.detailTextLabel!.text = career                })
         }
+
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+
         alert.popoverPresentationController?.sourceView = careerCell
         alert.popoverPresentationController?.sourceRect = careerCell.bounds
         alert.popoverPresentationController?.permittedArrowDirections = [ .Down, .Up ]
+
         presentViewController(alert, animated: true, completion: nil)
     }
 

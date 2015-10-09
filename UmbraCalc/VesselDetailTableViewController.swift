@@ -192,13 +192,7 @@ class VesselDetailTableViewController: UITableViewController {
         workspacesLabel.text = String(vessel?.workspaceCount ?? 0)
         happinessLabel.text = percentFormatter.stringFromNumber(vessel?.happiness ?? 0)
 
-        if let kolony = (vessel as? Base)?.kolony {
-            print("inputs:", kolony.inputResources * 60 * 60 * 6)
-            print("outputs:", kolony.outputResources * 60 * 60 * 6)
-        } else {
-            print("inputs:", (vessel?.inputResources ?? [:]) * 60 * 60 * 6)
-            print("outputs:", (vessel?.outputResources ?? [:]) * 60 * 60 * 6)
-        }
+        vessel?.containingKolonizingCollection?.logResources()
     }
 
 }

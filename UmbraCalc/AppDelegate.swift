@@ -13,6 +13,7 @@
 //  http://creativecommons.org/licenses/by-nc/4.0/.
 //
 
+import CoreData
 import UIKit
 
 @UIApplicationMain
@@ -36,6 +37,14 @@ extension AppDelegate: UIApplicationDelegate {
                 ].forEach {
                     _ = try? Crew(insertIntoManagedObjectContext: managedObjectContext).withName($0.0).withCareer($0.1)
             }
+        }
+
+        if !Station.existsInContext(managedObjectContext) {
+            _ = try? Station(insertIntoManagedObjectContext: managedObjectContext)
+        }
+
+        if !Kolony.existsInContext(managedObjectContext) {
+            _ = try? Kolony(insertIntoManagedObjectContext: managedObjectContext).withBases([Base(insertIntoManagedObjectContext: managedObjectContext)])
         }
 
         let split = window!.rootViewController as! UISplitViewController

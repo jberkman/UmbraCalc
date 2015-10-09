@@ -16,9 +16,35 @@
 import Foundation
 import CoreData
 
-class NamedEntity: NSManagedObject {
+class NamedEntity: ScopedEntity {
 
     static let nameSortDescriptor = NSSortDescriptor(key: "name", ascending: true)
+
+    @NSManaged private var primitiveName: String?
+
+    var name: String? {
+        get {
+            willAccessValueForKey("name")
+            let ret = primitiveName
+            didAccessValueForKey("name")
+            return ret
+        }
+        set {
+            willChangeValueForKey("name")
+            primitiveName = newValue
+            setScopeNeedsUpdate()
+            didChangeValueForKey("name")
+        }
+    }
+
+    override var scopeKey: String {
+        return [entity.name!, name ?? "", creationDateScopeKey].joinWithSeparator("-")
+    }
+
+    @warn_unused_result
+    func withName(name: String) -> Self {
+        return withValue(name, forKey: "name")
+    }
 
 }
 

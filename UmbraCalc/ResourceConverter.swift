@@ -16,9 +16,52 @@
 import Foundation
 import CoreData
 
-class ResourceConverter: NSManagedObject {
+class ResourceConverter: ScopedEntity {
 
     private dynamic var cachedResourceConverterNode: ResourceConverterNode?
+
+    @NSManaged var activeCount: Int16
+
+    @NSManaged private var primitivePart: Part?
+    @NSManaged private var primitiveTag: String?
+
+    override var scopeKey: String {
+        return [entity.name!, tag ?? "", creationDateScopeKey].joinWithSeparator("-")
+    }
+
+    var part: Part? {
+        get {
+            willAccessValueForKey("part")
+            let ret = primitivePart
+            didAccessValueForKey("part")
+            return ret
+        }
+        set {
+            willChangeValueForKey("part")
+            primitivePart = newValue
+            rootScope = newValue?.rootScope
+            didChangeValueForKey("part")
+        }
+    }
+
+    override var superscope: ScopedEntity? {
+        return part
+    }
+
+    var tag: String? {
+        get {
+            willAccessValueForKey("tag")
+            let ret = primitiveTag
+            didAccessValueForKey("tag")
+            return ret
+        }
+        set {
+            willChangeValueForKey("tag")
+            primitiveTag = newValue
+            setScopeNeedsUpdate()
+            didChangeValueForKey("tag")
+        }
+    }
 
     var resourceConverterNode: ResourceConverterNode? {
         guard let tag = tag else { return nil }

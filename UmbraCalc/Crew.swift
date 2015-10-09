@@ -18,14 +18,33 @@ import Foundation
 
 class Crew: NamedEntity {
 
-    @warn_unused_result
-    func withCareer(career: String) -> Self {
-        return withValue(career, forKey: "career")
+    @NSManaged var career: String?
+    @NSManaged var starCount: Int16
+
+    @NSManaged private var primitivePart: Part?
+
+    var part: Part? {
+        get {
+            willAccessValueForKey("part")
+            let ret = primitivePart
+            didAccessValueForKey("part")
+            return ret
+        }
+        set {
+            willChangeValueForKey("part")
+            primitivePart = newValue
+            rootScope = newValue?.rootScope
+            didChangeValueForKey("part")
+        }
+    }
+
+    override var superscope: ScopedEntity? {
+        return part
     }
 
     @warn_unused_result
-    func withName(name: String) -> Self {
-        return withValue(name, forKey: "name")
+    func withCareer(career: String) -> Self {
+        return withValue(career, forKey: "career")
     }
 
     @warn_unused_result

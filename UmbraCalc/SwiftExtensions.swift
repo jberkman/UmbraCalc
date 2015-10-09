@@ -23,6 +23,8 @@ protocol Addable {
 protocol Subtractable {
     @warn_unused_result
     func -(lhs: Self, rhs: Self) -> Self
+
+    static var additiveIdentity: Self { get }
 }
 
 protocol Multipliable {
@@ -30,6 +32,7 @@ protocol Multipliable {
     func *(lhs: Self, rhs: Self) -> Self
 
     static var multiplicativeIdentity: Self { get }
+    static var zero: Self { get }
 }
 
 protocol Dividable {
@@ -42,17 +45,27 @@ protocol ArithmeticType: Addable, Subtractable, Multipliable, Dividable { }
 extension Int: ArithmeticType {
     static var additiveIdentity = 0
     static var multiplicativeIdentity = 1
+    static var zero = 0
 }
 
 extension Double: ArithmeticType {
     static var additiveIdentity = 0.0
     static var multiplicativeIdentity = 1.0
+    static var zero = 0.0
 }
 
 func +<Key: Hashable, Value: Addable>(lhs: Dictionary<Key, Value>, rhs: Dictionary<Key, Value>) -> Dictionary<Key, Value> {
-    return (Array(lhs.keys) + Array(rhs.keys)).reduce([Key: Value]()) {
+    return Set(lhs.keys).union(Set(rhs.keys)).reduce([Key: Value]()) {
         var ret = $0
         ret[$1] = (lhs[$1] ?? Value.additiveIdentity) + (rhs[$1] ?? Value.additiveIdentity)
+        return ret
+    }
+}
+
+func -<Key: Hashable, Value: Subtractable>(lhs: Dictionary<Key, Value>, rhs: Dictionary<Key, Value>) -> Dictionary<Key, Value> {
+    return Set(lhs.keys).union(Set(rhs.keys)).reduce([Key: Value]()) {
+        var ret = $0
+        ret[$1] = (lhs[$1] ?? Value.additiveIdentity) - (rhs[$1] ?? Value.additiveIdentity)
         return ret
     }
 }
@@ -61,6 +74,14 @@ func *<Key: Hashable, Value: Multipliable>(lhs: Dictionary<Key, Value>, rhs: Val
     return lhs.keys.reduce([:]) {
         var ret = $0
         ret[$1] = (lhs[$1] ?? Value.multiplicativeIdentity) * rhs
+        return ret
+    }
+}
+
+func *<Key: Hashable, Value: Multipliable>(lhs: Dictionary<Key, Value>, rhs: Dictionary<Key, Value>) -> Dictionary<Key, Value> {
+    return Set(lhs.keys).union(Set(rhs.keys)).reduce([Key: Value]()) {
+        var ret = $0
+        ret[$1] = (lhs[$1] ?? Value.zero) * (rhs[$1] ?? Value.zero)
         return ret
     }
 }

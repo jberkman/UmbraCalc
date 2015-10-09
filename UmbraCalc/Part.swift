@@ -20,7 +20,14 @@ private let minEfficiency = 0.25
 
 private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
 
-class Part: NSManagedObject {
+class Part: ScopedEntity {
+
+    @NSManaged var count: Int16
+    @NSManaged var resourceConverters: NSSet?
+    @NSManaged var crew: NSSet?
+
+    @NSManaged private var primitivePartName: String?
+    @NSManaged private var primitiveVessel: Vessel?
 
     private dynamic var cachedPartNode: PartNode? {
         didSet {
@@ -29,11 +36,70 @@ class Part: NSManagedObject {
                 guard let tag = $0.tag where resourceConverterNodes[tag] != nil else { return true }
                 resourceConverterNodes[tag] = nil
                 return false
-                }.forEach { $0.deleteEntity() }
+                }.forEach {
+                    print("deleting:", $0)
+                    $0.deleteEntity()
+            }
             guard let managedObjectContext = managedObjectContext else { return }
             resourceConverterNodes.values.forEach {
                 _ = try? ResourceConverter(insertIntoManagedObjectContext: managedObjectContext).withTag($0.tag).withPart(self)
             }
+        }
+    }
+
+    var vessel: Vessel? {
+        get {
+            willAccessValueForKey("vessel")
+            let ret = primitiveVessel
+            didAccessValueForKey("vessel")
+            return ret
+        }
+        set {
+            willChangeValueForKey("vessel")
+            primitiveVessel = newValue
+            rootScope = newValue?.rootScope
+            didChangeValueForKey("vessel")
+        }
+    }
+
+    override var superscope: ScopedEntity? {
+        return vessel
+    }
+
+    override var rootScope: ScopedEntity? {
+        get {
+            return super.rootScope
+        }
+        set {
+            super.rootScope = newValue
+            crew?.forEach { ($0 as! ScopedEntity).rootScope = newValue }
+            resourceConverters?.forEach { ($0 as! ScopedEntity).rootScope = newValue }
+        }
+    }
+
+    override var scopeKey: String {
+        return [entity.name!, partName ?? "", creationDateScopeKey].joinWithSeparator("-")
+    }
+
+    override func setScopeNeedsUpdate() {
+        super.setScopeNeedsUpdate()
+        (crew as? Set<Crew>)?.forEach { $0.setScopeNeedsUpdate() }
+        (resourceConverters as? Set<ResourceConverter>)?.forEach { $0.setScopeNeedsUpdate() }
+    }
+
+    var partName: String? {
+        get {
+            willAccessValueForKey("partName")
+            let ret = primitivePartName
+            didAccessValueForKey("partName")
+            return ret
+        }
+        set {
+            willChangeValueForKey("partName")
+            primitivePartName = newValue
+            setScopeNeedsUpdate()
+            didChangeValueForKey("partName")
+            _ = partNode
         }
     }
 
@@ -67,10 +133,7 @@ class Part: NSManagedObject {
 
     @warn_unused_result
     func withPartName(partName: String?) -> Self {
-        let ret = withValue(partName, forKey: "partName")
-        // FIXME: how to override setting in swift?
-        _ = partNode
-        return ret
+        return withValue(partName, forKey: "partName")
     }
 
     var title: String? { return partNode?.title }

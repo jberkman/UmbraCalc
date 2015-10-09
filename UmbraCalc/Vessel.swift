@@ -18,15 +18,7 @@ import CoreData
 
 class Vessel: NamedEntity {
 
-    @warn_unused_result
-    func withName(name: String) -> Self {
-        return withValue(name, forKey: "name")
-    }
-
-    @warn_unused_result
-    func withParts<S: SequenceType where S.Generator.Element == Part>(parts: S) -> Self {
-        return withValue(Set(parts), forKey: "parts")
-    }
+    @NSManaged var parts: NSSet?
 
     private var partsSet: Set<Part> {
         return parts as? Set<Part> ?? Set()
@@ -34,6 +26,16 @@ class Vessel: NamedEntity {
 
     var containingKolonizingCollection: KolonizingCollectionType? {
         return nil
+    }
+
+    @warn_unused_result
+    func withParts<S: SequenceType where S.Generator.Element == Part>(parts: S) -> Self {
+        return withValue(Set(parts), forKey: "parts")
+    }
+
+    override func setScopeNeedsUpdate() {
+        super.setScopeNeedsUpdate()
+        partsSet.forEach { $0.setScopeNeedsUpdate() }
     }
 
 }

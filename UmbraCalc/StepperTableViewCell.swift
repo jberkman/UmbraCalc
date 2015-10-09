@@ -20,6 +20,9 @@ class StepperTableViewCell: UITableViewCell {
     @IBOutlet weak var stepperTextLabel: UILabel!
     @IBOutlet weak var stepperDetailTextLabel: UILabel!
 
+    @IBOutlet weak var leadingTextLabelConstraint: NSLayoutConstraint!
+    @IBOutlet weak var leadingDetailTextLabelConstraint: NSLayoutConstraint!
+
     private var minimumValue = 0.0
     private var maximumValue = 100.0
 

@@ -30,8 +30,16 @@ class DelegatedDataSource: NSObject {
         dataSources[section] = dataSource
     }
 
+    func unregisterDataSourceForSection(section: Int) {
+        dataSources[section] = nil
+    }
+
     func registerDataSource(dataSource: OffsettableDataSource) {
-        dataSources[dataSource.sectionOffset] = dataSource
+        registerDataSource(dataSource, forSection: dataSource.sectionOffset)
+    }
+
+    func unregisterDataSource(dataSource: OffsettableDataSource) {
+        unregisterDataSourceForSection(dataSource.sectionOffset)
     }
 
 }

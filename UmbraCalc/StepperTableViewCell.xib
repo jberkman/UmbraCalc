@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -35,17 +36,19 @@
                 <animations/>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="l9E-Qc-fhE" secondAttribute="bottom" constant="4" id="3at-7N-CFJ"/>
-                    <constraint firstItem="l9E-Qc-fhE" firstAttribute="leading" secondItem="ZSg-Qf-SW4" secondAttribute="leading" constant="15" id="PVe-1G-x1t"/>
+                    <constraint firstItem="l9E-Qc-fhE" firstAttribute="leading" secondItem="ZSg-Qf-SW4" secondAttribute="leadingMargin" constant="7" id="PVe-1G-x1t"/>
                     <constraint firstItem="bKw-pI-tCk" firstAttribute="top" secondItem="ZSg-Qf-SW4" secondAttribute="top" constant="5" id="REq-Ea-SOG"/>
                     <constraint firstItem="wRj-H5-wHD" firstAttribute="leading" secondItem="bKw-pI-tCk" secondAttribute="trailing" id="YpO-2I-kGw"/>
                     <constraint firstAttribute="trailing" secondItem="wRj-H5-wHD" secondAttribute="trailing" id="d01-on-sw5"/>
                     <constraint firstItem="wRj-H5-wHD" firstAttribute="leading" secondItem="l9E-Qc-fhE" secondAttribute="trailing" id="lOe-j4-WBS"/>
-                    <constraint firstItem="bKw-pI-tCk" firstAttribute="leading" secondItem="ZSg-Qf-SW4" secondAttribute="leading" constant="15" id="smB-w7-qWt"/>
+                    <constraint firstItem="bKw-pI-tCk" firstAttribute="leading" secondItem="ZSg-Qf-SW4" secondAttribute="leadingMargin" constant="7" id="smB-w7-qWt"/>
                     <constraint firstItem="wRj-H5-wHD" firstAttribute="centerY" secondItem="ZSg-Qf-SW4" secondAttribute="centerY" id="yaH-bR-GY1"/>
                 </constraints>
             </tableViewCellContentView>
             <animations/>
             <connections>
+                <outlet property="leadingDetailTextLabelConstraint" destination="PVe-1G-x1t" id="6g7-N1-6iZ"/>
+                <outlet property="leadingTextLabelConstraint" destination="smB-w7-qWt" id="IL2-13-SrL"/>
                 <outlet property="stepper" destination="wRj-H5-wHD" id="dP2-9M-aGX"/>
                 <outlet property="stepperDetailTextLabel" destination="l9E-Qc-fhE" id="Lnr-2L-vex"/>
                 <outlet property="stepperTextLabel" destination="bKw-pI-tCk" id="g5t-6X-Wbw"/>

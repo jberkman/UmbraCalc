@@ -20,16 +20,21 @@ private let defaultParts = [ "OKS_Aeroponics", "OKS_ColonyHub", "OKS_HabRing", "
 
 class Station: Vessel {
 
+    override var containingKolonizingCollection: KolonizingCollectionType? {
+        return self
+    }
+
     @warn_unused_result
     func withDefaultParts() throws -> Self {
         guard let managedObjectContext = managedObjectContext else { return self }
         return try withParts(defaultParts.map { try Part(insertIntoManagedObjectContext: managedObjectContext).withPartName($0) })
     }
 
-    override var containingKolonizingCollection: KolonizingCollectionType? {
-        return self
+    override func awakeFromInsert() {
+        super.awakeFromInsert()
+        primitiveRootScope = self
     }
-    
+
 }
 
 extension Station {

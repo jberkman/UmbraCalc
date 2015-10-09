@@ -14,6 +14,16 @@
 //
 
 private let minEfficiency = 0.25
+private let secondsPerDay = Double(60 * 60 * 6)
+
+extension ResourceConverting {
+
+    func outputResourcesWithInputConstraints(inputConstraints: [String: Double]) -> [String: Double] {
+        let constraint = Set(inputResources.keys).intersect(Set(inputConstraints.keys)).map({ inputConstraints[$0]! }).minElement() ?? 1
+        return outputResources * constraint
+    }
+
+}
 
 extension ResourceConvertingCollectionType {
 
@@ -27,6 +37,20 @@ extension ResourceConvertingCollectionType {
 
     var activeResourceConvertingCount: Int {
         return resourceConvertingCollection.map { $0.activeResourceConvertingCount }.reduce(0, combine: +)
+    }
+
+    func inputConstraintsWithOutputResources(outputResources: [String: Double]) -> [String: Double] {
+        return inputResources.reduce([:]) {
+            guard let output = outputResources[$1.0] else {
+                var ret = $0
+                ret[$1.0] = 0
+                return ret
+            }
+            guard output < $1.1 else { return $0 }
+            var ret = $0
+            ret[$1.0] = output / $1.1
+            return ret
+        }
     }
 
 }
@@ -65,7 +89,6 @@ extension CrewingCollectionType {
 
 }
 
-
 extension KolonizingCollectionType {
 
     var crewCapacity: Int {
@@ -78,6 +101,32 @@ extension KolonizingCollectionType {
 
     var workspaceCount: Int {
         return kolonizingCollection.map { $0.workspaceCount }.reduce(0, combine: +)
+    }
+
+    func logResources() {
+        let initialSupplies = [
+            "Machinery": Double.infinity,
+            "Plutonium-238": Double.infinity
+        ]
+
+        let crewInputs = crewingCollection.map { $0.inputResources }.reduce([:], combine: +)
+        let crewOutputs = crewingCollection.map { $0.outputResources }.reduce([:], combine: +)
+
+        print("inputs:", inputResources * secondsPerDay)
+        print("outputs:", outputResources * secondsPerDay)
+        print("crew inputs:", crewInputs * secondsPerDay)
+        print("crew outputs:", crewOutputs * secondsPerDay)
+
+        _ = (0 ..< 5).reduce(crewOutputs + initialSupplies) {
+            let inputConstraints = inputConstraintsWithOutputResources($0)
+            let constrainedOutputs = resourceConvertingCollection.map { $0.outputResourcesWithInputConstraints(inputConstraints) }.reduce([:], combine: +)
+
+            print("\ninput constraints[\($1)]:", inputConstraints)
+            print("constrained outputs[\($1)]:", constrainedOutputs * secondsPerDay)
+            print("net[\($1)]:", (constrainedOutputs + crewOutputs - inputResources * inputConstraints - crewInputs) * secondsPerDay)
+
+            return constrainedOutputs + crewOutputs + initialSupplies
+        }
     }
 
 }

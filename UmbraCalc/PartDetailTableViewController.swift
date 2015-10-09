@@ -20,73 +20,6 @@ private let efficiencyPart = "EfficiencyPart"
 
 class PartDetailTableViewController: UITableViewController {
 
-    private class ResourceConverterDataSource: FetchedDataSource<ResourceConverter, UITableViewCell> {
-
-        private var part: Part? {
-            didSet {
-                managedObjectContext = part?.managedObjectContext
-                fetchRequest.predicate = part == nil ? nil : NSPredicate(format: "part = %@", part!)
-            }
-        }
-
-        override init(sectionOffset: Int = 0) {
-            super.init(sectionOffset: sectionOffset)
-            reuseIdentifier = "resourceConverterCell"
-            fetchRequest.sortDescriptors = [ResourceConverter.nameSortDescriptor]
-        }
-
-        private func textLabelForModel(model: ResourceConverterDataSource.Model) -> String? {
-            guard model.part?.crewCapacity == 0 else { return model.name }
-            let capacity = model.part?.count ?? 0
-            return "\(model.displayName) (\(model.activeCount) of \(capacity))"
-        }
-
-        private override func configureCell(cell: ResourceConverterDataSource.Cell, forModel resourceConverter: Model) {
-            cell.textLabel?.text = textLabelForModel(resourceConverter)
-
-            let inputs = resourceConverter.inputResources.keys.sort().joinWithSeparator(" + ")
-            let outputs = resourceConverter.outputResources.keys.sort().joinWithSeparator(" + ")
-            cell.detailTextLabel?.text = "\(inputs) -> \(outputs)"
-
-            if resourceConverter.part?.crewed == true {
-                if !(cell.accessoryView is UISwitch) {
-                    let toggle = UISwitch()
-                    toggle.addTarget(self, action: "toggleDidChangeValue:", forControlEvents: .ValueChanged)
-                    cell.accessoryView = toggle
-                }
-                (cell.accessoryView as! UISwitch).on = resourceConverter.activeCount > 0
-            } else {
-                if !(cell.accessoryView is UIStepper) {
-                    let stepper = UIStepper()
-                    stepper.addTarget(self, action: "stepperDidChangeValue:", forControlEvents: .ValueChanged)
-                    cell.accessoryView = stepper
-                }
-                let stepper = cell.accessoryView as! UIStepper
-                stepper.value = Double(resourceConverter.activeCount)
-                stepper.maximumValue = Double(resourceConverter.part?.count ?? 0)
-            }
-
-            cell.selectionStyle = .None
-        }
-
-        private func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-            return "Activating converters slightly reduces crew efficiency of this station or kolony."
-        }
-
-        @objc private func toggleDidChangeValue(sender: UISwitch) {
-            guard let indexPath = tableView.indexPathForCellSubview(sender) else { return }
-            modelAtIndexPath(indexPath).activeCount = sender.on ? 1 : 0
-        }
-
-        @objc private func stepperDidChangeValue(sender: UIStepper) {
-            guard let indexPath = tableView.indexPathForCellSubview(sender) else { return }
-            let resourceConverter = modelAtIndexPath(indexPath)
-            resourceConverter.activeCount = Int16(sender.value)
-            tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.text = textLabelForModel(resourceConverter)
-        }
-        
-    }
-
     private class EfficiencyPartDataSource: NSObject, OffsettableDataSource {
 
         private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
@@ -142,23 +75,27 @@ class PartDetailTableViewController: UITableViewController {
     }
 
     @IBOutlet weak var careerFactorLabel: UILabel!
-    @IBOutlet weak var crewCell: UITableViewCell!
+    @IBOutlet weak var crewCapacityLabel: UILabel!
     @IBOutlet weak var crewEfficiencyLabel: UILabel!
     @IBOutlet weak var efficiencyLabel: UILabel!
-    @IBOutlet weak var livingSpaceCountLabel: UILabel!
+    @IBOutlet weak var happinessLabel: UILabel!
     @IBOutlet weak var partsEfficiencyLabel: UILabel!
-    @IBOutlet weak var workspaceCountLabel: UILabel!
 
     private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
 
     private lazy var dataSource: StoryboardDelegatedDataSource = StoryboardDelegatedDataSource(dataSource: self)
-    private lazy var resourceConverterDataSource = ResourceConverterDataSource(sectionOffset: 1)
-    private lazy var efficiencyPartDataSource = EfficiencyPartDataSource(sectionOffset: 4)
+    private lazy var efficiencyPartDataSource = EfficiencyPartDataSource(sectionOffset: 1)
+    private lazy var crewDataSource = CrewSelectionDataSource(sectionOffset: 7)
 
     var part: Part? {
         didSet {
-            resourceConverterDataSource.part = part
+            crewDataSource.part = part
             efficiencyPartDataSource.part = part
+            if part?.efficiencyFactors.isEmpty == false {
+                dataSource.registerDataSource(efficiencyPartDataSource)
+            } else {
+                dataSource.unregisterDataSource(efficiencyPartDataSource)
+            }
             updateView()
         }
     }
@@ -166,12 +103,12 @@ class PartDetailTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: resourceConverterDataSource.reuseIdentifier)
-        dataSource.registerDataSource(resourceConverterDataSource)
-        resourceConverterDataSource.tableView = tableView
+        tableView.registerClass(Value1TableViewCell.self, forCellReuseIdentifier: crewDataSource.reuseIdentifier)
+        dataSource.registerDataSource(crewDataSource)
+        crewDataSource.tableView = tableView
+        crewDataSource.fetchRequest.sortDescriptors = [Crew.nameSortDescriptor]
 
         tableView.registerClass(Value1TableViewCell.self, forCellReuseIdentifier: efficiencyPartDataSource.reuseIdentifier)
-        dataSource.registerDataSource(efficiencyPartDataSource)
 
         tableView.dataSource = dataSource
     }
@@ -179,15 +116,23 @@ class PartDetailTableViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         updateView()
-        if resourceConverterDataSource.fetchedResultsController == nil {
-            resourceConverterDataSource.reloadData()
+        if crewDataSource.fetchedResultsController == nil {
+            crewDataSource.reloadData()
         }
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
-        case Crew.showListSegueIdentifier:
-            (segue.destinationViewController as! CrewSelectionTableViewController).part = part
+        case Crew.addSegueIdentifier:
+            let navigationController = segue.destinationViewController as! UINavigationController
+            let crewDetail = navigationController.viewControllers.first as! CrewDetailTableViewController
+
+            let context = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+            context.parentContext = part?.managedObjectContext
+
+            crewDetail.crew = try? Crew(insertIntoManagedObjectContext: context).withCareer(Crew.pilotTitle)
+            crewDetail.navigationItem.leftBarButtonItem = crewDetail.cancelButtonItem
+            crewDetail.navigationItem.rightBarButtonItem = crewDetail.saveButtonItem
 
         default:
             break
@@ -208,44 +153,44 @@ class PartDetailTableViewController: UITableViewController {
         guard isViewLoaded() else { return }
         navigationItem.title = part?.title
 
-        let crewed = part?.crewed == true
-        crewCell.detailTextLabel?.text = crewed ? "\(part?.crew?.count ?? 0) of \(part?.crewCapacity ?? 0)" : "Uncrewed"
-        crewCell.accessoryType = crewed ? .DisclosureIndicator : .None
-        crewCell.selectionStyle = crewed ? .Default : .None
-
-        livingSpaceCountLabel.text = String(part?.livingSpaceCount ?? 0)
-        workspaceCountLabel.text = String(part?.workspaceCount ?? 0)
         careerFactorLabel.text = percentFormatter.stringFromNumber(part?.careerFactor ?? 0)
+        crewCapacityLabel.text = "\(part?.crewCount ?? 0) of \(part?.crewCapacity ?? 0)"
         crewEfficiencyLabel.text = percentFormatter.stringFromNumber(part?.crewingEfficiency ?? 0)
+        happinessLabel.text = percentFormatter.stringFromNumber(part?.vessel?.happiness ?? 0)
         partsEfficiencyLabel.text = percentFormatter.stringFromNumber(part?.kolonizingEfficiency ?? 0)
         efficiencyLabel.text = percentFormatter.stringFromNumber(part?.efficiency ?? 0)
 
-        if let kolony = (part?.vessel as? Base)?.kolony {
-            print("inputs:", kolony.inputResources * 60 * 60 * 6)
-            print("outputs:", kolony.outputResources * 60 * 60 * 6)
-        } else {
-            print("inputs:", (part?.vessel?.inputResources ?? [:]) * 60 * 60 * 6)
-            print("outputs:", (part?.vessel?.outputResources ?? [:]) * 60 * 60 * 6)
-        }
+        part?.crewableCollection?.containingKolonizingCollection?.logResources()
     }
 
 }
 
 extension PartDetailTableViewController {
 
-//    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-//        switch indexPath.section {
-//        case resource.sectionOffset:
-//            performSegueWithIdentifier(Base.showSegueIdentifier, sender: tableView.cellForRowAtIndexPath(indexPath))
-//
-//        default:
-//            break
-//        }
-//    }
+    override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        switch indexPath.section {
+        case crewDataSource.sectionOffset:
+            return crewDataSource.tableView(tableView, shouldHighlightRowAtIndexPath: indexPath)
+
+        default:
+            return false
+        }
+    }
+
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        switch indexPath.section {
+        case crewDataSource.sectionOffset:
+            crewDataSource.tableView(tableView, didSelectRowAtIndexPath: indexPath)
+            updateView()
+
+        default:
+            break
+        }
+    }
 
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         switch indexPath.section {
-        case resourceConverterDataSource.sectionOffset, efficiencyPartDataSource.sectionOffset:
+        case crewDataSource.sectionOffset, efficiencyPartDataSource.sectionOffset:
             return 44
 
         default:
@@ -259,6 +204,21 @@ extension PartDetailTableViewController {
 
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return false
+    }
+
+}
+
+extension PartDetailTableViewController {
+
+    @IBAction func cancelCrew(segue: UIStoryboardSegue) { }
+
+    @IBAction func saveCrew(segue: UIStoryboardSegue) {
+        do {
+            try  (segue.sourceViewController as! CrewDetailTableViewController).managedObjectContext?.save()
+        } catch {
+            let nserror = error as NSError
+            NSLog("Couldn't save: \(nserror), \(nserror.userInfo)")
+        }
     }
 
 }

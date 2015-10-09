@@ -20,6 +20,41 @@ private let defaultParts = [ "MKV_AgModule", "MKV_HabModule", "MKV_Lander", "MKV
 
 class Base: Vessel {
 
+    @NSManaged private var primitiveKolony: Kolony?
+
+    var kolony: Kolony? {
+        get {
+            willAccessValueForKey("kolony")
+            let ret = primitiveKolony
+            didAccessValueForKey("kolony")
+            return ret
+        }
+        set {
+            willChangeValueForKey("kolony")
+            primitiveKolony = newValue
+            rootScope = newValue?.rootScope
+            didChangeValueForKey("kolony")
+        }
+    }
+
+    override var rootScope: ScopedEntity? {
+        get {
+            return super.rootScope
+        }
+        set {
+            super.rootScope = newValue
+            parts?.forEach { ($0 as! ScopedEntity).rootScope = newValue }
+        }
+    }
+
+    override var superscope: ScopedEntity? {
+        return kolony
+    }
+
+    override var containingKolonizingCollection: KolonizingCollectionType? {
+        return kolony
+    }
+
     @warn_unused_result
     func withKolony(kolony: Kolony?) -> Self {
         return withValue(kolony, forKey: "kolony")
@@ -31,10 +66,6 @@ class Base: Vessel {
         return try withParts(defaultParts.map { try Part(insertIntoManagedObjectContext: managedObjectContext).withPartName($0) })
     }
 
-    override var containingKolonizingCollection: KolonizingCollectionType? {
-        return kolony
-    }
-    
 }
 
 extension Base {

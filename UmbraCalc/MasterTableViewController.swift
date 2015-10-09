@@ -39,17 +39,13 @@ class MasterTableViewController: UITableViewController {
             } else if let vessel = model as? Station {
                 cell.textLabel?.text = vessel.displayName
                 cell.detailTextLabel?.text = "\(vessel.crewCount) Crew"
-            } else if let crew = model as? Crew {
-                cell.textLabel?.text = crew.crewDisplayName
-                cell.detailTextLabel?.text = crew.career
             }
             cell.accessoryType = splitAccessoryType
         }
 
     }
 
-    @IBOutlet weak var entitySegmentedControl: UISegmentedControl?
-    @IBOutlet weak var addButton: UIBarButtonItem?
+    @IBOutlet weak var entitySegmentedControl: UISegmentedControl!
 
     private lazy var dataSource: DataSource = { return DataSource(viewController: self) }()
 
@@ -69,10 +65,12 @@ class MasterTableViewController: UITableViewController {
         }
     }
 
-    private var displayedEntityName: String = "" {
-        didSet {
-            updateEntity()
-        }
+    private var orbitalSegmentSelected: Bool {
+        return entitySegmentedControl.selectedSegmentIndex == 0
+    }
+
+    private var displayedEntityName: String {
+        return orbitalSegmentSelected ? Station.modelName : Kolony.modelName
     }
 
     private var displayedEntityDescription: NSEntityDescription? {
@@ -83,7 +81,7 @@ class MasterTableViewController: UITableViewController {
             }
             return entities.lazy.filter { $0.name == self.displayedEntityName }.first
         }
-        guard let context = dataSource.managedObjectContext else { return nil }
+        guard let context = managedObjectContext else { return nil }
         return descriptionWithManagedObjectContext(context)
     }
 
@@ -106,7 +104,7 @@ class MasterTableViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         guard dataSource.fetchedResultsController == nil else { return }
-        displayedEntityName = Kolony.modelName
+        updateEntity()
     }
 
     override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
@@ -122,42 +120,26 @@ class MasterTableViewController: UITableViewController {
         }
     }
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard let cell = tableView.cellForRowAtIndexPath(indexPath) else { return }
-        performSegueWithIdentifier(displayedEntityName.showSegueIdentifier, sender: cell)
-    }
-
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         let destinationViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first
 
         switch segue.identifier! {
-        case Crew.showSegueIdentifier:
+        case "Detail".showSegueIdentifier:
             guard let indexPath = tableView.indexPathForSegueSender(sender) else { return }
-            let controller = destinationViewController as! CrewDetailTableViewController
-            controller.crew = dataSource.modelAtIndexPath(indexPath) as? Crew
-            selectedEntity = controller.crew
-
-        case Kolony.showSegueIdentifier:
-            guard let indexPath = tableView.indexPathForSegueSender(sender) else { return }
-            let controller = destinationViewController as! KolonyDetailTableViewController
-            controller.kolony = dataSource.modelAtIndexPath(indexPath) as? Kolony
-            selectedEntity = controller.kolony
-
-        case Station.showSegueIdentifier:
-            guard let indexPath = tableView.indexPathForSegueSender(sender) else { return }
-            let controller = destinationViewController as! VesselDetailTableViewController
-            controller.vessel = dataSource.modelAtIndexPath(indexPath) as? Vessel
-            selectedEntity = controller.vessel
+            let controller = destinationViewController as! KolonizedDetailTableViewController
+            controller.namedEntity = dataSource.modelAtIndexPath(indexPath)
+            selectedEntity = controller.namedEntity
 
         default:
             break
         }
     }
 
-    private func updateEntity() {
+    @IBAction func updateEntity() {
         dataSource.fetchRequest.entity = displayedEntityDescription
         guard isViewLoaded() else { return }
         dataSource.reloadData()
+        updateDetailView()
     }
 
     private func updateDetailView() {
@@ -168,7 +150,7 @@ class MasterTableViewController: UITableViewController {
             return
         }
         let indexPath = NSIndexPath(forItem: 0, inSection: 0)
-        performSegueWithIdentifier(displayedEntityName.showSegueIdentifier, sender: indexPath)
+        performSegueWithIdentifier("Detail".showSegueIdentifier, sender: indexPath)
         tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
     }
 
@@ -178,28 +160,16 @@ extension MasterTableViewController {
 
     @IBAction func addModel(sender: UIBarButtonItem) {
         guard let managedObjectContext = managedObjectContext else { return }
-        let model: DataSource.Model!
-
-        switch displayedEntityName {
-        case Crew.modelName:
-            model = try? Crew(insertIntoManagedObjectContext: managedObjectContext).withCareer(Crew.engineerTitle)
-
-        case Kolony.modelName:
-            model = try? Kolony(insertIntoManagedObjectContext: managedObjectContext).withBases([Base(insertIntoManagedObjectContext: managedObjectContext).withDefaultParts()])
-
-        case Station.modelName:
-            model = try? Station(insertIntoManagedObjectContext: managedObjectContext).withDefaultParts()
-
-        default:
-            fatalError("Unhandled model: \(displayedEntityName)")
-        }
+        let model: DataSource.Model! = orbitalSegmentSelected
+            ? try? Station(insertIntoManagedObjectContext: managedObjectContext) //.withDefaultParts()
+            : try? Kolony(insertIntoManagedObjectContext: managedObjectContext).withBases([Base(insertIntoManagedObjectContext: managedObjectContext) /*.withDefaultParts()*/])
 
         guard model != nil else { return }
         managedObjectContext.processPendingChanges()
 
         guard let indexPath = dataSource.indexPathForModel(model) else { return }
         tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
-        performSegueWithIdentifier(displayedEntityName.showSegueIdentifier, sender: indexPath)
+        performSegueWithIdentifier("Detail".showSegueIdentifier, sender: indexPath)
     }
     
     @objc private func willDeleteEntityWithNotification(notification: NSNotification) {
@@ -218,15 +188,6 @@ extension MasterTableViewController {
 
         performSegueWithIdentifier(displayedEntityName.showSegueIdentifier, sender: indexPath)
         tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
-    }
-
-    @IBAction func segmentDidChange(sender: UISegmentedControl) {
-        switch sender.selectedSegmentIndex {
-        case 0: displayedEntityName = Kolony.modelName
-        case 1: displayedEntityName = Station.modelName
-        case 2: displayedEntityName = Crew.modelName
-        default: break
-        }
     }
 
 }

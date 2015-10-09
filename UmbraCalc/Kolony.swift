@@ -18,9 +18,15 @@ import CoreData
 
 class Kolony: NamedEntity {
 
-    @warn_unused_result
-    func withName(name: String) -> Self {
-        return withValue(name, forKey: "name")
+    @NSManaged var bases: NSSet?
+
+    private var basesSet: Set<Base> {
+        return bases as? Set<Base> ?? Set()
+    }
+
+    override func awakeFromInsert() {
+        super.awakeFromInsert()
+        primitiveRootScope = self
     }
 
     @warn_unused_result
@@ -28,8 +34,9 @@ class Kolony: NamedEntity {
         return withValue(Set(bases), forKey: "bases")
     }
 
-    private var basesSet: Set<Base> {
-        return bases as? Set<Base> ?? Set()
+    override func setScopeNeedsUpdate() {
+        super.setScopeNeedsUpdate()
+        basesSet.forEach { $0.setScopeNeedsUpdate() }
     }
 
 }
