@@ -159,8 +159,6 @@ class PartDetailTableViewController: UITableViewController {
         happinessLabel.text = percentFormatter.stringFromNumber(part?.vessel?.happiness ?? 0)
         partsEfficiencyLabel.text = percentFormatter.stringFromNumber(part?.kolonizingEfficiency ?? 0)
         efficiencyLabel.text = percentFormatter.stringFromNumber(part?.efficiency ?? 0)
-
-        part?.crewableCollection?.containingKolonizingCollection?.logResources()
     }
 
 }

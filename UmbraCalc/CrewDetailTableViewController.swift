@@ -83,16 +83,16 @@ class CrewDetailTableViewController: UITableViewController {
         updateStars()
     }
 
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//        guard let identifier = segue.identifier else { return }
-//        switch identifier {
-//        case Crew.saveSegueIdentifier:
-//            crew?.name = nameTextField.text
-//
-//        default:
-//            break
-//        }
-//    }
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        guard let identifier = segue.identifier else { return }
+        switch identifier {
+        case Crew.saveSegueIdentifier:
+            crew?.name = nameTextField.text
+
+        default:
+            break
+        }
+    }
 
     private func presentCareerSheet() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)

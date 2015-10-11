@@ -191,8 +191,6 @@ class VesselDetailTableViewController: UITableViewController {
         livingSpacesLabel.text = String(vessel?.livingSpaceCount ?? 0)
         workspacesLabel.text = String(vessel?.workspaceCount ?? 0)
         happinessLabel.text = percentFormatter.stringFromNumber(vessel?.happiness ?? 0)
-
-        vessel?.containingKolonizingCollection?.logResources()
     }
 
 }

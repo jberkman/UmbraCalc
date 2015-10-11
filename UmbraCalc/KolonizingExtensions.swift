@@ -14,7 +14,8 @@
 //
 
 private let minEfficiency = 0.25
-private let secondsPerDay = Double(60 * 60 * 6)
+let secondsPerDay = Double(60 * 60 * 6)
+let secondsPerYear = secondsPerDay * 426
 
 extension ResourceConverting {
 
@@ -103,8 +104,9 @@ extension KolonizingCollectionType {
         return kolonizingCollection.map { $0.workspaceCount }.reduce(0, combine: +)
     }
 
-    func logResources() {
+    var netResourceConversion: [String: Double] {
         let initialSupplies = [
+            "Fertilizer": Double.infinity,
             "Machinery": Double.infinity,
             "Plutonium-238": Double.infinity
         ]
@@ -117,15 +119,32 @@ extension KolonizingCollectionType {
         print("crew inputs:", crewInputs * secondsPerDay)
         print("crew outputs:", crewOutputs * secondsPerDay)
 
-        _ = (0 ..< 5).reduce(crewOutputs + initialSupplies) {
-            let inputConstraints = inputConstraintsWithOutputResources($0)
+
+        let iterationCount = 5 - 1
+        return (0 ... iterationCount).reduce(crewOutputs) {
+            let inputConstraints = initialSupplies.reduce(inputConstraintsWithOutputResources($0 + initialSupplies)) {
+                guard $0[$1.0] == nil else { return $0 }
+                var ret = $0
+                ret[$1.0] = 1
+                return ret
+            }
+
+
+//            let inputConstraints = Set(inputResources.keys).intersect(Set(initialInputConstraints.keys)).map({ initialInputConstraints[$0]! }).minElement() ?? 1
             let constrainedOutputs = resourceConvertingCollection.map { $0.outputResourcesWithInputConstraints(inputConstraints) }.reduce([:], combine: +)
 
-            print("\ninput constraints[\($1)]:", inputConstraints)
-            print("constrained outputs[\($1)]:", constrainedOutputs * secondsPerDay)
-            print("net[\($1)]:", (constrainedOutputs + crewOutputs - inputResources * inputConstraints - crewInputs) * secondsPerDay)
+            if $1 < iterationCount {
+                return constrainedOutputs + crewOutputs
+            }
 
-            return constrainedOutputs + crewOutputs + initialSupplies
+            print("constrainedOutputs:", constrainedOutputs * secondsPerDay)
+            print("crewOutputs:", crewOutputs * secondsPerDay)
+            print("inputConstraints:", inputConstraints)
+            print("inputResources:", inputResources * inputConstraints * secondsPerDay)
+            print("crewInputs:", crewInputs * secondsPerDay)
+            print("net:", (constrainedOutputs + crewOutputs - inputResources * inputConstraints - crewInputs) * secondsPerDay)
+
+            return constrainedOutputs + crewOutputs - inputResources * inputConstraints - crewInputs
         }
     }
 

@@ -28,12 +28,12 @@ class KolonizedDataSource: ScopedDataSource {
 
     override var tableView: UITableView! {
         didSet {
-            tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: "baseCell")
-            tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: "uncrewedPartCell")
-            tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: "uncrewedResourceConverterCell")
-            tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: "crewedPartCell")
-            tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: "crewedResourceConverterCell")
-            tableView.registerClass(Value1TableViewCell.self, forCellReuseIdentifier: "crewCell")
+//            tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: "baseCell")
+//            tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: "uncrewedPartCell")
+//            tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: "uncrewedResourceConverterCell")
+//            tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: "crewedPartCell")
+//            tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: "crewedResourceConverterCell")
+//            tableView.registerClass(Value1TableViewCell.self, forCellReuseIdentifier: "crewCell")
         }
     }
 
