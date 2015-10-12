@@ -26,6 +26,7 @@
 		166F0B381BC64D4D000A4D3E /* CrewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B371BC64D4D000A4D3E /* CrewDataSource.swift */; settings = {ASSET_TAGS = (); }; };
 		166F0B401BC765F7000A4D3E /* ScopedEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B3E1BC765F6000A4D3E /* ScopedEntity.swift */; settings = {ASSET_TAGS = (); }; };
 		166F0B691BC797C1000A4D3E /* ScopedDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B681BC797C1000A4D3E /* ScopedDataSource.swift */; settings = {ASSET_TAGS = (); }; };
+		1684F21C1BCB3469002B965F /* StaticDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1684F21B1BCB3469002B965F /* StaticDataSource.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9571BB6813400EDBCF7 /* VesselTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9561BB6813400EDBCF7 /* VesselTests.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9631BB7021C00EDBCF7 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E95B1BB7021C00EDBCF7 /* Station.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9681BB7021C00EDBCF7 /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9601BB7021C00EDBCF7 /* Base.swift */; settings = {ASSET_TAGS = (); }; };
@@ -94,6 +95,7 @@
 		166F0B371BC64D4D000A4D3E /* CrewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrewDataSource.swift; sourceTree = "<group>"; };
 		166F0B3E1BC765F6000A4D3E /* ScopedEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopedEntity.swift; sourceTree = "<group>"; };
 		166F0B681BC797C1000A4D3E /* ScopedDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopedDataSource.swift; sourceTree = "<group>"; };
+		1684F21B1BCB3469002B965F /* StaticDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StaticDataSource.swift; sourceTree = "<group>"; };
 		1699E9561BB6813400EDBCF7 /* VesselTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VesselTests.swift; sourceTree = "<group>"; };
 		1699E95B1BB7021C00EDBCF7 /* Station.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
 		1699E9601BB7021C00EDBCF7 /* Base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Base.swift; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 		1699E9901BB8D0F900EDBCF7 /* DataSources */ = {
 			isa = PBXGroup;
 			children = (
+				1684F21B1BCB3469002B965F /* StaticDataSource.swift */,
 				166F0B371BC64D4D000A4D3E /* CrewDataSource.swift */,
 				164E38B91BC8D2C2001DD649 /* CrewSelectionDataSource.swift */,
 				16BB66801BC4DEB2009DD819 /* DelegatedDataSource.swift */,
@@ -537,6 +540,7 @@
 				164E38BA1BC8D2C3001DD649 /* CrewSelectionDataSource.swift in Sources */,
 				1654A22B1BBE6B7700623F50 /* SelectionDataSource.swift in Sources */,
 				16FE814D1BC39A8900F1A56C /* ResourceConverterNode.swift in Sources */,
+				1684F21C1BCB3469002B965F /* StaticDataSource.swift in Sources */,
 				16B7AD261BB53793006DFA4E /* PartNode.swift in Sources */,
 				166F0B401BC765F7000A4D3E /* ScopedEntity.swift in Sources */,
 				16BB66851BC4F4BC009DD819 /* StepperTableViewCell.swift in Sources */,

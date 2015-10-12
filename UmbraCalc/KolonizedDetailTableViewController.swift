@@ -23,43 +23,61 @@ private let workspacesCellIdentifier = "workspacesCell"
 
 class KolonizedDetailTableViewController: UIViewController {
 
-    private struct Row {
-        let reuseIdentifier: String
-        let configureCell: (cell: UITableViewCell, indexPath: NSIndexPath) -> Void
-    }
+    private class ResupplyDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
 
-    private struct Section {
-        let footerTitle: String?
-        let rows: [Row]?
-        let dataSource: UITableViewDataSource?
+        private var resourceNames: [String] = []
 
-        init(footerTitle: String?, rows: [Row]) {
-            self.footerTitle = footerTitle
-            self.rows = rows
-            dataSource = nil
+        var resources: [String: Double] = [:] {
+            didSet {
+                resourceNames = resources.keys.sort()
+            }
         }
 
-        init(footerTitle: String?, dataSource: UITableViewDataSource) {
-            self.footerTitle = footerTitle
-            self.dataSource = dataSource
-            rows = nil
+        @objc func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            return max(1, resources.count)
         }
+
+        @objc func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+            guard !resources.isEmpty else {
+                return tableView.dequeueReusableCellWithIdentifier("noneCell", forIndexPath: indexPath)
+            }
+            let cell = tableView.dequeueReusableCellWithIdentifier("resourceCell", forIndexPath: indexPath)
+            cell.textLabel!.text = resourceNames[indexPath.row]
+            cell.detailTextLabel!.text = String(resources[resourceNames[indexPath.row]]!)
+            return cell
+        }
+
+        @objc func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+            return "Yearly Resupply Required"
+        }
+
+        @objc func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+            return 0
+        }
+
     }
 
-    private lazy var sections: [Section] = [
-        Section(footerTitle: nil, rows: [
+    @IBOutlet weak var resupplyTableView: UITableView!
+    @IBOutlet weak var resupplyHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var seperatorView: UIView!
+    @IBOutlet weak var seperatorHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var stackView: UIView!
+    @IBOutlet weak var tableView: UITableView!
+
+    private var hasAppeared = false
+
+    private lazy var resupplyDataSource = ResupplyDataSource()
+
+    private lazy var staticDataSource: StaticDataSource = StaticDataSource(sections: [
+        Section(rows: [
             Row(reuseIdentifier: nameCellIdentifier) { [weak self] cell, _ in
                 guard let textField = cell.contentView.subviews.first as? UITextField else { return }
                 textField.text = self?.namedEntity?.name
                 textField.delegate = self
             }
-            ]),
+            ], headerTitle: nil, footerTitle: nil),
 
-        Section(footerTitle: "Activating converters slightly reduces crew efficiency of this station or kolony.\n\n" +
-            "IMPORTANT: Resource converters on efficiency parts should be deactivated when used as efficiency parts.",
-            dataSource: self.kolonizedDataSource),
-
-        Section(footerTitle: "Crew efficiency is improved by adding workspaces and living spaces, and having at least five crewmembers on the station or kolony.", rows: [
+        Section(rows: [
             Row(reuseIdentifier: crewCapacityCellIdentifier) { [weak self] cell, _ in
                 cell.detailTextLabel!.text = String(self?.kolonizingCollection?.crewCapacity ?? 0)
             },
@@ -69,35 +87,27 @@ class KolonizedDetailTableViewController: UIViewController {
             Row(reuseIdentifier: workspacesCellIdentifier) { [weak self] cell, _ in
                 cell.detailTextLabel!.text = String(self?.kolonizingCollection?.workspaceCount ?? 0)
             }
-            ])
-    ]
+            ], headerTitle: nil,
+            footerTitle: "Crew efficiency is improved by adding workspaces and living spaces, and having at least five crewmembers on the station or kolony."),
 
-    private func indexPathForRowWithReuseIdentifier(reuseIdentifier: String) -> NSIndexPath? {
-        for (sectionIndex, section) in sections.enumerate() {
-            guard let rows = section.rows else { continue }
-            for (rowIndex, row) in rows.enumerate() {
-                if row.reuseIdentifier == reuseIdentifier {
-                    return NSIndexPath(forRow: rowIndex, inSection: sectionIndex)
-                }
-            }
-        }
-        return nil
-    }
+        Section(rows: [], headerTitle: nil, footerTitle: nil)
+        ])
 
-    @IBOutlet weak var resupplyStackView: UIStackView!
-    @IBOutlet weak var tableView: UITableView!
+    private lazy var kolonizedDataSource: KolonizedDataSource = KolonizedDataSource(sectionOffset: 2)
 
-    private var hasAppeared = false
+    private lazy var dataSource: StoryboardDelegatedDataSource! = StoryboardDelegatedDataSource(dataSource: self.staticDataSource)
 
-    private lazy var dataSource: StoryboardDelegatedDataSource = StoryboardDelegatedDataSource(dataSource: self)
-    private lazy var kolonizedDataSource: KolonizedDataSource = KolonizedDataSource(sectionOffset: 1)
+    //footerTitle: "Activating converters slightly reduces crew efficiency of this station or kolony.\n\n" +
+    //            "IMPORTANT: Resource converters on efficiency parts should be deactivated when used as efficiency parts.",
+
 
     private var nameTextField: UITextField? {
-        guard let indexPath = indexPathForRowWithReuseIdentifier(nameCellIdentifier) else { return nil }
+        guard let indexPath = staticDataSource.indexPathForRowWithReuseIdentifier(nameCellIdentifier) else { return nil }
         return tableView.cellForRowAtIndexPath(indexPath)?.contentView.subviews.first as? UITextField
     }
 
-    var namedEntity: NamedEntity? {
+    // marking dynamic fixes crash at runtime?!
+    dynamic var namedEntity: NamedEntity? {
         get {
             return kolonizedDataSource.rootScope as? NamedEntity
         }
@@ -112,6 +122,9 @@ class KolonizedDetailTableViewController: UIViewController {
     }
 
     var station: Station? {
+        print(kolonizedDataSource)
+        print(kolonizedDataSource.rootScope)
+        print(kolonizedDataSource.rootScope as? Station)
         return kolonizedDataSource.rootScope as? Station
     }
 
@@ -135,16 +148,21 @@ class KolonizedDetailTableViewController: UIViewController {
 
         tableView.dataSource = dataSource
         tableView.delegate = self
+
+        resupplyTableView.dataSource = resupplyDataSource
     }
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         updateView()
-        if kolonizedDataSource.fetchedResultsController == nil {
-            kolonizedDataSource.reloadData()
+        seperatorHeightConstraint.constant = 1 / traitCollection.displayScale
+        guard !hasAppeared else {
+            guard let indexPath = tableView.indexPathForSelectedRow else { return }
+            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            return
         }
-        guard let indexPath = tableView.indexPathForSelectedRow else { return }
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        kolonizedDataSource.reloadData()
+        resupplyTableView.reloadData()
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -194,56 +212,32 @@ class KolonizedDetailTableViewController: UIViewController {
 
         updateTitle()
 
-        tableView.indexPathsForVisibleRows?.forEach {
-            guard $0 != indexPath, let cell = tableView.cellForRowAtIndexPath($0) else { return }
-            guard let dataSource = sections[$0.section].dataSource else {
-                sections[$0.section].rows![$0.row].configureCell(cell: cell, indexPath: $0)
-                return
-            }
-            guard let dataSource2 = dataSource as? KolonizedDataSource else {
-                tableView.reloadRowsAtIndexPaths([$0], withRowAnimation: .Fade)
-                return
-            }
-            dataSource2.configureCell(cell, forModel: dataSource2.modelAtIndexPath($0))
+        if let indexPaths = tableView.indexPathsForVisibleRows?.filter({ $0 != indexPath }) {
+            tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
         }
 
-        UIView.animateWithDuration(0.2) {
-            self.resupplyStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-            self.kolonizingCollection?.netResourceConversion
-                .filter { $0.1 < 0 }
-                .map {
-                    let label = UILabel()
-                    label.text = "\($0.0): \(-$0.1 * secondsPerYear)"
-                    return label
-                }
-                .forEach { self.resupplyStackView.addArrangedSubview($0) }
-            self.resupplyStackView.hidden = self.resupplyStackView.arrangedSubviews.isEmpty
+        resupplyDataSource.resources = kolonizingCollection?.netResourceConversion.reduce([:]) {
+            guard $1.1 < 0 else { return $0 }
+            var ret = $0
+            ret![$1.0] = -$1.1 * secondsPerYear
+            return ret
+            } ?? [:]
+
+        let resourceCount = resupplyDataSource.resources.count
+        resupplyTableView.scrollEnabled = resourceCount > 1
+        resupplyTableView.reloadData()
+        seperatorView.hidden = !resupplyTableView.scrollEnabled
+
+        if resupplyTableView.scrollEnabled {
+            resupplyHeightConstraint.constant = 44 * 3
+        } else {
+            resupplyTableView.layoutIfNeeded()
+            resupplyHeightConstraint.constant = resupplyTableView.contentSize.height - 38
+            resupplyTableView.contentOffset = .zero
         }
-    }
 
-}
-
-extension KolonizedDetailTableViewController: UITableViewDataSource {
-
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return sections.count
-    }
-
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections[section].rows?.count ?? sections[section].dataSource!.tableView(tableView, numberOfRowsInSection: section)
-    }
-
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        guard let row = sections[indexPath.section].rows?[indexPath.row] else {
-            return sections[indexPath.section].dataSource!.tableView(tableView, cellForRowAtIndexPath: indexPath)
-        }
-        let cell = tableView.dequeueReusableCellWithIdentifier(row.reuseIdentifier, forIndexPath: indexPath)
-        row.configureCell(cell: cell, indexPath: indexPath)
-        return cell
-    }
-
-    func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return sections[section].footerTitle
+        print("height:", resupplyHeightConstraint, resupplyTableView.intrinsicContentSize())
+        stackView.setNeedsLayout()
     }
 
 }
