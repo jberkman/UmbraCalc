@@ -25,7 +25,7 @@ class CrewSelectionDataSource: SelectionDataSource<Crew, UITableViewCell> {
         }
     }
 
-    override var selectedModels: Set<CrewSelectionDataSource.Model> {
+    override var selectedModels: Set<CrewSelectionDataSource.Element> {
         get { return part?.crew as? Set<Crew> ?? Set() }
         set { part?.crew = newValue }
     }
@@ -34,17 +34,17 @@ class CrewSelectionDataSource: SelectionDataSource<Crew, UITableViewCell> {
         super.init(sectionOffset: sectionOffset)
     }
 
-    override func configureCell(cell: CrewSelectionDataSource.Cell, forModel model: CrewSelectionDataSource.Model) {
-        super.configureCell(cell, forModel: model)
+    override func configureCell(cell: CrewSelectionDataSource.Cell, forElement model: CrewSelectionDataSource.Element) {
+        super.configureCell(cell, forElement: model)
         cell.textLabel?.text = model.crewDisplayName
         cell.detailTextLabel?.text = model.career
     }
 
-    override func selectModel(model: Model) {
+    override func selectModel(model: Element) {
         model.part = part
     }
 
-    override func deselectModel(model: Model) {
+    override func deselectModel(model: Element) {
         model.part = nil
     }
 

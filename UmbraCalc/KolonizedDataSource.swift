@@ -97,32 +97,32 @@ class KolonizedDataSource: ScopedDataSource {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let model = modelAtIndexPath(indexPath)
+        let element = self[indexPath]
         let reuseIdentifier: String
-        if model is Base {
+        if element is Base {
             reuseIdentifier = "baseCell"
-        } else if let part = model as? Part {
+        } else if let part = element as? Part {
             reuseIdentifier = (part.crewed ? "" : "un") + "crewedPartCell"
-        } else if let resourceConverter = model as? ResourceConverter {
+        } else if let resourceConverter = element as? ResourceConverter {
             reuseIdentifier = (resourceConverter.part?.crewed == true ? "" : "un") + "crewedResourceConverterCell"
         } else {
             reuseIdentifier = "crewCell"
         }
         let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier, forIndexPath: indexPath)
-        configureCell(cell, forModel: model)
+        configureCell(cell, forElement: element)
         cell.indentationWidth = 15
         return cell
     }
 
-    override func configureCell(cell: ScopedDataSource.Cell, forModel model: Model) {
-        if let base = model as? Base {
+    override func configureCell(cell: ScopedDataSource.Cell, forElement element: Element) {
+        if let base = element as? Base {
             configureCell(cell, forBase: base)
-        } else if let part = model as? Part {
+        } else if let part = element as? Part {
             configureCell(cell, forPart: part)
-        } else if let resourceConverter = model as? ResourceConverter {
+        } else if let resourceConverter = element as? ResourceConverter {
             configureCell(cell, forResourceConverter: resourceConverter)
         } else {
-            configureCell(cell, forCrew: model as! Crew)
+            configureCell(cell, forCrew: element as! Crew)
         }
     }
 

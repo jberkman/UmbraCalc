@@ -13,7 +13,9 @@
 //  http://creativecommons.org/licenses/by-nc/4.0/.
 //
 
+import Apropos
 import CoreData
+import JeSuis
 import UIKit
 
 private let nameCellIdentifier = "nameCell"
@@ -95,7 +97,7 @@ class KolonizedDetailTableViewController: UIViewController {
 
     private lazy var kolonizedDataSource: KolonizedDataSource = KolonizedDataSource(sectionOffset: 2)
 
-    private lazy var dataSource: DelegatedDataSource! = DelegatedDataSource(dataSource: self.staticDataSource)
+    private lazy var dataSource: CompoundDataSource! = CompoundDataSource(dataSource: self.staticDataSource)
 
     //footerTitle: "Activating converters slightly reduces crew efficiency of this station or kolony.\n\n" +
     //            "IMPORTANT: Resource converters on efficiency parts should be deactivated when used as efficiency parts.",
@@ -141,7 +143,7 @@ class KolonizedDetailTableViewController: UIViewController {
         view.backgroundColor = tableView.backgroundColor
 
         kolonizedDataSource.tableView = tableView
-        dataSource.registerDataSource(kolonizedDataSource)
+        dataSource[kolonizedDataSource.sectionOffset] = kolonizedDataSource
 
         tableView.dataSource = dataSource
         tableView.delegate = self
@@ -154,8 +156,12 @@ class KolonizedDetailTableViewController: UIViewController {
         updateView()
         seperatorHeightConstraint.constant = 1 / traitCollection.displayScale
         guard !hasAppeared else {
-            guard let indexPath = tableView.indexPathForSelectedRow else { return }
-            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            if let indexPath = tableView.indexPathForSelectedRow {
+                tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            }
+            if let indexPath = resupplyTableView.indexPathForSelectedRow {
+                tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            }
             return
         }
         kolonizedDataSource.reloadData()
@@ -175,16 +181,20 @@ class KolonizedDetailTableViewController: UIViewController {
         case Crew.showSegueIdentifier:
             let indexPath = tableView.indexPathForSegueSender(sender)!
             let crewDetail = segue.destinationViewController as! CrewDetailTableViewController
-            crewDetail.crew = kolonizedDataSource.modelAtIndexPath(indexPath) as? Crew
+            crewDetail.crew = kolonizedDataSource[indexPath] as? Crew
 
         case Part.addSegueIdentifier:
-            let filteredOutKeyword = station == nil ? "orbital" : "surface"
+            let filteredOutKeywords = station == nil ? [ "orbital", "oks" ] : [ "surface", "mk-v" ]
             let navigationController = segue.destinationViewController as! UINavigationController
             let partNodeList = navigationController.viewControllers.first as! PartNodeListTableViewController
-            partNodeList.partNodes = partNodeList.partNodes.filter { !$0.title.lowercaseString.containsString(filteredOutKeyword) }
+
+            partNodeList.partNodes = partNodeList.partNodes.filter {
+                let title = $0.title.lowercaseString
+                return !filteredOutKeywords.contains { title.containsString($0) }
+            }
 
             guard let indexPath = tableView.indexPathForSegueSender(sender),
-                base = kolonizedDataSource.modelAtIndexPath(indexPath) as? Base else {
+                base = kolonizedDataSource[indexPath] as? Base else {
                     selectedBase = nil
                     break
             }
@@ -193,7 +203,13 @@ class KolonizedDetailTableViewController: UIViewController {
         case Part.showSegueIdentifier:
             let indexPath = tableView.indexPathForSegueSender(sender)!
             let partDetail = segue.destinationViewController as! PartDetailTableViewController
-            partDetail.part = kolonizedDataSource.modelAtIndexPath(indexPath) as? Part
+            partDetail.part = kolonizedDataSource[indexPath] as? Part
+
+        case "Resource".showSegueIdentifier:
+            let indexPath = resupplyTableView.indexPathForSegueSender(sender)!
+            let resourceDetail = segue.destinationViewController as! ResourceDetailTableViewController
+            resourceDetail.resourceName = resupplyDataSource.resourceNames[indexPath.row]
+            resourceDetail.kolonizingCollection = kolonizingCollection
 
         default:
             break
@@ -249,7 +265,7 @@ extension KolonizedDetailTableViewController: UITableViewDelegate {
 
         alert.addAction(UIAlertAction(title: "Edit Name", style: .Default) { _ in
             let alert = UIAlertController(title: "Rename Base", message: nil, preferredStyle: .Alert)
-            let base = self.kolonizedDataSource.modelAtIndexPath(indexPath) as! Base
+            let base = self.kolonizedDataSource[indexPath] as! Base
 
             alert.addTextFieldWithConfigurationHandler {
                 $0.text = base.name
@@ -276,13 +292,13 @@ extension KolonizedDetailTableViewController: UITableViewDelegate {
 
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         guard indexPath.section >= kolonizedDataSource.sectionOffset else { return false }
-        let model = kolonizedDataSource.modelAtIndexPath(indexPath)
+        let model = kolonizedDataSource[indexPath]
         return model is Crew || (model as? Part)?.crewed == true
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         guard indexPath.section >= kolonizedDataSource.sectionOffset else { return }
-        let identifier = (kolonizedDataSource.modelAtIndexPath(indexPath) as! Segueable).showSegueIdentifier
+        let identifier = (kolonizedDataSource[indexPath] as! Segueable).showSegueIdentifier
         performSegueWithIdentifier(identifier, sender: indexPath)
     }
 
@@ -300,7 +316,7 @@ extension KolonizedDetailTableViewController: UITableViewDelegate {
 extension KolonizedDetailTableViewController: KolonizedDataSourceDelegate {
 
     func tableView(tableView: UITableView, stepperAccessory: UIStepper, valueChangedForRowAtIndexPath indexPath: NSIndexPath) {
-        let model = kolonizedDataSource.modelAtIndexPath(indexPath)
+        let model = kolonizedDataSource[indexPath]
         if let part = model as? Part {
             part.count = Int16(stepperAccessory.value)
             (part.resourceConverters as? Set<ResourceConverter>)?.forEach { $0.activeCount = min($0.activeCount, part.count) }
@@ -311,7 +327,7 @@ extension KolonizedDetailTableViewController: KolonizedDataSourceDelegate {
     }
 
     func tableView(tableView: UITableView, switchAccessory: UISwitch, valueChangedForRowAtIndexPath indexPath: NSIndexPath) {
-        (kolonizedDataSource.modelAtIndexPath(indexPath) as! ResourceConverter).activeCount = switchAccessory.on ? 1 : 0
+        (kolonizedDataSource[indexPath] as! ResourceConverter).activeCount = switchAccessory.on ? 1 : 0
         updateView(exceptRowAtIndexPath: indexPath)
     }
 

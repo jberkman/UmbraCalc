@@ -14,48 +14,49 @@
 //
 
 import CoreData
+import JeSuis
 import UIKit
 
-class SelectionDataSource<Model: NSManagedObject, Cell: UITableViewCell>: FetchedDataSource<Model, Cell>, UITableViewDelegate {
+class SelectionDataSource<Element: NSManagedObject, Cell: UITableViewCell>: FetchedDataSource<Element, Cell>, UITableViewDelegate {
 
-    var selectedModels = Set<Model>()
+    var selectedModels = Set<Element>()
     var maximumSelectionCount = Int.max
 
     override init(sectionOffset: Int = 0) {
         super.init(sectionOffset: sectionOffset)
     }
 
-    override func configureCell(cell: Cell, forModel model: Model) {
+    override func configureCell(cell: Cell, forElement model: Element) {
         cell.accessoryType = selectedModels.contains(model) ? .Checkmark : .None
     }
 
     override func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         super.controller(controller, didChangeObject: anObject, atIndexPath: indexPath, forChangeType: type, newIndexPath: newIndexPath)
         guard case .Delete = type else { return }
-        selectedModels.remove(anObject as! Model)
+        selectedModels.remove(anObject as! Element)
     }
 
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return selectedModels.contains(modelAtIndexPath(indexPath)) == true || selectedModels.count < maximumSelectionCount
+        return selectedModels.contains(self[indexPath]) == true || selectedModels.count < maximumSelectionCount
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        let model = modelAtIndexPath(indexPath)
+        let model = self[indexPath]
         if selectedModels.contains(model) == true {
             deselectModel(model)
         } else {
             selectModel(model)
         }
         guard let cell = tableView.cellForRowAtIndexPath(indexPath) as? Cell else { return }
-        configureCell(cell, forModel: model)
+        configureCell(cell, forElement: model)
     }
 
-    func selectModel(model: Model) {
+    func selectModel(model: Element) {
         selectedModels.insert(model)
     }
 
-    func deselectModel(model: Model) {
+    func deselectModel(model: Element) {
         selectedModels.remove(model)
     }
 

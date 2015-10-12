@@ -14,13 +14,14 @@
 //
 
 import CoreData
+import JeSuis
 import UIKit
 
 private let efficiencyPart = "EfficiencyPart"
 
 class PartDetailTableViewController: UITableViewController {
 
-    private class EfficiencyPartDataSource: NSObject, OffsettableDataSource {
+    private class EfficiencyPartDataSource: NSObject, UITableViewDataSource, SectionOffsetting {
 
         private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
 
@@ -83,7 +84,7 @@ class PartDetailTableViewController: UITableViewController {
 
     private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
 
-    private lazy var dataSource: StoryboardDelegatedDataSource = StoryboardDelegatedDataSource(dataSource: self)
+    private lazy var dataSource: StoryboardCompoundDataSource = StoryboardCompoundDataSource(dataSource: self)
     private lazy var efficiencyPartDataSource = EfficiencyPartDataSource(sectionOffset: 1)
     private lazy var crewDataSource = CrewSelectionDataSource(sectionOffset: 7)
 
@@ -91,11 +92,7 @@ class PartDetailTableViewController: UITableViewController {
         didSet {
             crewDataSource.part = part
             efficiencyPartDataSource.part = part
-            if part?.efficiencyFactors.isEmpty == false {
-                dataSource.registerDataSource(efficiencyPartDataSource)
-            } else {
-                dataSource.unregisterDataSource(efficiencyPartDataSource)
-            }
+            dataSource[efficiencyPartDataSource.sectionOffset] = part?.efficiencyFactors.isEmpty == false ? efficiencyPartDataSource : nil
             updateView()
         }
     }
@@ -104,7 +101,7 @@ class PartDetailTableViewController: UITableViewController {
         super.viewDidLoad()
 
         tableView.registerClass(Value1TableViewCell.self, forCellReuseIdentifier: crewDataSource.reuseIdentifier)
-        dataSource.registerDataSource(crewDataSource)
+        dataSource[crewDataSource.sectionOffset] = crewDataSource
         crewDataSource.tableView = tableView
         crewDataSource.fetchRequest.sortDescriptors = [Crew.nameSortDescriptor]
 

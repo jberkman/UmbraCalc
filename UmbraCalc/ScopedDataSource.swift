@@ -15,6 +15,7 @@
 
 import CoreData
 import Foundation
+import JeSuis
 import UIKit
 
 class ScopedDataSource: FetchedDataSource<ScopedEntity, UITableViewCell> {
@@ -35,12 +36,12 @@ class ScopedDataSource: FetchedDataSource<ScopedEntity, UITableViewCell> {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let model = modelAtIndexPath(indexPath)
+        let model = self[indexPath]
         guard let entityName = model.entity.name, reuseIdentifier = reuseIdentifiers[entityName] else {
             fatalError("Unknown entity for model: \(model)")
         }
         let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier, forIndexPath: indexPath)
-        configureCell(cell, forModel: model)
+        configureCell(cell, forElement: model)
         return cell
     }
 
@@ -49,7 +50,7 @@ class ScopedDataSource: FetchedDataSource<ScopedEntity, UITableViewCell> {
     }
 
     func tableView(tableView: UITableView, indentationLevelForRowAtIndexPath indexPath: NSIndexPath) -> Int {
-        return modelAtIndexPath(indexPath).scopeDepth - 1
+        return self[indexPath].scopeDepth - 1
     }
 
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

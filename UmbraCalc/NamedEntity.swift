@@ -13,6 +13,7 @@
 //  http://creativecommons.org/licenses/by-nc/4.0/.
 //
 
+import Balsa
 import Foundation
 import CoreData
 

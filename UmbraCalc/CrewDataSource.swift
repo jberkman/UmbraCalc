@@ -13,6 +13,7 @@
 //  http://creativecommons.org/licenses/by-nc/4.0/.
 //
 
+import JeSuis
 import Foundation
 import UIKit
 
@@ -33,7 +34,7 @@ class CrewDataSource: FetchedDataSource<Crew, UITableViewCell> {
         fetchRequest.sortDescriptors = [Crew.nameSortDescriptor]
     }
 
-    override func configureCell(cell: UITableViewCell, forModel crew: Crew) {
+    override func configureCell(cell: UITableViewCell, forElement crew: Crew) {
         cell.textLabel?.text = crew.crewDisplayName
         cell.detailTextLabel?.text = {
             switch self.detailType {

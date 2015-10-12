@@ -17,6 +17,12 @@ private let minEfficiency = 0.25
 let secondsPerDay = Double(60 * 60 * 6)
 let secondsPerYear = secondsPerDay * 426
 
+private let initialSupplies = [
+    "Fertilizer": Double.infinity,
+    "Machinery": Double.infinity,
+    "Plutonium-238": Double.infinity
+]
+
 extension ResourceConverting {
 
     func outputResourcesWithInputConstraints(inputConstraints: [String: Double]) -> [String: Double] {
@@ -50,6 +56,15 @@ extension ResourceConvertingCollectionType {
             guard output < $1.1 else { return $0 }
             var ret = $0
             ret[$1.0] = output / $1.1
+            return ret
+        }
+    }
+
+    func initialSupplyInputConstraintsWithOutputResources(outputResources: [String: Double]) -> [String: Double] {
+        return initialSupplies.reduce(inputConstraintsWithOutputResources(outputResources + initialSupplies)) {
+            guard $0[$1.0] == nil else { return $0 }
+            var ret = $0
+            ret[$1.0] = 1
             return ret
         }
     }
@@ -106,11 +121,6 @@ extension KolonizingCollectionType {
     }
 
     var netResourceConversion: [String: Double] {
-        let initialSupplies = [
-            "Fertilizer": Double.infinity,
-            "Machinery": Double.infinity,
-            "Plutonium-238": Double.infinity
-        ]
 
         let crewInputs = crewingCollection.map { $0.inputResources }.reduce([:], combine: +)
         let crewOutputs = crewingCollection.map { $0.outputResources }.reduce([:], combine: +)
@@ -123,15 +133,8 @@ extension KolonizingCollectionType {
 
         let iterationCount = 5 - 1
         return (0 ... iterationCount).reduce(crewOutputs) {
-            let inputConstraints = initialSupplies.reduce(inputConstraintsWithOutputResources($0 + initialSupplies)) {
-                guard $0[$1.0] == nil else { return $0 }
-                var ret = $0
-                ret[$1.0] = 1
-                return ret
-            }
+            let inputConstraints = initialSupplyInputConstraintsWithOutputResources($0)
 
-
-//            let inputConstraints = Set(inputResources.keys).intersect(Set(initialInputConstraints.keys)).map({ initialInputConstraints[$0]! }).minElement() ?? 1
             let constrainedOutputs = resourceConvertingCollection.map { $0.outputResourcesWithInputConstraints(inputConstraints) }.reduce([:], combine: +)
 
             if $1 < iterationCount {

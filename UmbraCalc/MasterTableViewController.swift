@@ -14,6 +14,7 @@
 //
 
 import CoreData
+import JeSuis
 import UIKit
 
 class MasterTableViewController: UITableViewController {
@@ -31,7 +32,7 @@ class MasterTableViewController: UITableViewController {
             super.init()
         }
 
-        override func configureCell(cell: UITableViewCell, forModel model: DataSource.Model) {
+        override func configureCell(cell: UITableViewCell, forElement model: DataSource.Element) {
             if let kolony = model as? Kolony {
                 cell.textLabel?.text = kolony.displayName
                 let baseCount = kolony.bases?.count ?? 0
@@ -54,7 +55,7 @@ class MasterTableViewController: UITableViewController {
         set { dataSource.managedObjectContext = newValue }
     }
 
-    var selectedEntity: DataSource.Model? {
+    var selectedEntity: DataSource.Element? {
         didSet {
             if oldValue != nil {
                 NSNotificationCenter.defaultCenter().removeObserver(self, name: willDeleteEntityNotification, object: oldValue!)
@@ -96,7 +97,7 @@ class MasterTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.leftBarButtonItem = editButtonItem()
-        dataSource.fetchRequest.sortDescriptors = [DataSource.Model.nameSortDescriptor]
+        dataSource.fetchRequest.sortDescriptors = [DataSource.Element.nameSortDescriptor]
         dataSource.tableView = tableView
         tableView.dataSource = dataSource
     }
@@ -127,7 +128,7 @@ class MasterTableViewController: UITableViewController {
         case "Detail".showSegueIdentifier:
             guard let indexPath = tableView.indexPathForSegueSender(sender) else { return }
             let controller = destinationViewController as! KolonizedDetailTableViewController
-            controller.namedEntity = dataSource.modelAtIndexPath(indexPath)
+            controller.namedEntity = dataSource[indexPath]
             selectedEntity = controller.namedEntity
 
         default:
@@ -160,14 +161,14 @@ extension MasterTableViewController {
 
     @IBAction func addModel(sender: UIBarButtonItem) {
         guard let managedObjectContext = managedObjectContext else { return }
-        let model: DataSource.Model! = orbitalSegmentSelected
+        let model: DataSource.Element! = orbitalSegmentSelected
             ? try? Station(insertIntoManagedObjectContext: managedObjectContext) //.withDefaultParts()
             : try? Kolony(insertIntoManagedObjectContext: managedObjectContext).withBases([Base(insertIntoManagedObjectContext: managedObjectContext) /*.withDefaultParts()*/])
 
         guard model != nil else { return }
         managedObjectContext.processPendingChanges()
 
-        guard let indexPath = dataSource.indexPathForModel(model) else { return }
+        guard let indexPath = dataSource[model] else { return }
         tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
         performSegueWithIdentifier("Detail".showSegueIdentifier, sender: indexPath)
     }
@@ -178,8 +179,8 @@ extension MasterTableViewController {
             return
         }
 
-        guard let model = dataSource.fetchedModels?.lazy.filter({ $0 != self.selectedEntity }).first,
-            indexPath = dataSource.indexPathForModel(model) else {
+        guard let model = dataSource.fetchedElements?.lazy.filter({ $0 != self.selectedEntity }).first,
+            indexPath = dataSource[model] else {
                 selectedEntity = nil
                 guard let viewController = emptyDetailViewController else { return }
                 showDetailViewController(viewController, sender: self)

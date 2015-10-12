@@ -13,6 +13,8 @@
 //  http://creativecommons.org/licenses/by-nc/4.0/.
 //
 
+import Apropos
+import Balsa
 import CoreData
 import Foundation
 

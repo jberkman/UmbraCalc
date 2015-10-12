@@ -14,6 +14,7 @@
 //
 
 import CoreData
+import JeSuis
 import UIKit
 
 class VesselDetailTableViewController: UITableViewController {
@@ -36,7 +37,7 @@ class VesselDetailTableViewController: UITableViewController {
             fetchRequest.sortDescriptors = [Vessel.nameSortDescriptor]
         }
 
-        override func configureCell(cell: PartDataSource.Cell, forModel part: Model) {
+        override func configureCell(cell: PartDataSource.Cell, forElement part: Element) {
             cell.textLabel?.text = part.displayName
             cell.detailTextLabel?.text = part.displaySummary
             if part.crewed {
@@ -49,7 +50,7 @@ class VesselDetailTableViewController: UITableViewController {
 
         @objc private func countStepperValueDidChange(sender: UIStepper) {
             guard let indexPath = tableView.indexPathForCellSubview(sender) else { return }
-            let part = modelAtIndexPath(indexPath)
+            let part = self[indexPath]
             part.count = Int16(sender.value)
             (part.resourceConverters as? Set<ResourceConverter>)?.forEach { $0.activeCount = min($0.activeCount, part.count) }
         }
@@ -66,7 +67,7 @@ class VesselDetailTableViewController: UITableViewController {
 
     private var hasAppeared = false
 
-    private lazy var dataSource: StoryboardDelegatedDataSource = StoryboardDelegatedDataSource(dataSource: self)
+    private lazy var dataSource: StoryboardCompoundDataSource = StoryboardCompoundDataSource(dataSource: self)
     private lazy var partDataSource = PartDataSource(sectionOffset: 1)
     private lazy var crewDataSource = CrewDataSource(sectionOffset: 2)
 
@@ -94,11 +95,11 @@ class VesselDetailTableViewController: UITableViewController {
         super.viewDidLoad()
 
         tableView.registerNib(UINib(nibName: "StepperTableViewCell", bundle: nil), forCellReuseIdentifier: partDataSource.reuseIdentifier)
-        dataSource.registerDataSource(partDataSource)
+        dataSource[partDataSource.sectionOffset] = partDataSource
         partDataSource.tableView = tableView
 
         tableView.registerClass(Value1TableViewCell.self, forCellReuseIdentifier: crewDataSource.reuseIdentifier)
-        dataSource.registerDataSource(crewDataSource)
+        dataSource[crewDataSource.sectionOffset] = crewDataSource
         crewDataSource.detailType = .Part
         crewDataSource.tableView = tableView
 
@@ -140,7 +141,7 @@ class VesselDetailTableViewController: UITableViewController {
         case Part.showSegueIdentifier:
             let indexPath = sender as? NSIndexPath ?? tableView.indexPathForCell(sender as! UITableViewCell)!
             let partDetail = segue.destinationViewController as! PartDetailTableViewController
-            partDetail.part = partDataSource.modelAtIndexPath(indexPath)
+            partDetail.part = partDataSource[indexPath]
 
         default:
             break
@@ -162,7 +163,7 @@ class VesselDetailTableViewController: UITableViewController {
 
     @IBAction func savePart(segue: UIStoryboardSegue) {
         func showDetailForPart(part: Part) {
-            guard let indexPath = partDataSource.indexPathForModel(part) else { return }
+            guard let indexPath = partDataSource[part] else { return }
             performSegueWithIdentifier(Part.showSegueIdentifier, sender: indexPath)
         }
 
