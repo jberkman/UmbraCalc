@@ -67,7 +67,8 @@ extension Crewing {
     }
 
     var crewDisplayName: String {
-        return (name?.isEmpty == false ? name! : "Unnamed Crew") + starString
+        let name = self.name?.isEmpty == false ? self.name! : "Unnamed Crew"
+        return "\(name) \(starString)"
     }
 
     var careerFactor: Double {
