@@ -115,10 +115,10 @@ extension KolonizingCollectionType {
         let crewInputs = crewingCollection.map { $0.inputResources }.reduce([:], combine: +)
         let crewOutputs = crewingCollection.map { $0.outputResources }.reduce([:], combine: +)
 
-        print("inputs:", inputResources * secondsPerDay)
-        print("outputs:", outputResources * secondsPerDay)
-        print("crew inputs:", crewInputs * secondsPerDay)
-        print("crew outputs:", crewOutputs * secondsPerDay)
+//        print("inputs:", inputResources * secondsPerDay)
+//        print("outputs:", outputResources * secondsPerDay)
+//        print("crew inputs:", crewInputs * secondsPerDay)
+//        print("crew outputs:", crewOutputs * secondsPerDay)
 
 
         let iterationCount = 5 - 1
@@ -138,12 +138,12 @@ extension KolonizingCollectionType {
                 return constrainedOutputs + crewOutputs
             }
 
-            print("constrainedOutputs:", constrainedOutputs * secondsPerDay)
-            print("crewOutputs:", crewOutputs * secondsPerDay)
-            print("inputConstraints:", inputConstraints)
-            print("inputResources:", inputResources * inputConstraints * secondsPerDay)
-            print("crewInputs:", crewInputs * secondsPerDay)
-            print("net:", (constrainedOutputs + crewOutputs - inputResources * inputConstraints - crewInputs) * secondsPerDay)
+//            print("constrainedOutputs:", constrainedOutputs * secondsPerDay)
+//            print("crewOutputs:", crewOutputs * secondsPerDay)
+//            print("inputConstraints:", inputConstraints)
+//            print("inputResources:", inputResources * inputConstraints * secondsPerDay)
+//            print("crewInputs:", crewInputs * secondsPerDay)
+//            print("net:", (constrainedOutputs + crewOutputs - inputResources * inputConstraints - crewInputs) * secondsPerDay)
 
             return constrainedOutputs + crewOutputs - inputResources * inputConstraints - crewInputs
         }

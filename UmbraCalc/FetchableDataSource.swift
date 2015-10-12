@@ -57,7 +57,6 @@ extension FetchableDataSource {
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: sectionNameKeyPath, cacheName: cacheName)
         do {
             try fetchedResultsController?.performFetch()
-            print(fetchedResultsController, fetchedResultsController?.fetchedObjects)
             reloadTableView()
         } catch let error as NSError {
             NSLog("Could not perform fetch: %@", error)

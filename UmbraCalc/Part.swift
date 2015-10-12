@@ -37,7 +37,6 @@ class Part: ScopedEntity {
                 resourceConverterNodes[tag] = nil
                 return false
                 }.forEach {
-                    print("deleting:", $0)
                     $0.deleteEntity()
             }
             guard let managedObjectContext = managedObjectContext else { return }

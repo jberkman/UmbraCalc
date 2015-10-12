@@ -122,9 +122,6 @@ class KolonizedDetailTableViewController: UIViewController {
     }
 
     var station: Station? {
-        print(kolonizedDataSource)
-        print(kolonizedDataSource.rootScope)
-        print(kolonizedDataSource.rootScope as? Station)
         return kolonizedDataSource.rootScope as? Station
     }
 
@@ -236,7 +233,6 @@ class KolonizedDetailTableViewController: UIViewController {
             resupplyTableView.contentOffset = .zero
         }
 
-        print("height:", resupplyHeightConstraint, resupplyTableView.intrinsicContentSize())
         stackView.setNeedsLayout()
     }
 
