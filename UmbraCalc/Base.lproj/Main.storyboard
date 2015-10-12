@@ -234,7 +234,7 @@
                     </connections>
                 </barButtonItem>
             </objects>
-            <point key="canvasLocation" x="-1018" y="858"/>
+            <point key="canvasLocation" x="-192" y="858"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="GIl-yQ-el2">
@@ -251,7 +251,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="i3F-8f-irR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-202" y="-44"/>
+            <point key="canvasLocation" x="-1018" y="858"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="fdj-qo-koA">
