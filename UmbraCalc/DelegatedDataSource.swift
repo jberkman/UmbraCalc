@@ -42,53 +42,48 @@ class DelegatedDataSource: NSObject {
         unregisterDataSourceForSection(dataSource.sectionOffset)
     }
 
+    private func tableView(tableView: UITableView, dataSourceForSection section: Int) -> UITableViewDataSource {
+        let rootSections = rootDataSource.numberOfSectionsInTableView?(tableView) ?? 1
+        return section < rootSections ? (dataSources[section] ?? rootDataSource) : dataSources[rootSections - 1]!
+    }
+
 }
 
 extension DelegatedDataSource: UITableViewDataSource {
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let dataSource = dataSources[section] else {
-            return rootDataSource.tableView(tableView, numberOfRowsInSection: section)
-        }
+        let dataSource = self.tableView(tableView, dataSourceForSection: section)
         return dataSource.tableView(tableView, numberOfRowsInSection: section)
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        guard let dataSource = dataSources[indexPath.section] else {
-            return rootDataSource.tableView(tableView, cellForRowAtIndexPath: indexPath)
-        }
+        let dataSource = self.tableView(tableView, dataSourceForSection: indexPath.section)
         return dataSource.tableView(tableView, cellForRowAtIndexPath: indexPath)
     }
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return rootDataSource.numberOfSectionsInTableView?(tableView) ?? 1
+        let numberOfSections = rootDataSource.numberOfSectionsInTableView?(tableView) ?? 1
+        let dataSource = self.tableView(tableView, dataSourceForSection: numberOfSections - 1)
+        return dataSource.numberOfSectionsInTableView?(tableView) ?? 1
     }
 
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard let dataSource = dataSources[section] else {
-            return rootDataSource.tableView?(tableView, titleForHeaderInSection: section)
-        }
+        let dataSource = self.tableView(tableView, dataSourceForSection: section)
         return dataSource.tableView?(tableView, titleForHeaderInSection: section)
     }
 
     func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        guard let dataSource = dataSources[section] else {
-            return rootDataSource.tableView?(tableView, titleForFooterInSection: section)
-        }
+        let dataSource = self.tableView(tableView, dataSourceForSection: section)
         return dataSource.tableView?(tableView, titleForFooterInSection: section)
     }
 
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        guard let dataSource = dataSources[indexPath.section] else {
-            return rootDataSource.tableView?(tableView, canEditRowAtIndexPath: indexPath) ?? true
-        }
+        let dataSource = self.tableView(tableView, dataSourceForSection: indexPath.section)
         return dataSource.tableView?(tableView, canEditRowAtIndexPath: indexPath) ?? true
     }
 
     func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        guard let dataSource = dataSources[indexPath.section] else {
-            return rootDataSource.tableView?(tableView, canMoveRowAtIndexPath: indexPath) ?? rootDataSource.respondsToSelector("tableView:moveRowAtIndexPath:toIndexPath:")
-        }
+        let dataSource = self.tableView(tableView, dataSourceForSection: indexPath.section)
         return dataSource.tableView?(tableView, canMoveRowAtIndexPath: indexPath) ?? dataSource.respondsToSelector("tableView:moveRowAtIndexPath:toIndexPath:")
     }
 
@@ -101,18 +96,12 @@ extension DelegatedDataSource: UITableViewDataSource {
     }
 
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        guard let dataSource = dataSources[indexPath.section] else {
-            rootDataSource.tableView?(tableView, commitEditingStyle: editingStyle, forRowAtIndexPath: indexPath)
-            return
-        }
+        let dataSource = self.tableView(tableView, dataSourceForSection: indexPath.section)
         dataSource.tableView?(tableView, commitEditingStyle: editingStyle, forRowAtIndexPath: indexPath)
     }
 
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-        guard let dataSource = dataSources[sourceIndexPath.section] else {
-            rootDataSource.tableView?(tableView, moveRowAtIndexPath: sourceIndexPath, toIndexPath: destinationIndexPath)
-            return
-        }
+        let dataSource = self.tableView(tableView, dataSourceForSection: sourceIndexPath.section)
         dataSource.tableView?(tableView, moveRowAtIndexPath: sourceIndexPath, toIndexPath: destinationIndexPath)
     }
 

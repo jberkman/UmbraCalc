@@ -22,7 +22,7 @@ class NamedEntity: ScopedEntity {
 
     @NSManaged private var primitiveName: String?
 
-    var name: String? {
+    dynamic var name: String? {
         get {
             willAccessValueForKey("name")
             let ret = primitiveName

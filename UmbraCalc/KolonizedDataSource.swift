@@ -26,17 +26,6 @@ class KolonizedDataSource: ScopedDataSource {
 
     private let percentFormatter = NSNumberFormatter().withValue(NSNumberFormatterStyle.PercentStyle.rawValue, forKey: "numberStyle")
 
-    override var tableView: UITableView! {
-        didSet {
-//            tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: "baseCell")
-//            tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: "uncrewedPartCell")
-//            tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: "uncrewedResourceConverterCell")
-//            tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: "crewedPartCell")
-//            tableView.registerClass(SubtitleTableViewCell.self, forCellReuseIdentifier: "crewedResourceConverterCell")
-//            tableView.registerClass(Value1TableViewCell.self, forCellReuseIdentifier: "crewCell")
-        }
-    }
-
     private func textLabelForResourceConverter(resourceConverter: ResourceConverter) -> String? {
         guard resourceConverter.part?.crewCapacity == 0 else { return resourceConverter.name }
         let capacity = resourceConverter.part?.count ?? 0

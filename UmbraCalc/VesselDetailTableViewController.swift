@@ -176,7 +176,7 @@ class VesselDetailTableViewController: UITableViewController {
         }
 
         guard let managedObjectContext = vessel?.managedObjectContext else { return }
-        _ = try? Part(insertIntoManagedObjectContext: managedObjectContext).withPartName(partNode.name).withVessel(vessel!)
+        _ = try? Part(insertIntoManagedObjectContext: managedObjectContext).withVessel(vessel!).withPartName(partNode.name)
 
         guard let indexPaths = tableView.indexPathsForVisibleRows else { return }
         tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .None)

@@ -47,7 +47,7 @@ class Part: ScopedEntity {
         }
     }
 
-    var vessel: Vessel? {
+    dynamic var vessel: Vessel? {
         get {
             willAccessValueForKey("vessel")
             let ret = primitiveVessel
@@ -58,6 +58,7 @@ class Part: ScopedEntity {
             willChangeValueForKey("vessel")
             primitiveVessel = newValue
             rootScope = newValue?.rootScope
+            scopeGroup = newValue?.scopeGroup
             didChangeValueForKey("vessel")
         }
     }
@@ -87,7 +88,7 @@ class Part: ScopedEntity {
         (resourceConverters as? Set<ResourceConverter>)?.forEach { $0.setScopeNeedsUpdate() }
     }
 
-    var partName: String? {
+    dynamic var partName: String? {
         get {
             willAccessValueForKey("partName")
             let ret = primitivePartName
@@ -98,8 +99,8 @@ class Part: ScopedEntity {
             willChangeValueForKey("partName")
             primitivePartName = newValue
             setScopeNeedsUpdate()
-            didChangeValueForKey("partName")
             _ = partNode
+            didChangeValueForKey("partName")
         }
     }
 
@@ -109,6 +110,11 @@ class Part: ScopedEntity {
             cachedPartNode = PartNode(named: name)
         }
         return cachedPartNode
+    }
+
+    override func prepareForDeletion() {
+        super.prepareForDeletion()
+        (crew as? Set<ScopedEntity>)?.forEach { $0.scopeGroup = nil }
     }
 
     @warn_unused_result

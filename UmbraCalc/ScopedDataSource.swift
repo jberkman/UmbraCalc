@@ -31,6 +31,7 @@ class ScopedDataSource: FetchedDataSource<ScopedEntity, UITableViewCell> {
     override init(sectionOffset: Int) {
         super.init(sectionOffset: sectionOffset)
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "scope", ascending: true), NSSortDescriptor(key: "creationDate", ascending: true)]
+        sectionNameKeyPath = "scopeGroup.scope"
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -49,6 +50,10 @@ class ScopedDataSource: FetchedDataSource<ScopedEntity, UITableViewCell> {
 
     func tableView(tableView: UITableView, indentationLevelForRowAtIndexPath indexPath: NSIndexPath) -> Int {
         return modelAtIndexPath(indexPath).scopeDepth - 1
+    }
+
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return nil
     }
 
 }

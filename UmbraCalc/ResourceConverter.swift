@@ -29,7 +29,7 @@ class ResourceConverter: ScopedEntity {
         return [entity.name!, tag ?? "", creationDateScopeKey].joinWithSeparator("-")
     }
 
-    var part: Part? {
+    dynamic var part: Part? {
         get {
             willAccessValueForKey("part")
             let ret = primitivePart
@@ -40,6 +40,7 @@ class ResourceConverter: ScopedEntity {
             willChangeValueForKey("part")
             primitivePart = newValue
             rootScope = newValue?.rootScope
+            scopeGroup = newValue?.scopeGroup
             didChangeValueForKey("part")
         }
     }
@@ -48,7 +49,7 @@ class ResourceConverter: ScopedEntity {
         return part
     }
 
-    var tag: String? {
+    dynamic var tag: String? {
         get {
             willAccessValueForKey("tag")
             let ret = primitiveTag

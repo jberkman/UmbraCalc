@@ -23,7 +23,7 @@ class Crew: NamedEntity {
 
     @NSManaged private var primitivePart: Part?
 
-    var part: Part? {
+    dynamic var part: Part? {
         get {
             willAccessValueForKey("part")
             let ret = primitivePart
@@ -34,6 +34,7 @@ class Crew: NamedEntity {
             willChangeValueForKey("part")
             primitivePart = newValue
             rootScope = newValue?.rootScope
+            scopeGroup = newValue?.scopeGroup
             didChangeValueForKey("part")
         }
     }

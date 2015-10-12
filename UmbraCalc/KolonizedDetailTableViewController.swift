@@ -79,7 +79,7 @@ class KolonizedDetailTableViewController: UIViewController {
 
         Section(rows: [
             Row(reuseIdentifier: crewCapacityCellIdentifier) { [weak self] cell, _ in
-                cell.detailTextLabel!.text = String(self?.kolonizingCollection?.crewCapacity ?? 0)
+                cell.detailTextLabel!.text = "\(self?.kolonizingCollection?.crewCount ?? 0) of \(self?.kolonizingCollection?.crewCapacity ?? 0)"
             },
             Row(reuseIdentifier: livingSpacesCellIdentifier) { [weak self] cell, _ in
                 cell.detailTextLabel!.text = String(self?.kolonizingCollection?.livingSpaceCount ?? 0)
@@ -95,7 +95,7 @@ class KolonizedDetailTableViewController: UIViewController {
 
     private lazy var kolonizedDataSource: KolonizedDataSource = KolonizedDataSource(sectionOffset: 2)
 
-    private lazy var dataSource: StoryboardDelegatedDataSource! = StoryboardDelegatedDataSource(dataSource: self.staticDataSource)
+    private lazy var dataSource: DelegatedDataSource! = DelegatedDataSource(dataSource: self.staticDataSource)
 
     //footerTitle: "Activating converters slightly reduces crew efficiency of this station or kolony.\n\n" +
     //            "IMPORTANT: Resource converters on efficiency parts should be deactivated when used as efficiency parts.",
@@ -217,7 +217,7 @@ class KolonizedDetailTableViewController: UIViewController {
         }
 
         resupplyDataSource.resources = kolonizingCollection?.netResourceConversion.reduce([:]) {
-            guard $1.1 < 0 else { return $0 }
+            guard $1.1 < 0 && $1.0 != "Plutonium-238" else { return $0 }
             var ret = $0
             ret![$1.0] = -$1.1 * secondsPerYear
             return ret
@@ -279,24 +279,24 @@ extension KolonizedDetailTableViewController: UITableViewDelegate {
     }
 
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        guard indexPath.section == kolonizedDataSource.sectionOffset else { return false }
+        guard indexPath.section >= kolonizedDataSource.sectionOffset else { return false }
         let model = kolonizedDataSource.modelAtIndexPath(indexPath)
         return model is Crew || (model as? Part)?.crewed == true
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard indexPath.section == kolonizedDataSource.sectionOffset else { return }
+        guard indexPath.section >= kolonizedDataSource.sectionOffset else { return }
         let identifier = (kolonizedDataSource.modelAtIndexPath(indexPath) as! Segueable).showSegueIdentifier
         performSegueWithIdentifier(identifier, sender: indexPath)
     }
 
     func tableView(tableView: UITableView, indentationLevelForRowAtIndexPath indexPath: NSIndexPath) -> Int {
-        guard indexPath.section == kolonizedDataSource.sectionOffset else { return 0 }
+        guard indexPath.section >= kolonizedDataSource.sectionOffset else { return 0 }
         return kolonizedDataSource.tableView(tableView, indentationLevelForRowAtIndexPath: indexPath)
     }
 
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return indexPath.section == kolonizedDataSource.sectionOffset
+        return indexPath.section >= kolonizedDataSource.sectionOffset
     }
 
 }
@@ -343,7 +343,7 @@ extension KolonizedDetailTableViewController {
         }
 
         guard let managedObjectContext = currentVessel?.managedObjectContext else { return }
-        _ = try? Part(insertIntoManagedObjectContext: managedObjectContext).withPartName(partNode.name).withVessel(currentVessel!)
+        _ = try? Part(insertIntoManagedObjectContext: managedObjectContext).withVessel(currentVessel!).withPartName(partNode.name)
 
         guard let indexPaths = tableView.indexPathsForVisibleRows else { return }
         tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .None)

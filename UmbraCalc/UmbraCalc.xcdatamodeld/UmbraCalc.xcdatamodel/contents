@@ -31,6 +31,8 @@
         <attribute name="modificationDate" attributeType="Date" indexed="YES" syncable="YES"/>
         <attribute name="scope" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <relationship name="rootScope" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ScopedEntity" inverseName="subscopes" inverseEntity="ScopedEntity" syncable="YES"/>
+        <relationship name="scopeGroup" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ScopedEntity" inverseName="subgroupScopes" inverseEntity="ScopedEntity" syncable="YES"/>
+        <relationship name="subgroupScopes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ScopedEntity" inverseName="scopeGroup" inverseEntity="ScopedEntity" syncable="YES"/>
         <relationship name="subscopes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ScopedEntity" inverseName="rootScope" inverseEntity="ScopedEntity" syncable="YES"/>
     </entity>
     <entity name="Station" representedClassName=".Station" parentEntity="Vessel" syncable="YES"/>
@@ -44,7 +46,7 @@
         <element name="NamedEntity" positionX="-36" positionY="54" width="128" height="60"/>
         <element name="Part" positionX="-54" positionY="-9" width="128" height="120"/>
         <element name="ResourceConverter" positionX="-36" positionY="54" width="128" height="90"/>
-        <element name="ScopedEntity" positionX="-36" positionY="54" width="128" height="120"/>
+        <element name="ScopedEntity" positionX="-36" positionY="54" width="128" height="150"/>
         <element name="Station" positionX="-18" positionY="81" width="128" height="45"/>
         <element name="Vessel" positionX="-63" positionY="-18" width="128" height="60"/>
     </elements>

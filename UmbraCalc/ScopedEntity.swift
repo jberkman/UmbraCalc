@@ -21,6 +21,8 @@ class ScopedEntity: NSManagedObject {
     @NSManaged var creationDate: NSTimeInterval
     @NSManaged var modificationDate: NSTimeInterval
     @NSManaged var scope: String?
+    @NSManaged var scopeGroup: ScopedEntity?
+    @NSManaged var subgroupScopes: NSSet?
     @NSManaged var subscopes: NSSet?
 
     @NSManaged private var primitiveCreationDate: NSDate?
@@ -47,7 +49,7 @@ class ScopedEntity: NSManagedObject {
     }
 
     var creationDateScopeKey: String {
-        return String(format: "%16llx", CLongLong(creationDate * 10_000))
+        return String(format: "%.16llx", CLongLong(creationDate * 10_000))
     }
 
     var scopeKey: String {
