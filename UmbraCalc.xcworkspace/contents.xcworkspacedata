@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:JeSuis/JeSuis.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Balsa/Balsa.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Apropos/Apropos.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "container:UmbraCalc.xcodeproj">
+   </FileRef>
+</Workspace>
