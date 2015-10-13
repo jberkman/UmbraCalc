@@ -89,11 +89,13 @@ class KolonizedDataSource: ScopedDataSource {
             return
         }
 
-        guard cell.accessoryView == nil else { return }
-        let stepper = UIStepper()
-        stepper.value = Double(part.count)
-        stepper.addTarget(self, action: "stepperDidChangeValue:", forControlEvents: .ValueChanged)
-        cell.accessoryView = stepper
+        if cell.accessoryView == nil {
+            let stepper = UIStepper()
+            stepper.addTarget(self, action: "stepperDidChangeValue:", forControlEvents: .ValueChanged)
+            cell.accessoryView = stepper
+        }
+
+        (cell.accessoryView as! UIStepper).value = Double(part.count)
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

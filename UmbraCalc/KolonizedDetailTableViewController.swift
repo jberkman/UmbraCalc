@@ -23,16 +23,21 @@ private let crewCapacityCellIdentifier = "crewCapacityCell"
 private let livingSpacesCellIdentifier = "livingSpacesCell"
 private let workspacesCellIdentifier = "workspacesCell"
 
-class KolonizedDetailTableViewController: UIViewController {
+class KolonizedDetailTableViewController: UITableViewController {
 
-    private class ResupplyDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
+    private class ResupplyDataSource: NSObject, UITableViewDataSource, UITableViewDelegate, SectionOffsetting {
 
+        var sectionOffset: Int
         private var resourceNames: [String] = []
 
         var resources: [String: Double] = [:] {
             didSet {
                 resourceNames = resources.keys.sort()
             }
+        }
+
+        init(sectionOffset: Int) {
+            self.sectionOffset = sectionOffset
         }
 
         @objc func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -59,16 +64,9 @@ class KolonizedDetailTableViewController: UIViewController {
 
     }
 
-    @IBOutlet weak var resupplyTableView: UITableView!
-    @IBOutlet weak var resupplyHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var seperatorView: UIView!
-    @IBOutlet weak var seperatorHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var stackView: UIView!
-    @IBOutlet weak var tableView: UITableView!
-
     private var hasAppeared = false
 
-    private lazy var resupplyDataSource = ResupplyDataSource()
+    private lazy var dataSource: CompoundDataSource! = CompoundDataSource(dataSource: self.staticDataSource)
 
     private lazy var staticDataSource: StaticDataSource = StaticDataSource(sections: [
         Section(rows: [
@@ -77,7 +75,7 @@ class KolonizedDetailTableViewController: UIViewController {
                 textField.text = self?.namedEntity?.name
                 textField.delegate = self
             }
-            ], headerTitle: nil, footerTitle: nil),
+            ]),
 
         Section(rows: [
             Row(reuseIdentifier: crewCapacityCellIdentifier) { [weak self] cell, _ in
@@ -89,15 +87,15 @@ class KolonizedDetailTableViewController: UIViewController {
             Row(reuseIdentifier: workspacesCellIdentifier) { [weak self] cell, _ in
                 cell.detailTextLabel!.text = String(self?.kolonizingCollection?.workspaceCount ?? 0)
             }
-            ], headerTitle: nil,
+            ],
             footerTitle: "Crew efficiency is improved by adding workspaces and living spaces, and having at least five crewmembers on the station or kolony."),
 
-        Section(rows: [], headerTitle: nil, footerTitle: nil)
+        Section(rows: []), // Resupply
+        Section(rows: [])  // Kolonized
         ])
 
-    private lazy var kolonizedDataSource: KolonizedDataSource = KolonizedDataSource(sectionOffset: 2)
-
-    private lazy var dataSource: CompoundDataSource! = CompoundDataSource(dataSource: self.staticDataSource)
+    private lazy var resupplyDataSource = ResupplyDataSource(sectionOffset: 2)
+    private lazy var kolonizedDataSource: KolonizedDataSource = KolonizedDataSource(sectionOffset: 3)
 
     //footerTitle: "Activating converters slightly reduces crew efficiency of this station or kolony.\n\n" +
     //            "IMPORTANT: Resource converters on efficiency parts should be deactivated when used as efficiency parts.",
@@ -143,29 +141,18 @@ class KolonizedDetailTableViewController: UIViewController {
         view.backgroundColor = tableView.backgroundColor
 
         kolonizedDataSource.tableView = tableView
-        dataSource[kolonizedDataSource.sectionOffset] = kolonizedDataSource
+        dataSource[resupplyDataSource] = resupplyDataSource
+        dataSource[kolonizedDataSource] = kolonizedDataSource
 
         tableView.dataSource = dataSource
         tableView.delegate = self
-
-        resupplyTableView.dataSource = resupplyDataSource
     }
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         updateView()
-        seperatorHeightConstraint.constant = 1 / traitCollection.displayScale
-        guard !hasAppeared else {
-            if let indexPath = tableView.indexPathForSelectedRow {
-                tableView.deselectRowAtIndexPath(indexPath, animated: true)
-            }
-            if let indexPath = resupplyTableView.indexPathForSelectedRow {
-                tableView.deselectRowAtIndexPath(indexPath, animated: true)
-            }
-            return
-        }
+        guard !hasAppeared else { return }
         kolonizedDataSource.reloadData()
-        resupplyTableView.reloadData()
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -206,7 +193,7 @@ class KolonizedDetailTableViewController: UIViewController {
             partDetail.part = kolonizedDataSource[indexPath] as? Part
 
         case "Resource".showSegueIdentifier:
-            let indexPath = resupplyTableView.indexPathForSegueSender(sender)!
+            let indexPath = tableView.indexPathForSegueSender(sender)!
             let resourceDetail = segue.destinationViewController as! ResourceDetailTableViewController
             resourceDetail.resourceName = resupplyDataSource.resourceNames[indexPath.row]
             resourceDetail.kolonizingCollection = kolonizingCollection
@@ -225,7 +212,7 @@ class KolonizedDetailTableViewController: UIViewController {
 
         updateTitle()
 
-        if let indexPaths = tableView.indexPathsForVisibleRows?.filter({ $0 != indexPath }) {
+        if let indexPaths = tableView.indexPathsForVisibleRows?.filter({ $0 != indexPath && $0.section != resupplyDataSource.sectionOffset }) {
             tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
         }
 
@@ -235,28 +222,14 @@ class KolonizedDetailTableViewController: UIViewController {
             ret![$1.0] = -$1.1 * secondsPerYear
             return ret
             } ?? [:]
-
-        let resourceCount = resupplyDataSource.resources.count
-        resupplyTableView.scrollEnabled = resourceCount > 2
-        resupplyTableView.reloadData()
-        seperatorView.hidden = !resupplyTableView.scrollEnabled
-
-        if resupplyTableView.scrollEnabled {
-            resupplyHeightConstraint.constant = 44 * 4
-        } else {
-            resupplyTableView.layoutIfNeeded()
-            resupplyHeightConstraint.constant = resupplyTableView.contentSize.height - 38
-            resupplyTableView.contentOffset = .zero
-        }
-
-        stackView.setNeedsLayout()
+        tableView.reloadSections(NSIndexSet(index: resupplyDataSource.sectionOffset), withRowAnimation: .Fade)
     }
 
 }
 
-extension KolonizedDetailTableViewController: UITableViewDelegate {
+extension KolonizedDetailTableViewController {
 
-    func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
+    override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
         let alert = UIAlertController(title: "Rename Base", message: nil, preferredStyle: .Alert)
         let base = self.kolonizedDataSource[indexPath] as! Base
 
@@ -271,24 +244,12 @@ extension KolonizedDetailTableViewController: UITableViewDelegate {
         presentViewController(alert, animated: true, completion: nil)
     }
 
-    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        guard indexPath.section >= kolonizedDataSource.sectionOffset else { return false }
-        let model = kolonizedDataSource[indexPath]
-        return model is Crew || (model as? Part)?.crewed == true
-    }
-
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard indexPath.section >= kolonizedDataSource.sectionOffset else { return }
-        let identifier = (kolonizedDataSource[indexPath] as! Segueable).showSegueIdentifier
-        performSegueWithIdentifier(identifier, sender: indexPath)
-    }
-
-    func tableView(tableView: UITableView, indentationLevelForRowAtIndexPath indexPath: NSIndexPath) -> Int {
+    override func tableView(tableView: UITableView, indentationLevelForRowAtIndexPath indexPath: NSIndexPath) -> Int {
         guard indexPath.section >= kolonizedDataSource.sectionOffset else { return 0 }
         return kolonizedDataSource.tableView(tableView, indentationLevelForRowAtIndexPath: indexPath)
     }
 
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return indexPath.section >= kolonizedDataSource.sectionOffset
     }
 
@@ -298,13 +259,18 @@ extension KolonizedDetailTableViewController: KolonizedDataSourceDelegate {
 
     func tableView(tableView: UITableView, stepperAccessory: UIStepper, valueChangedForRowAtIndexPath indexPath: NSIndexPath) {
         let model = kolonizedDataSource[indexPath]
+        print(indexPath, stepperAccessory)
         if let part = model as? Part {
+            print(part.count)
             part.count = Int16(stepperAccessory.value)
+            print(part.count)
+            print(stepperAccessory.value)
             (part.resourceConverters as? Set<ResourceConverter>)?.forEach { $0.activeCount = min($0.activeCount, part.count) }
         } else if let resourceConverter = model as? ResourceConverter {
             resourceConverter.activeCount = Int16(stepperAccessory.value)
         }
         updateView(exceptRowAtIndexPath: indexPath)
+        print(stepperAccessory.value)
     }
 
     func tableView(tableView: UITableView, switchAccessory: UISwitch, valueChangedForRowAtIndexPath indexPath: NSIndexPath) {
