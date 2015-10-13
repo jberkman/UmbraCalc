@@ -106,26 +106,30 @@ class ResourceDetailTableViewController: UITableViewController {
         let crewInputs = collection.crewingCollection.map{ $0.inputResources }.reduce([:], combine: +)
         let netResources = constrainedOutputs - inputConstraints * collection.inputResources - crewInputs
 
+        let producerRows = producers.isEmpty ? [Row(reuseIdentifier: "noneCell") { _, _ in }] : producers.map {
+            ResourceRow(reuseIdentifier: reuseIdentifier($0), resource: $0) {
+                $0.textLabel?.text = name($2)
+                let constrainedOutputs: [String: Double]
+                if let resourceCollection = ($2 as? ResourceConvertingCollectionType)?.resourceConvertingCollection {
+                    constrainedOutputs = resourceCollection.map { $0.outputResourcesWithInputConstraints(inputConstraints) }.reduce([:], combine: +)
+                } else {
+                    constrainedOutputs = $2.outputResources
+                }
+                $0.detailTextLabel?.text = "\((constrainedOutputs[resourceName] ?? 0) * secondsPerDay) / day"
+            }
+        }
+
+        let consumerRows = consumers.isEmpty ? [Row(reuseIdentifier: "noneCell") { _, _ in }] : consumers.map {
+            ResourceRow(reuseIdentifier: reuseIdentifier($0), resource: $0) {
+                $0.textLabel?.text = name($2)
+                let inputResources = $2 is Crewing ? $2.inputResources : $2.inputResources * inputConstraints
+                $0.detailTextLabel?.text = "\((inputResources[resourceName] ?? 0) * secondsPerDay) / day"
+            }
+        }
+
         dataSource = StaticDataSource(sections: [
-            Section(rows: producers.map {
-                ResourceRow(reuseIdentifier: reuseIdentifier($0), resource: $0) {
-                    $0.textLabel?.text = name($2)
-                    let constrainedOutputs: [String: Double]
-                    if let resourceCollection = ($2 as? ResourceConvertingCollectionType)?.resourceConvertingCollection {
-                        constrainedOutputs = resourceCollection.map { $0.outputResourcesWithInputConstraints(inputConstraints) }.reduce([:], combine: +)
-                    } else {
-                        constrainedOutputs = $2.outputResources
-                    }
-                    $0.detailTextLabel?.text = "\((constrainedOutputs[resourceName] ?? 0) * secondsPerDay) / day"
-                }
-                }, headerTitle: "Producers", footerTitle: nil),
-            Section(rows: consumers.map {
-                ResourceRow(reuseIdentifier: reuseIdentifier($0), resource: $0) {
-                    $0.textLabel?.text = name($2)
-                    let inputResources = $2 is Crewing ? $2.inputResources : $2.inputResources * inputConstraints
-                    $0.detailTextLabel?.text = "\((inputResources[resourceName] ?? 0) * secondsPerDay) / day"
-                }
-                }, headerTitle: "Consumers", footerTitle: nil),
+            Section(rows: producerRows, headerTitle: "Producers"),
+            Section(rows: consumerRows, headerTitle: "Consumers"),
             Section(rows: [
                 Row(reuseIdentifier: "dailyCell") { cell, _ in
                     cell.detailTextLabel?.text = String((netResources[resourceName] ?? 0) * secondsPerDay)

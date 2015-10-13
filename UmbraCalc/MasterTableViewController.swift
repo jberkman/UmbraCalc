@@ -44,6 +44,15 @@ class MasterTableViewController: UITableViewController {
             cell.accessoryType = splitAccessoryType
         }
 
+        func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+            return true
+        }
+        
+        func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+            guard editingStyle == .Delete else { return }
+            self[indexPath].deleteEntity()
+        }
+
     }
 
     @IBOutlet weak var entitySegmentedControl: UISegmentedControl!

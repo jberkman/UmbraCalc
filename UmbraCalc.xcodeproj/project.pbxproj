@@ -26,7 +26,6 @@
 		1684F2521BCCB7F7002B965F /* Apropos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1684F24F1BCCB7F7002B965F /* Apropos.framework */; };
 		1684F2531BCCB7F7002B965F /* Balsa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1684F2501BCCB7F7002B965F /* Balsa.framework */; };
 		1684F2541BCCB7F7002B965F /* JeSuis.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1684F2511BCCB7F7002B965F /* JeSuis.framework */; };
-		1684F2561BCCBDFA002B965F /* JeSuisExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1684F2551BCCBDFA002B965F /* JeSuisExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9571BB6813400EDBCF7 /* VesselTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9561BB6813400EDBCF7 /* VesselTests.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9631BB7021C00EDBCF7 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E95B1BB7021C00EDBCF7 /* Station.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9681BB7021C00EDBCF7 /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9601BB7021C00EDBCF7 /* Base.swift */; settings = {ASSET_TAGS = (); }; };
@@ -94,7 +93,6 @@
 		1684F24F1BCCB7F7002B965F /* Apropos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Apropos.framework; path = "Apropos/build/Debug-iphoneos/Apropos.framework"; sourceTree = "<group>"; };
 		1684F2501BCCB7F7002B965F /* Balsa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Balsa.framework; path = "Balsa/build/Debug-iphoneos/Balsa.framework"; sourceTree = "<group>"; };
 		1684F2511BCCB7F7002B965F /* JeSuis.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JeSuis.framework; path = "JeSuis/build/Debug-iphoneos/JeSuis.framework"; sourceTree = "<group>"; };
-		1684F2551BCCBDFA002B965F /* JeSuisExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JeSuisExtensions.swift; sourceTree = "<group>"; };
 		1699E9561BB6813400EDBCF7 /* VesselTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VesselTests.swift; sourceTree = "<group>"; };
 		1699E95B1BB7021C00EDBCF7 /* Station.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
 		1699E9601BB7021C00EDBCF7 /* Base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Base.swift; sourceTree = "<group>"; };
@@ -336,7 +334,6 @@
 				1633604E1BBCF867003A6B5D /* AproposExtensions.swift */,
 				1699E9861BB8494B00EDBCF7 /* CoreDataExtensions.swift */,
 				16B7AD1E1BB5134A006DFA4E /* FoundationExtensions.swift */,
-				1684F2551BCCBDFA002B965F /* JeSuisExtensions.swift */,
 				166F0B331BC62F78000A4D3E /* KolonizingExtensions.swift */,
 				166F0B2B1BC5A6F1000A4D3E /* SwiftExtensions.swift */,
 				16FE81421BC1C82700F1A56C /* UIKitExtensions.swift */,
@@ -499,7 +496,6 @@
 				16B7ACC91BB39066006DFA4E /* UmbraCalc.xcdatamodeld in Sources */,
 				16FE810C1BBEDB7C00F1A56C /* KolonizedDetailTableViewController.swift in Sources */,
 				1699E9981BB8D65300EDBCF7 /* NamedEntity.swift in Sources */,
-				1684F2561BCCBDFA002B965F /* JeSuisExtensions.swift in Sources */,
 				166F0B691BC797C1000A4D3E /* ScopedDataSource.swift in Sources */,
 				16FE81431BC1C82700F1A56C /* UIKitExtensions.swift in Sources */,
 				16B7ACFF1BB3AC51006DFA4E /* Vessel.swift in Sources */,

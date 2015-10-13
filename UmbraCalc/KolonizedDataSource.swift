@@ -128,4 +128,18 @@ class KolonizedDataSource: ScopedDataSource {
         }
     }
 
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return true
+    }
+
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        guard editingStyle == .Delete else { return }
+        let entity = self[indexPath]
+        if let crew = entity as? Crew {
+            crew.part = nil
+        } else {
+            entity.deleteEntity()
+        }
+    }
+
 }

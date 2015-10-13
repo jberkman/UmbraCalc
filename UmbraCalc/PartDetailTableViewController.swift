@@ -148,6 +148,7 @@ class PartDetailTableViewController: UITableViewController {
 
     private func updateView() {
         guard isViewLoaded() else { return }
+
         navigationItem.title = part?.title
 
         careerFactorLabel.text = percentFormatter.stringFromNumber(part?.careerFactor ?? 0)

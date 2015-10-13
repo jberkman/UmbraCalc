@@ -212,9 +212,7 @@ class KolonizedDetailTableViewController: UITableViewController {
 
         updateTitle()
 
-        if let indexPaths = tableView.indexPathsForVisibleRows?.filter({ $0 != indexPath && $0.section != resupplyDataSource.sectionOffset }) {
-            tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
-        }
+        tableView.reloadData()
 
         resupplyDataSource.resources = kolonizingCollection?.netResourceConversion.reduce([:]) {
             guard $1.1 < 0 && $1.0 != "Plutonium-238" else { return $0 }
@@ -222,11 +220,13 @@ class KolonizedDetailTableViewController: UITableViewController {
             ret![$1.0] = -$1.1 * secondsPerYear
             return ret
             } ?? [:]
-        tableView.reloadSections(NSIndexSet(index: resupplyDataSource.sectionOffset), withRowAnimation: .Fade)
+
+        tableView.reloadSections(NSIndexSet(index: resupplyDataSource.sectionOffset), withRowAnimation: .None)
     }
 
 }
 
+// UITableViewDelegate
 extension KolonizedDetailTableViewController {
 
     override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
@@ -253,24 +253,24 @@ extension KolonizedDetailTableViewController {
         return indexPath.section >= kolonizedDataSource.sectionOffset
     }
 
+    override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String? {
+        guard indexPath.section >= kolonizedDataSource.sectionOffset else { return nil }
+        return kolonizedDataSource[indexPath] is Crew ? "Unassign" : "Remove"
+    }
+
 }
 
 extension KolonizedDetailTableViewController: KolonizedDataSourceDelegate {
 
     func tableView(tableView: UITableView, stepperAccessory: UIStepper, valueChangedForRowAtIndexPath indexPath: NSIndexPath) {
         let model = kolonizedDataSource[indexPath]
-        print(indexPath, stepperAccessory)
         if let part = model as? Part {
-            print(part.count)
             part.count = Int16(stepperAccessory.value)
-            print(part.count)
-            print(stepperAccessory.value)
             (part.resourceConverters as? Set<ResourceConverter>)?.forEach { $0.activeCount = min($0.activeCount, part.count) }
         } else if let resourceConverter = model as? ResourceConverter {
             resourceConverter.activeCount = Int16(stepperAccessory.value)
         }
         updateView(exceptRowAtIndexPath: indexPath)
-        print(stepperAccessory.value)
     }
 
     func tableView(tableView: UITableView, switchAccessory: UISwitch, valueChangedForRowAtIndexPath indexPath: NSIndexPath) {
