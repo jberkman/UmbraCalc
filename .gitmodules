@@ -4,3 +4,6 @@
 [submodule "Balsa"]
 	path = Balsa
 	url = https://github.com/jberkman/Balsa.git
+[submodule "JeSuis"]
+	path = JeSuis
+	url = https://github.com/jberkman/JeSuis.git

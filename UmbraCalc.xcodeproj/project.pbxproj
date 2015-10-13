@@ -16,7 +16,6 @@
 		1654A22D1BBE714400623F50 /* MasterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9881BB8871F00EDBCF7 /* MasterTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		1654A22F1BBE71FE00623F50 /* PartDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162EA5F41BB91A62001AFBBC /* PartDetailTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		1654A2311BBE71FE00623F50 /* PartNodeListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E99B1BB9030600EDBCF7 /* PartNodeListTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		1654A2321BBE71FE00623F50 /* VesselDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E98A1BB8A20300EDBCF7 /* VesselDetailTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		166F0B2C1BC5A6F2000A4D3E /* SwiftExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B2B1BC5A6F1000A4D3E /* SwiftExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 		166F0B321BC6101E000A4D3E /* Kolonizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B311BC6101E000A4D3E /* Kolonizing.swift */; settings = {ASSET_TAGS = (); }; };
 		166F0B341BC62F78000A4D3E /* KolonizingExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B331BC62F78000A4D3E /* KolonizingExtensions.swift */; settings = {ASSET_TAGS = (); }; };
@@ -104,7 +103,6 @@
 		1699E9841BB83C4A00EDBCF7 /* EmptyDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyDetailViewController.swift; sourceTree = "<group>"; };
 		1699E9861BB8494B00EDBCF7 /* CoreDataExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataExtensions.swift; sourceTree = "<group>"; };
 		1699E9881BB8871F00EDBCF7 /* MasterTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterTableViewController.swift; sourceTree = "<group>"; };
-		1699E98A1BB8A20300EDBCF7 /* VesselDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VesselDetailTableViewController.swift; sourceTree = "<group>"; };
 		1699E9931BB8D51000EDBCF7 /* NamedType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NamedType.swift; sourceTree = "<group>"; };
 		1699E9961BB8D65300EDBCF7 /* NamedEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NamedEntity.swift; sourceTree = "<group>"; };
 		1699E99B1BB9030600EDBCF7 /* PartNodeListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartNodeListTableViewController.swift; sourceTree = "<group>"; };
@@ -212,7 +210,6 @@
 				162EA5F41BB91A62001AFBBC /* PartDetailTableViewController.swift */,
 				1699E99B1BB9030600EDBCF7 /* PartNodeListTableViewController.swift */,
 				1684F21F1BCB800F002B965F /* ResourceDetailTableViewController.swift */,
-				1699E98A1BB8A20300EDBCF7 /* VesselDetailTableViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -257,8 +254,8 @@
 				16B7ACC41BB39066006DFA4E /* UmbraCalc */,
 				16B7ACDE1BB39066006DFA4E /* UmbraCalcTests */,
 				16B7ACE91BB39066006DFA4E /* UmbraCalcUITests */,
-				16B7ACC31BB39066006DFA4E /* Products */,
 				1684F2571BCCBF35002B965F /* Frameworks */,
+				16B7ACC31BB39066006DFA4E /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -336,10 +333,10 @@
 		16F999B31BB663730018A685 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				1684F2551BCCBDFA002B965F /* JeSuisExtensions.swift */,
 				1633604E1BBCF867003A6B5D /* AproposExtensions.swift */,
 				1699E9861BB8494B00EDBCF7 /* CoreDataExtensions.swift */,
 				16B7AD1E1BB5134A006DFA4E /* FoundationExtensions.swift */,
+				1684F2551BCCBDFA002B965F /* JeSuisExtensions.swift */,
 				166F0B331BC62F78000A4D3E /* KolonizingExtensions.swift */,
 				166F0B2B1BC5A6F1000A4D3E /* SwiftExtensions.swift */,
 				16FE81421BC1C82700F1A56C /* UIKitExtensions.swift */,
@@ -519,7 +516,6 @@
 				16B7AD031BB3AC51006DFA4E /* Crew.swift in Sources */,
 				16B7AD071BB3BE57006DFA4E /* CoreDataStack.swift in Sources */,
 				166F0B381BC64D4D000A4D3E /* CrewDataSource.swift in Sources */,
-				1654A2321BBE71FE00623F50 /* VesselDetailTableViewController.swift in Sources */,
 				1654A2291BBE69FE00623F50 /* CrewDetailTableViewController.swift in Sources */,
 				16B7AD011BB3AC51006DFA4E /* Part.swift in Sources */,
 				1654A22C1BBE713B00623F50 /* EmptyDetailViewController.swift in Sources */,

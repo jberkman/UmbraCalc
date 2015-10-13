@@ -43,13 +43,13 @@ class PartNodeListTableViewController: UITableViewController {
         return partNodes.count
     }
 
-    func partNodeForRowAtIndexPath(indexPath: NSIndexPath) -> PartNode {
+    subscript (indexPath: NSIndexPath) -> PartNode {
         return partNodes[indexPath.row]
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
-        let partNode = partNodeForRowAtIndexPath(indexPath)
+        let partNode = self[indexPath]
         cell.textLabel?.text = partNode.title
         var details: [String] = []
         if partNode.crewed {
@@ -66,7 +66,7 @@ class PartNodeListTableViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
-        let partNode = partNodeForRowAtIndexPath(indexPath)
+        let partNode = self[indexPath]
         let alert = UIAlertController(title: partNode.title, message: partNode.descriptionText, preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Add", style: .Default) { _ in
             self.performSegueWithIdentifier(Part.saveSegueIdentifier, sender: indexPath)
@@ -80,14 +80,64 @@ class PartNodeListTableViewController: UITableViewController {
         switch segue.identifier! {
         case Part.saveSegueIdentifier:
             if let cell = sender as? UITableViewCell, indexPath = tableView.indexPathForCell(cell) {
-                selectedPartNode = partNodeForRowAtIndexPath(indexPath)
+                selectedPartNode = self[indexPath]
             } else if let indexPath = sender as? NSIndexPath {
-                selectedPartNode = partNodeForRowAtIndexPath(indexPath)
+                selectedPartNode = self[indexPath]
             }
 
         default:
             break
         }
+    }
+
+}
+
+class PartNodeSelectionTableViewcontroller: PartNodeListTableViewController {
+
+    @IBOutlet weak var doneButtonitem: UIBarButtonItem!
+
+    var selectedPartNodes: Set<PartNode> = Set()
+
+    var allowsMultipleSelection = false {
+        didSet {
+            guard isViewLoaded() else { return }
+            tableView.reloadData()
+        }
+    }
+
+    private func accessoryTypeForPartNode(partNode: PartNode) -> UITableViewCellAccessoryType {
+        return allowsMultipleSelection ? selectedPartNodes.contains(partNode) ? .Checkmark : .None : .DetailButton
+    }
+
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+        cell.accessoryType = accessoryTypeForPartNode(self[indexPath])
+        return cell
+    }
+
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        guard allowsMultipleSelection else {
+            super.tableView(tableView, didSelectRowAtIndexPath: indexPath)
+            return
+        }
+
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        let partNode = self[indexPath]
+        if selectedPartNodes.contains(partNode) == true {
+            selectedPartNodes.remove(partNode)
+        } else {
+            selectedPartNodes.insert(partNode)
+        }
+        tableView.cellForRowAtIndexPath(indexPath)?.accessoryType = accessoryTypeForPartNode(partNode)
+    }
+
+    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+        return !allowsMultipleSelection || identifier != "savePart"
+    }
+
+    @IBAction func enableMultipleSelection() {
+        navigationItem.setRightBarButtonItem(doneButtonitem, animated: true)
+        allowsMultipleSelection = true
     }
 
 }

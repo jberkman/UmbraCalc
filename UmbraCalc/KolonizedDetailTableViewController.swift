@@ -259,7 +259,7 @@ extension KolonizedDetailTableViewController: UITableViewDelegate {
     func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
 
-        alert.addAction(UIAlertAction(title: "Add Part", style: .Default) { _ in
+        alert.addAction(UIAlertAction(title: "Add Part(s)", style: .Default) { _ in
             self.performSegueWithIdentifier(Part.addSegueIdentifier, sender: indexPath)
             })
 
@@ -356,17 +356,18 @@ extension KolonizedDetailTableViewController {
 
         guard let managedObjectContext = currentVessel?.managedObjectContext else { return }
         _ = try? Part(insertIntoManagedObjectContext: managedObjectContext).withVessel(currentVessel!).withPartName(partNode.name)
-
-        guard let indexPaths = tableView.indexPathsForVisibleRows else { return }
-        tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
     }
 
     @IBAction func savePart(segue: UIStoryboardSegue) {
-        let partNodeList = segue.sourceViewController as! PartNodeListTableViewController
+        let partNodeList = segue.sourceViewController as! PartNodeSelectionTableViewcontroller
         if let partNode = partNodeList.selectedPartNode {
             addPartNodeToCurrentVessel(partNode)
+        } else {
+            partNodeList.selectedPartNodes.forEach(addPartNodeToCurrentVessel)
         }
         selectedBase = nil
+        guard let indexPaths = tableView.indexPathsForVisibleRows else { return }
+        tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
     }
 
 }

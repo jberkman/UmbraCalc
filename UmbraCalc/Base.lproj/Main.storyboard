@@ -441,7 +441,7 @@
         <!--Add Part-->
         <scene sceneID="ftV-VX-0Gg">
             <objects>
-                <tableViewController id="kLR-pk-xYm" customClass="PartNodeListTableViewController" customModule="UmbraCalc" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="kLR-pk-xYm" customClass="PartNodeSelectionTableViewcontroller" customModule="UmbraCalc" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="lAc-s0-BLr">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -489,12 +489,26 @@
                     <navigationItem key="navigationItem" title="Add Part" id="Biw-uJ-fR3">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="a5g-Hq-TMu">
                             <connections>
-                                <segue destination="biF-Mx-LeC" kind="unwind" unwindAction="cancelPart:" id="SjN-4X-F7d"/>
+                                <segue destination="biF-Mx-LeC" kind="unwind" identifier="cancelPart" unwindAction="cancelPart:" id="SjN-4X-F7d"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Multiple" id="krf-1y-Ves">
+                            <connections>
+                                <action selector="enableMultipleSelection" destination="kLR-pk-xYm" id="5q7-7D-qU2"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="cancelButtonItem" destination="a5g-Hq-TMu" id="WEc-xO-945"/>
+                        <outlet property="doneButtonitem" destination="Mgr-Ne-5Yx" id="cQM-q3-eWQ"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kP8-8b-G66" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <barButtonItem systemItem="done" id="Mgr-Ne-5Yx">
+                    <connections>
+                        <segue destination="biF-Mx-LeC" kind="unwind" identifier="saveMultiple" unwindAction="savePart:" id="VXV-AD-hhr"/>
+                    </connections>
+                </barButtonItem>
                 <exit id="biF-Mx-LeC" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-1847" y="858"/>
