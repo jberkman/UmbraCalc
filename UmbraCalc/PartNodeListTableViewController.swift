@@ -116,11 +116,7 @@ class PartNodeSelectionTableViewcontroller: PartNodeListTableViewController {
     }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard allowsMultipleSelection else {
-            super.tableView(tableView, didSelectRowAtIndexPath: indexPath)
-            return
-        }
-
+        guard allowsMultipleSelection else { return }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         let partNode = self[indexPath]
         if selectedPartNodes.contains(partNode) == true {

@@ -257,35 +257,16 @@ class KolonizedDetailTableViewController: UIViewController {
 extension KolonizedDetailTableViewController: UITableViewDelegate {
 
     func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        let alert = UIAlertController(title: "Rename Base", message: nil, preferredStyle: .Alert)
+        let base = self.kolonizedDataSource[indexPath] as! Base
 
-        alert.addAction(UIAlertAction(title: "Add Part(s)", style: .Default) { _ in
-            self.performSegueWithIdentifier(Part.addSegueIdentifier, sender: indexPath)
-            })
+        alert.addTextFieldWithConfigurationHandler { $0.text = base.name }
 
-        alert.addAction(UIAlertAction(title: "Edit Name", style: .Default) { _ in
-            let alert = UIAlertController(title: "Rename Base", message: nil, preferredStyle: .Alert)
-            let base = self.kolonizedDataSource[indexPath] as! Base
-
-            alert.addTextFieldWithConfigurationHandler {
-                $0.text = base.name
-            }
-
-            alert.addAction(UIAlertAction(title: "Save", style: .Default) { _ in
-                base.name = alert.textFields![0].text
-                })
-
-            alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-
-            self.presentViewController(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "Rename", style: .Default) { _ in
+            base.name = alert.textFields![0].text
             })
 
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-
-        let cell = tableView.cellForRowAtIndexPath(indexPath)!
-        alert.popoverPresentationController?.sourceView = cell
-        alert.popoverPresentationController?.sourceRect = cell.bounds
-        alert.popoverPresentationController?.permittedArrowDirections = [.Up, .Down]
 
         presentViewController(alert, animated: true, completion: nil)
     }
@@ -341,7 +322,19 @@ extension KolonizedDetailTableViewController {
             performSegueWithIdentifier(Part.addSegueIdentifier, sender: sender)
             return
         }
-        _ = try? Base(insertIntoManagedObjectContext: managedObjectContext).withKolony(kolony) //.withDefaultParts()
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        (kolony.bases as? Set<Base>)?.forEach { base in
+            alert.addAction(UIAlertAction(title: "Add Part(s) to \(base.displayName)", style: .Default) { _ in
+                self.selectedBase = base
+                self.performSegueWithIdentifier(Part.addSegueIdentifier, sender: self.kolonizedDataSource[base])
+            })
+        }
+        alert.addAction(UIAlertAction(title: "Add Base", style: .Default) { _ in
+            _ = try? Base(insertIntoManagedObjectContext: managedObjectContext).withKolony(kolony) //.withDefaultParts()
+            })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        alert.popoverPresentationController?.barButtonItem = sender
+        presentViewController(alert, animated: true, completion: nil)
     }
 
     @IBAction func cancelPart(segue: UIStoryboardSegue) {
