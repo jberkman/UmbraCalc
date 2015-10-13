@@ -53,7 +53,7 @@ extension NSBundle {
             return cachedNodes
         }
         guard let URLs = URLsForResourcesWithExtension(partsExtension, subdirectory: partsSubdirectory) else { return [] }
-        let nodes = URLs.map { PartNode(URL: $0) }.filter { $0 != nil }.map { $0! }
+        let nodes = URLs.map { PartNode(URL: $0) }.flatMap { $0 }
         objc_setAssociatedObject(self, &partNodeAssociatedObjectKey, nodes, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         return nodes
     }
@@ -62,6 +62,7 @@ extension NSBundle {
 
 class PartNode: NSObject {
 
+    let fileName: String?
     let name: String
     let title: String
     let descriptionText: String
@@ -78,7 +79,9 @@ class PartNode: NSObject {
 
     var crewed: Bool { return crewCapacity > 0 }
 
-    init?(configNode: [NSObject: AnyObject]) {
+    init?(configNode: [NSObject: AnyObject], fileName: String? = nil) {
+        self.fileName = fileName
+
         guard let part = configNode[partKey] as? [NSObject: AnyObject] else {
             name = ""
             title = ""
@@ -184,7 +187,7 @@ class PartNode: NSObject {
             return nil
         }
 
-        self.init(configNode: ConfigNode.configNodeWithData(data))
+        self.init(configNode: ConfigNode.configNodeWithData(data), fileName: (URL.lastPathComponent! as NSString).stringByDeletingPathExtension)
     }
 
     convenience init?(named name: String, inBundle bundle: NSBundle = NSBundle.mainBundle()) {

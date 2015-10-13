@@ -308,13 +308,13 @@ extension KolonizedDetailTableViewController {
     }
 
     private func addPartNodeToCurrentVessel(partNode: PartNode) {
-        if partNode.crewCapacity == 0, let existingPart = (currentVessel?.parts as? Set<Part>)?.lazy.filter({ $0.partName == partNode.name }).first {
+        if partNode.crewCapacity == 0, let existingPart = (currentVessel?.parts as? Set<Part>)?.lazy.filter({ $0.partFileName == partNode.fileName }).first {
             ++existingPart.count
             return
         }
 
-        guard let managedObjectContext = currentVessel?.managedObjectContext else { return }
-        _ = try? Part(insertIntoManagedObjectContext: managedObjectContext).withVessel(currentVessel!).withPartName(partNode.name)
+        guard let managedObjectContext = currentVessel?.managedObjectContext, fileName = partNode.fileName else { return }
+        _ = try? Part(insertIntoManagedObjectContext: managedObjectContext).withVessel(currentVessel!).withPartFileName(fileName)
     }
 
     @IBAction func savePart(segue: UIStoryboardSegue) {

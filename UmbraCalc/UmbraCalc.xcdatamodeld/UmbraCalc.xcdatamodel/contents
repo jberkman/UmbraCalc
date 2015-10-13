@@ -16,7 +16,7 @@
     </entity>
     <entity name="Part" representedClassName=".Part" parentEntity="ScopedEntity" syncable="YES">
         <attribute name="count" attributeType="Integer 16" minValueString="0" defaultValueString="1" syncable="YES"/>
-        <attribute name="partName" attributeType="String" syncable="YES"/>
+        <attribute name="partFileName" attributeType="String" syncable="YES"/>
         <relationship name="crew" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Crew" inverseName="part" inverseEntity="Crew" syncable="YES"/>
         <relationship name="resourceConverters" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ResourceConverter" inverseName="part" inverseEntity="ResourceConverter" syncable="YES"/>
         <relationship name="vessel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Vessel" inverseName="parts" inverseEntity="Vessel" syncable="YES"/>

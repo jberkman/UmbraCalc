@@ -28,7 +28,7 @@ class Part: ScopedEntity {
     @NSManaged var resourceConverters: NSSet?
     @NSManaged var crew: NSSet?
 
-    @NSManaged private var primitivePartName: String?
+    @NSManaged private var primitivePartFileName: String?
     @NSManaged private var primitiveVessel: Vessel?
 
     private dynamic var cachedPartNode: PartNode? {
@@ -80,7 +80,7 @@ class Part: ScopedEntity {
     }
 
     override var scopeKey: String {
-        return [entity.name!, partName ?? "", creationDateScopeKey].joinWithSeparator("-")
+        return [entity.name!, partFileName ?? "", creationDateScopeKey].joinWithSeparator("-")
     }
 
     override func setScopeNeedsUpdate() {
@@ -89,25 +89,25 @@ class Part: ScopedEntity {
         (resourceConverters as? Set<ResourceConverter>)?.forEach { $0.setScopeNeedsUpdate() }
     }
 
-    dynamic var partName: String? {
+    dynamic var partFileName: String? {
         get {
-            willAccessValueForKey("partName")
-            let ret = primitivePartName
-            didAccessValueForKey("partName")
+            willAccessValueForKey("partFileName")
+            let ret = primitivePartFileName
+            didAccessValueForKey("partFileName")
             return ret
         }
         set {
-            willChangeValueForKey("partName")
-            primitivePartName = newValue
+            willChangeValueForKey("partFileName")
+            primitivePartFileName = newValue
             setScopeNeedsUpdate()
             _ = partNode
-            didChangeValueForKey("partName")
+            didChangeValueForKey("partFileName")
         }
     }
 
     var partNode: PartNode? {
-        guard let name = partName else { return nil }
-        if cachedPartNode?.name != name {
+        guard let name = partFileName else { return nil }
+        if cachedPartNode?.fileName != name {
             cachedPartNode = PartNode(named: name)
         }
         return cachedPartNode
@@ -139,8 +139,8 @@ class Part: ScopedEntity {
     }
 
     @warn_unused_result
-    func withPartName(partName: String?) -> Self {
-        return withValue(partName, forKey: "partName")
+    func withPartFileName(partFileName: String?) -> Self {
+        return withValue(partFileName, forKey: "partFileName")
     }
 
     var title: String? { return partNode?.title }
