@@ -237,12 +237,12 @@ class KolonizedDetailTableViewController: UIViewController {
             } ?? [:]
 
         let resourceCount = resupplyDataSource.resources.count
-        resupplyTableView.scrollEnabled = resourceCount > 1
+        resupplyTableView.scrollEnabled = resourceCount > 2
         resupplyTableView.reloadData()
         seperatorView.hidden = !resupplyTableView.scrollEnabled
 
         if resupplyTableView.scrollEnabled {
-            resupplyHeightConstraint.constant = 44 * 3
+            resupplyHeightConstraint.constant = 44 * 4
         } else {
             resupplyTableView.layoutIfNeeded()
             resupplyHeightConstraint.constant = resupplyTableView.contentSize.height - 38

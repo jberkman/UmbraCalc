@@ -3,6 +3,7 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--Master Table View Controller-->
@@ -874,7 +875,7 @@
                                         <animations/>
                                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="154" id="chV-PV-JZl"/>
+                                            <constraint firstAttribute="height" priority="750" constant="154" id="chV-PV-JZl"/>
                                         </constraints>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="noneCell" textLabel="Vtw-Oq-SSX" style="IBUITableViewCellStyleDefault" id="RDg-j6-MaU">
@@ -1224,6 +1225,9 @@
                                     </tableView>
                                 </subviews>
                                 <animations/>
+                                <constraints>
+                                    <constraint firstItem="zYA-e8-fRz" firstAttribute="height" relation="lessThanOrEqual" secondItem="aCE-xb-byl" secondAttribute="height" multiplier="0.5" id="qXm-nK-MaF"/>
+                                </constraints>
                             </stackView>
                         </subviews>
                         <animations/>
@@ -1260,7 +1264,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="KMb-4h-dp6"/>
-        <segue reference="YX9-FN-fxW"/>
+        <segue reference="iZ9-Kj-cDs"/>
+        <segue reference="H6v-6N-SVI"/>
     </inferredMetricsTieBreakers>
 </document>
