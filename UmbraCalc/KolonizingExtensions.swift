@@ -120,36 +120,20 @@ extension KolonizingCollectionType {
         return kolonizingCollection.map { $0.workspaceCount }.reduce(0, combine: +)
     }
 
-    var netResourceConversion: [String: Double] {
-
-        let crewInputs = crewingCollection.map { $0.inputResources }.reduce([:], combine: +)
+    var constrainedOutputs: [String: Double] {
         let crewOutputs = crewingCollection.map { $0.outputResources }.reduce([:], combine: +)
-
-//        print("inputs:", inputResources * secondsPerDay)
-//        print("outputs:", outputResources * secondsPerDay)
-//        print("crew inputs:", crewInputs * secondsPerDay)
-//        print("crew outputs:", crewOutputs * secondsPerDay)
-
-
-        let iterationCount = 5 - 1
-        return (0 ... iterationCount).reduce(crewOutputs) {
-            let inputConstraints = initialSupplyInputConstraintsWithOutputResources($0)
-
+        return (0 ..< 5).reduce(crewOutputs) { inputs, _ in
+            let inputConstraints = initialSupplyInputConstraintsWithOutputResources(inputs)
             let constrainedOutputs = resourceConvertingCollection.map { $0.outputResourcesWithInputConstraints(inputConstraints) }.reduce([:], combine: +)
-
-            if $1 < iterationCount {
-                return constrainedOutputs + crewOutputs
-            }
-
-//            print("constrainedOutputs:", constrainedOutputs * secondsPerDay)
-//            print("crewOutputs:", crewOutputs * secondsPerDay)
-//            print("inputConstraints:", inputConstraints)
-//            print("inputResources:", inputResources * inputConstraints * secondsPerDay)
-//            print("crewInputs:", crewInputs * secondsPerDay)
-//            print("net:", (constrainedOutputs + crewOutputs - inputResources * inputConstraints - crewInputs) * secondsPerDay)
-
-            return constrainedOutputs + crewOutputs - inputResources * inputConstraints - crewInputs
+            return constrainedOutputs + crewOutputs
         }
+    }
+
+    var netResourceConversion: [String: Double] {
+        let outputs = constrainedOutputs
+        let inputConstraints = initialSupplyInputConstraintsWithOutputResources(outputs)
+        let crewInputs = crewingCollection.map { $0.inputResources }.reduce([:], combine: +)
+        return outputs - inputConstraints * inputResources - crewInputs
     }
 
 }

@@ -101,9 +101,10 @@ class ResourceDetailTableViewController: UITableViewController {
         let producers = converters.filter { $0.outputResources[resourceName] != nil }
         let consumers = converters.filter { $0.inputResources[resourceName] != nil }
 
-        let netResources = collection.netResourceConversion
-
-        let inputConstraints = collection.initialSupplyInputConstraintsWithOutputResources(netResources)
+        let constrainedOutputs = collection.constrainedOutputs
+        let inputConstraints = collection.initialSupplyInputConstraintsWithOutputResources(constrainedOutputs)
+        let crewInputs = collection.crewingCollection.map{ $0.inputResources }.reduce([:], combine: +)
+        let netResources = constrainedOutputs - inputConstraints * collection.inputResources - crewInputs
 
         dataSource = StaticDataSource(sections: [
             Section(rows: producers.map {
