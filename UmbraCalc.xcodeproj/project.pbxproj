@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		161755FF1BCEA16B001EFBB8 /* JeSuis.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161755FE1BCEA16B001EFBB8 /* JeSuis.framework */; };
+		161756001BCEA16B001EFBB8 /* JeSuis.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 161755FE1BCEA16B001EFBB8 /* JeSuis.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		161756021BCEA16B001EFBB8 /* Balsa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161756011BCEA16B001EFBB8 /* Balsa.framework */; };
+		161756031BCEA16B001EFBB8 /* Balsa.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 161756011BCEA16B001EFBB8 /* Balsa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		161756051BCEA16B001EFBB8 /* Apropos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 161756041BCEA16B001EFBB8 /* Apropos.framework */; };
+		161756061BCEA16B001EFBB8 /* Apropos.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 161756041BCEA16B001EFBB8 /* Apropos.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1633604F1BBCF867003A6B5D /* AproposExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1633604E1BBCF867003A6B5D /* AproposExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 		164E38B81BC7A1AF001DD649 /* KolonizedDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E38B71BC7A1AF001DD649 /* KolonizedDataSource.swift */; settings = {ASSET_TAGS = (); }; };
 		164E38BA1BC8D2C3001DD649 /* CrewSelectionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E38B91BC8D2C2001DD649 /* CrewSelectionDataSource.swift */; settings = {ASSET_TAGS = (); }; };
@@ -23,9 +29,6 @@
 		166F0B401BC765F7000A4D3E /* ScopedEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B3E1BC765F6000A4D3E /* ScopedEntity.swift */; settings = {ASSET_TAGS = (); }; };
 		166F0B691BC797C1000A4D3E /* ScopedDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B681BC797C1000A4D3E /* ScopedDataSource.swift */; settings = {ASSET_TAGS = (); }; };
 		1684F2201BCB800F002B965F /* ResourceDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1684F21F1BCB800F002B965F /* ResourceDetailTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		1684F2521BCCB7F7002B965F /* Apropos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1684F24F1BCCB7F7002B965F /* Apropos.framework */; };
-		1684F2531BCCB7F7002B965F /* Balsa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1684F2501BCCB7F7002B965F /* Balsa.framework */; };
-		1684F2541BCCB7F7002B965F /* JeSuis.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1684F2511BCCB7F7002B965F /* JeSuis.framework */; };
 		1699E9571BB6813400EDBCF7 /* VesselTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9561BB6813400EDBCF7 /* VesselTests.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9631BB7021C00EDBCF7 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E95B1BB7021C00EDBCF7 /* Station.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9681BB7021C00EDBCF7 /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9601BB7021C00EDBCF7 /* Base.swift */; settings = {ASSET_TAGS = (); }; };
@@ -77,7 +80,26 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		161756071BCEA16C001EFBB8 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				161756061BCEA16B001EFBB8 /* Apropos.framework in Embed Frameworks */,
+				161756031BCEA16B001EFBB8 /* Balsa.framework in Embed Frameworks */,
+				161756001BCEA16B001EFBB8 /* JeSuis.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		161755FE1BCEA16B001EFBB8 /* JeSuis.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = JeSuis.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		161756011BCEA16B001EFBB8 /* Balsa.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Balsa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		161756041BCEA16B001EFBB8 /* Apropos.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Apropos.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		162EA5F41BB91A62001AFBBC /* PartDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartDetailTableViewController.swift; sourceTree = "<group>"; };
 		162EA6211BBAD81D001AFBBC /* SelectionDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectionDataSource.swift; sourceTree = "<group>"; };
 		1633604E1BBCF867003A6B5D /* AproposExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AproposExtensions.swift; sourceTree = "<group>"; };
@@ -90,9 +112,6 @@
 		166F0B3E1BC765F6000A4D3E /* ScopedEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopedEntity.swift; sourceTree = "<group>"; };
 		166F0B681BC797C1000A4D3E /* ScopedDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScopedDataSource.swift; sourceTree = "<group>"; };
 		1684F21F1BCB800F002B965F /* ResourceDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceDetailTableViewController.swift; sourceTree = "<group>"; };
-		1684F24F1BCCB7F7002B965F /* Apropos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Apropos.framework; path = "Apropos/build/Debug-iphoneos/Apropos.framework"; sourceTree = "<group>"; };
-		1684F2501BCCB7F7002B965F /* Balsa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Balsa.framework; path = "Balsa/build/Debug-iphoneos/Balsa.framework"; sourceTree = "<group>"; };
-		1684F2511BCCB7F7002B965F /* JeSuis.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JeSuis.framework; path = "JeSuis/build/Debug-iphoneos/JeSuis.framework"; sourceTree = "<group>"; };
 		1699E9561BB6813400EDBCF7 /* VesselTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VesselTests.swift; sourceTree = "<group>"; };
 		1699E95B1BB7021C00EDBCF7 /* Station.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
 		1699E9601BB7021C00EDBCF7 /* Base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Base.swift; sourceTree = "<group>"; };
@@ -142,9 +161,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1684F2521BCCB7F7002B965F /* Apropos.framework in Frameworks */,
-				1684F2531BCCB7F7002B965F /* Balsa.framework in Frameworks */,
-				1684F2541BCCB7F7002B965F /* JeSuis.framework in Frameworks */,
+				161756051BCEA16B001EFBB8 /* Apropos.framework in Frameworks */,
+				161756021BCEA16B001EFBB8 /* Balsa.framework in Frameworks */,
+				161755FF1BCEA16B001EFBB8 /* JeSuis.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -178,9 +197,9 @@
 		1684F2571BCCBF35002B965F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1684F24F1BCCB7F7002B965F /* Apropos.framework */,
-				1684F2501BCCB7F7002B965F /* Balsa.framework */,
-				1684F2511BCCB7F7002B965F /* JeSuis.framework */,
+				161756041BCEA16B001EFBB8 /* Apropos.framework */,
+				161756011BCEA16B001EFBB8 /* Balsa.framework */,
+				161755FE1BCEA16B001EFBB8 /* JeSuis.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -352,6 +371,7 @@
 				16B7ACBF1BB39066006DFA4E /* Frameworks */,
 				16B7ACC01BB39066006DFA4E /* Resources */,
 				16B7AD201BB51FCC006DFA4E /* ShellScript */,
+				161756071BCEA16C001EFBB8 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
