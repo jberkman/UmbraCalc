@@ -192,7 +192,7 @@ extension MasterTableViewController {
                 return
         }
 
-        performSegueWithIdentifier(displayedEntityName.showSegueIdentifier, sender: indexPath)
+        performSegueWithIdentifier("Detail".showSegueIdentifier, sender: indexPath)
         tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
     }
 
