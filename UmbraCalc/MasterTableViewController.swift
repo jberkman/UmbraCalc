@@ -44,11 +44,7 @@ class MasterTableViewController: UITableViewController {
             cell.accessoryType = splitAccessoryType
         }
 
-        func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-            return true
-        }
-        
-        func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        @objc func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
             guard editingStyle == .Delete else { return }
             self[indexPath].deleteEntity()
         }
@@ -57,7 +53,7 @@ class MasterTableViewController: UITableViewController {
 
     @IBOutlet weak var entitySegmentedControl: UISegmentedControl!
 
-    private lazy var dataSource: DataSource = { return DataSource(viewController: self) }()
+    private lazy var dataSource: DataSource = DataSource(viewController: self)
 
     var managedObjectContext: NSManagedObjectContext? {
         get { return dataSource.managedObjectContext }

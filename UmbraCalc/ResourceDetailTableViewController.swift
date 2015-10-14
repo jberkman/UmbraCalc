@@ -106,7 +106,7 @@ class ResourceDetailTableViewController: UITableViewController {
         let crewInputs = collection.crewingCollection.map{ $0.inputResources }.reduce([:], combine: +)
         let netResources = constrainedOutputs - inputConstraints * collection.inputResources - crewInputs
 
-        let producerRows = producers.isEmpty ? [Row(reuseIdentifier: "noneCell") { _, _ in }] : producers.map {
+        let producerRows = producers.map {
             ResourceRow(reuseIdentifier: reuseIdentifier($0), resource: $0) {
                 $0.textLabel?.text = name($2)
                 let constrainedOutputs: [String: Double]
@@ -119,7 +119,7 @@ class ResourceDetailTableViewController: UITableViewController {
             }
         }
 
-        let consumerRows = consumers.isEmpty ? [Row(reuseIdentifier: "noneCell") { _, _ in }] : consumers.map {
+        let consumerRows = consumers.map {
             ResourceRow(reuseIdentifier: reuseIdentifier($0), resource: $0) {
                 $0.textLabel?.text = name($2)
                 let inputResources = $2 is Crewing ? $2.inputResources : $2.inputResources * inputConstraints
@@ -138,7 +138,7 @@ class ResourceDetailTableViewController: UITableViewController {
                     cell.detailTextLabel?.text = String((netResources[resourceName] ?? 0) * secondsPerYear)
                 }
                 ], headerTitle: "Totals", footerTitle: nil)
-            ])
+            ].filter { !$0.rows.isEmpty })
     }
 
 }

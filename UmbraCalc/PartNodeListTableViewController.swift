@@ -77,6 +77,10 @@ class PartNodeListTableViewController: UITableViewController {
     }
 
     private func updateDataSource() {
+        func livingSpaceFilter(partNode: PartNode) -> Bool {
+            return partNode.livingSpaceCount > 0 || (partNode.crewCapacity > 0 && partNode.workspaceCount == 0)
+        }
+
         func resourceFilter(outputResources: [String])(partNode: PartNode) -> Bool {
             return partNode.resourceConverters.values.contains {
                 $0.outputResources.keys.contains { outputResources.contains($0) }
@@ -101,8 +105,8 @@ class PartNodeListTableViewController: UITableViewController {
 
         dataSource = StaticDataSource(sections: [
             Section(rows: partNodes
-                .filter { $0.livingSpaceCount > 0 }
-                .map(kolonizingRow), headerTitle: "Living Spacess"),
+                .filter(livingSpaceFilter)
+                .map(kolonizingRow), headerTitle: "Crew and Living Spaces"),
 
             Section(rows: partNodes
                 .filter { $0.workspaceCount > 0 }

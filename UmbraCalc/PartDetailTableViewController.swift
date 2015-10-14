@@ -202,6 +202,10 @@ extension PartDetailTableViewController {
         return false
     }
 
+    override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String? {
+        return "Retire"
+    }
+
 }
 
 extension PartDetailTableViewController {

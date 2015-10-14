@@ -58,8 +58,8 @@ class KolonizedDetailTableViewController: UITableViewController {
             return "Yearly Resupply Required"
         }
 
-        @objc func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-            return 0
+        @objc private func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+            return false
         }
 
     }
@@ -226,6 +226,14 @@ class KolonizedDetailTableViewController: UITableViewController {
 
 }
 
+extension KolonizedDetailTableViewController {
+
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return indexPath.section >= kolonizedDataSource.sectionOffset
+    }
+
+}
+
 // UITableViewDelegate
 extension KolonizedDetailTableViewController {
 
@@ -247,10 +255,6 @@ extension KolonizedDetailTableViewController {
     override func tableView(tableView: UITableView, indentationLevelForRowAtIndexPath indexPath: NSIndexPath) -> Int {
         guard indexPath.section >= kolonizedDataSource.sectionOffset else { return 0 }
         return kolonizedDataSource.tableView(tableView, indentationLevelForRowAtIndexPath: indexPath)
-    }
-
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return indexPath.section >= kolonizedDataSource.sectionOffset
     }
 
     override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String? {
