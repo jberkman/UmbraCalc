@@ -18,6 +18,7 @@ let secondsPerDay = Double(60 * 60 * 6)
 let secondsPerYear = secondsPerDay * 426
 
 private let initialSupplies = [
+    "EnrichedUranium": Double.infinity,
     "Fertilizer": Double.infinity,
     "Machinery": Double.infinity,
     "Plutonium-238": Double.infinity
