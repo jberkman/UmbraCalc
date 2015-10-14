@@ -56,3 +56,9 @@ class ResourceConverterNode: NSObject {
     }
 
 }
+
+extension ResourceConverterNode: ResourceConverting {
+
+    var activeResourceConvertingCount: Int { return 1 }
+
+}

@@ -56,10 +56,7 @@ class KolonizedDataSource: ScopedDataSource {
 
     private func configureCell(cell: UITableViewCell, forResourceConverter resourceConverter: ResourceConverter) {
         cell.textLabel?.text = textLabelForResourceConverter(resourceConverter)
-
-        let inputs = resourceConverter.inputResources.keys.sort().joinWithSeparator(" + ")
-        let outputs = resourceConverter.outputResources.keys.sort().joinWithSeparator(" + ")
-        cell.detailTextLabel?.text = "\(inputs) -> \(outputs)"
+        cell.detailTextLabel?.text = resourceConverter.resourceConvertingDetailText
 
         if resourceConverter.part?.crewed == true {
             if cell.accessoryView == nil {

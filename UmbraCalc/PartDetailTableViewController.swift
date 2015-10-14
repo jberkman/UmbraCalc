@@ -32,7 +32,7 @@ class PartDetailTableViewController: UITableViewController {
 
         private var part: Part? {
             didSet {
-                partNodes = EfficiencyPartDataSource.bundledPartNodes.filter { self.part?.efficiencyFactors[$0.name] != nil }
+                partNodes = EfficiencyPartDataSource.bundledPartNodes.filter { self.part?.efficiencyFactors[$0.name!] != nil }
             }
         }
 
@@ -66,7 +66,7 @@ class PartDetailTableViewController: UITableViewController {
             let partNode = partNodeForRowAtIndexPath(indexPath)
             cell.textLabel?.text = partNode.title
             guard let vesselEfficiencyParts = part?.crewableCollection?.containingKolonizingCollection?.kolonizingCollection,
-                rate = part?.efficiencyFactors[partNode.name],
+                rate = part?.efficiencyFactors[partNode.name!],
                 rateString = percentFormatter.stringFromNumber(rate) else { return cell }
             let count = vesselEfficiencyParts.map { $0.name == partNode.name ? ($0 as? Countable)?.count ?? 0 : 0 }.reduce(0, combine: +)
             cell.detailTextLabel?.text = "\(count) x \(rateString)"

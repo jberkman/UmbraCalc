@@ -30,6 +30,12 @@ extension ResourceConverting {
         return outputResources * constraint
     }
 
+    var resourceConvertingDetailText: String {
+        let inputs = inputResources.keys.sort().joinWithSeparator(" + ")
+        let outputs = outputResources.keys.sort().joinWithSeparator(" + ")
+        return "\(inputs) -> \(outputs)"
+    }
+
 }
 
 extension ResourceConvertingCollectionType {
@@ -102,6 +108,18 @@ extension CrewingCollectionType {
 
     var careerFactor: Double {
         return crewingCollection.map { $0.careerFactor }.reduce(0, combine: +)
+    }
+
+}
+
+extension Kolonizing {
+
+    var kolonizingDetailText: String {
+        return [
+            crewCapacity > 0 ? "Crew Capacity: \(crewCapacity)" : nil,
+            livingSpaceCount > 0 ? "Living Spaces: \(livingSpaceCount)" : nil,
+            workspaceCount > 0 ? "Workspaces: \(workspaceCount)" : nil
+            ].flatMap { $0 }.joinWithSeparator(" ")
     }
 
 }

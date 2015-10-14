@@ -318,12 +318,8 @@ extension KolonizedDetailTableViewController {
     }
 
     @IBAction func savePart(segue: UIStoryboardSegue) {
-        let partNodeList = segue.sourceViewController as! PartNodeSelectionTableViewcontroller
-        if let partNode = partNodeList.selectedPartNode {
-            addPartNodeToCurrentVessel(partNode)
-        } else {
-            partNodeList.selectedPartNodes.forEach(addPartNodeToCurrentVessel)
-        }
+        let partNodeList = segue.sourceViewController as! PartNodeListTableViewController
+        partNodeList.selectedPartNodes.forEach(addPartNodeToCurrentVessel)
         selectedBase = nil
         guard let indexPaths = tableView.indexPathsForVisibleRows else { return }
         tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)

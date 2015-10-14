@@ -29,6 +29,7 @@ private let livingSpaceKey = "livingSpace"
 private let maxEfficencyKey = "MaxEfficiency"
 private let moduleKey = "MODULE"
 private let moduleResourceConverterKey = "ModuleResourceConverter"
+private let moduleResourceHarvesterKey = "ModuleResourceHarvester"
 private let nameKey = "name"
 private let partKey = "PART"
 private let primarySkillKey = "PrimarySkill"
@@ -63,7 +64,7 @@ extension NSBundle {
 class PartNode: NSObject {
 
     let fileName: String?
-    let name: String
+    let name: String?
     let title: String
     let descriptionText: String
     let crewCapacity: Int
@@ -139,20 +140,25 @@ class PartNode: NSObject {
         var resourceConverters = [String: ResourceConverterNode]()
 
         for module in modules {
-            guard module[nameKey] as? String != moduleResourceConverterKey else {
+            guard let moduleName = module[nameKey] as? String else { continue }
+            switch moduleName {
+            case moduleResourceConverterKey:
                 let resourceConverter = ResourceConverterNode(configNode: module)
                 resourceConverters[resourceConverter.tag] = resourceConverter
-                continue
+
+            case MKSModuleValue:
+                workspaceCount = intWithValue(module[workSpaceKey])
+                livingSpaceCount = intWithValue(module[livingSpaceKey])
+                crewBonus = doubleWithValue(module[crewBonusKey], defaultValue: defaultCrewBonus)
+                hasGenerators = boolWithValue(module[hasGeneratorsKey], defaultValue: defaultHasGenerators)
+                maxEfficiency = doubleWithValue(module[maxEfficencyKey], defaultValue: defaultMaxEfficiency)
+                primarySkill = module[primarySkillKey] as? String ?? defaultPrimarySkill
+                secondarySkill = module[secondarySkillKey] as? String ?? defaultSecondarySkill
+                efficiencyPartList = module[efficiencyPartListKey] as? String
+
+            default:
+                break
             }
-            guard module[nameKey] as? String == MKSModuleValue else { continue }
-            workspaceCount = intWithValue(module[workSpaceKey])
-            livingSpaceCount = intWithValue(module[livingSpaceKey])
-            crewBonus = doubleWithValue(module[crewBonusKey], defaultValue: defaultCrewBonus)
-            hasGenerators = boolWithValue(module[hasGeneratorsKey], defaultValue: defaultHasGenerators)
-            maxEfficiency = doubleWithValue(module[maxEfficencyKey], defaultValue: defaultMaxEfficiency)
-            primarySkill = module[primarySkillKey] as? String ?? defaultPrimarySkill
-            secondarySkill = module[secondarySkillKey] as? String ?? defaultSecondarySkill
-            efficiencyPartList = module[efficiencyPartListKey] as? String
         }
 
         self.workspaceCount = workspaceCount
@@ -198,6 +204,18 @@ class PartNode: NSObject {
         }
 
         self.init(URL: URL)
+    }
+
+}
+
+extension PartNode: Kolonizing {
+
+    var crewingCollection: AnyForwardCollection<Crewing> {
+        return AnyForwardCollection([])
+    }
+
+    var resourceConvertingCollection: AnyForwardCollection<ResourceConverting> {
+        return AnyForwardCollection(resourceConverters.map { $0.1 as ResourceConverting })
     }
 
 }

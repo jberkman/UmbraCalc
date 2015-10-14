@@ -13,15 +13,41 @@
 //  http://creativecommons.org/licenses/by-nc/4.0/.
 //
 
+import JeSuis
 import UIKit
 
 class PartNodeListTableViewController: UITableViewController {
 
+    private class PartNodeRow: Row {
+        var partNode: PartNode
+        init(partNode: PartNode, configureCell: (cell: UITableViewCell, partNode: PartNode) -> Void) {
+            self.partNode = partNode
+            super.init(reuseIdentifier: "reuseIdentifier") { cell, _ in
+                configureCell(cell: cell, partNode: partNode)
+            }
+        }
+    }
+
     @IBOutlet weak var cancelButtonItem: UIBarButtonItem!
+    @IBOutlet weak var doneButtonitem: UIBarButtonItem!
 
-    private(set) var selectedPartNode: PartNode?
+    private(set) var selectedPartNodes: Set<PartNode> = Set()
 
-    lazy var partNodes: [PartNode] = bundledPartNodes
+    var allowsMultipleSelection = false {
+        didSet {
+            guard isViewLoaded() else { return }
+            tableView.reloadData()
+        }
+    }
+
+    private lazy var dataSource: CompoundDataSource = CompoundDataSource(dataSource: self)
+
+    var partNodes: [PartNode] = bundledPartNodes {
+        didSet {
+            guard isViewLoaded() else { return }
+            updateDataSource()
+        }
+    }
 
     static var bundledPartNodes: [PartNode] {
         return NSBundle.mainBundle().partNodes
@@ -35,34 +61,69 @@ class PartNodeListTableViewController: UITableViewController {
         }
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        updateDataSource()
+        tableView.dataSource = dataSource
+    }
+
+    private func accessoryTypeForPartNode(partNode: PartNode) -> UITableViewCellAccessoryType {
+        return allowsMultipleSelection ? selectedPartNodes.contains(partNode) ? .Checkmark : .None : .DetailButton
+    }
+
+    private func updateDataSource() {
+        func resourceFilter(outputResources: [String])(partNode: PartNode) -> Bool {
+            return partNode.resourceConverters.values.contains {
+                $0.outputResources.keys.contains { outputResources.contains($0) }
+            }
+        }
+
+        func kolonizingRow(partNode: PartNode) -> PartNodeRow {
+            return PartNodeRow(partNode: partNode) { [weak self] cell, partNode in
+                cell.textLabel?.text = partNode.title
+                cell.detailTextLabel?.text = partNode.kolonizingDetailText
+                cell.accessoryType = self?.accessoryTypeForPartNode(partNode) ?? .None
+            }
+        }
+
+        func resourceConvertingRow(partNode: PartNode) -> PartNodeRow {
+            return PartNodeRow(partNode: partNode) { [weak self] cell, partNode in
+                cell.textLabel?.text = partNode.title
+                cell.detailTextLabel?.text = partNode.resourceConvertingDetailText
+                cell.accessoryType = self?.accessoryTypeForPartNode(partNode) ?? .None
+            }
+        }
+
+        dataSource[0] = StaticDataSource(sections: [
+            Section(rows: partNodes
+                .filter { $0.livingSpaceCount > 0 }
+                .map(kolonizingRow), headerTitle: "Living Spacess"),
+
+            Section(rows: partNodes
+                .filter { $0.workspaceCount > 0 }
+                .map(kolonizingRow), headerTitle: "Workspaces"),
+
+            Section(rows: partNodes
+                .filter(resourceFilter(["Organics", "Supplies"]))
+                .map(resourceConvertingRow), headerTitle: "Life Support"),
+
+            Section(rows: partNodes
+                .filter(resourceFilter(["ElectricCharge"]))
+                .map(resourceConvertingRow), headerTitle: "Power"),
+
+            Section(rows: partNodes
+                .filter { !$0.resourceConverters.isEmpty && !resourceFilter(["Organics", "Supplies", "ElectricCharge"])(partNode: $0) }
+                .map(resourceConvertingRow), headerTitle: "Resource Converters")
+
+            ].filter { !$0.rows.isEmpty })
+    }
+
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return partNodes.count
-    }
-
     subscript (indexPath: NSIndexPath) -> PartNode {
-        return partNodes[indexPath.row]
-    }
-
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
-        let partNode = self[indexPath]
-        cell.textLabel?.text = partNode.title
-        var details: [String] = []
-        if partNode.crewed {
-            details.append("Crew Capacity: \(partNode.crewCapacity)")
-        }
-        if partNode.livingSpaceCount > 0 {
-            details.append("Living Spaces: \(partNode.livingSpaceCount)")
-        }
-        if partNode.workspaceCount > 0 {
-            details.append("Workspaces: \(partNode.workspaceCount)")
-        }
-        cell.detailTextLabel?.text = details.joinWithSeparator(" ")
-        return cell
+        return ((dataSource[0] as! StaticDataSource)[indexPath] as! PartNodeRow).partNode
     }
 
     override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
@@ -80,39 +141,14 @@ class PartNodeListTableViewController: UITableViewController {
         switch segue.identifier! {
         case Part.saveSegueIdentifier:
             if let cell = sender as? UITableViewCell, indexPath = tableView.indexPathForCell(cell) {
-                selectedPartNode = self[indexPath]
+                selectedPartNodes = Set([self[indexPath]])
             } else if let indexPath = sender as? NSIndexPath {
-                selectedPartNode = self[indexPath]
+                selectedPartNodes = Set([self[indexPath]])
             }
 
         default:
             break
         }
-    }
-
-}
-
-class PartNodeSelectionTableViewcontroller: PartNodeListTableViewController {
-
-    @IBOutlet weak var doneButtonitem: UIBarButtonItem!
-
-    var selectedPartNodes: Set<PartNode> = Set()
-
-    var allowsMultipleSelection = false {
-        didSet {
-            guard isViewLoaded() else { return }
-            tableView.reloadData()
-        }
-    }
-
-    private func accessoryTypeForPartNode(partNode: PartNode) -> UITableViewCellAccessoryType {
-        return allowsMultipleSelection ? selectedPartNodes.contains(partNode) ? .Checkmark : .None : .DetailButton
-    }
-
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
-        cell.accessoryType = accessoryTypeForPartNode(self[indexPath])
-        return cell
     }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
