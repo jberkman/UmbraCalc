@@ -40,7 +40,13 @@ class PartNodeListTableViewController: UITableViewController {
         }
     }
 
-    private lazy var dataSource: CompoundDataSource = CompoundDataSource(dataSource: self)
+    private var dataSource: StaticDataSource? {
+        didSet {
+            guard isViewLoaded() else { return }
+            tableView.dataSource = dataSource
+            tableView.reloadData()
+        }
+    }
 
     var partNodes: [PartNode] = bundledPartNodes {
         didSet {
@@ -64,7 +70,6 @@ class PartNodeListTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         updateDataSource()
-        tableView.dataSource = dataSource
     }
 
     private func accessoryTypeForPartNode(partNode: PartNode) -> UITableViewCellAccessoryType {
@@ -94,7 +99,7 @@ class PartNodeListTableViewController: UITableViewController {
             }
         }
 
-        dataSource[0] = StaticDataSource(sections: [
+        dataSource = StaticDataSource(sections: [
             Section(rows: partNodes
                 .filter { $0.livingSpaceCount > 0 }
                 .map(kolonizingRow), headerTitle: "Living Spacess"),
@@ -118,12 +123,8 @@ class PartNodeListTableViewController: UITableViewController {
             ].filter { !$0.rows.isEmpty })
     }
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
-
     subscript (indexPath: NSIndexPath) -> PartNode {
-        return ((dataSource[0] as! StaticDataSource)[indexPath] as! PartNodeRow).partNode
+        return (dataSource![indexPath] as! PartNodeRow).partNode
     }
 
     override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {

@@ -501,7 +501,6 @@
                             </tableViewCell>
                         </prototypes>
                         <connections>
-                            <outlet property="dataSource" destination="kLR-pk-xYm" id="bRo-fg-IUW"/>
                             <outlet property="delegate" destination="kLR-pk-xYm" id="reY-VZ-UJt"/>
                         </connections>
                     </tableView>
