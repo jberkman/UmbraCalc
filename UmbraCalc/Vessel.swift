@@ -21,6 +21,7 @@ import CoreData
 class Vessel: NamedEntity {
 
     @NSManaged var parts: NSSet?
+    @NSManaged private var primitiveScopeGroup: ScopedEntity?
 
     private var partsSet: Set<Part> {
         return parts as? Set<Part> ?? Set()
@@ -28,6 +29,11 @@ class Vessel: NamedEntity {
 
     var containingKolonizingCollection: KolonizingCollectionType? {
         return nil
+    }
+
+    override func awakeFromInsert() {
+        super.awakeFromInsert()
+        primitiveScopeGroup = self
     }
 
     @warn_unused_result

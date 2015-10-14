@@ -21,7 +21,6 @@ private let defaultParts = [ "MKV_AgModule", "MKV_HabModule", "MKV_Lander", "MKV
 class Base: Vessel {
 
     @NSManaged private var primitiveKolony: Kolony?
-    @NSManaged private var primitiveScopeGroup: ScopedEntity?
 
     dynamic var kolony: Kolony? {
         get {
@@ -54,11 +53,6 @@ class Base: Vessel {
 
     override var containingKolonizingCollection: KolonizingCollectionType? {
         return kolony
-    }
-
-    override func awakeFromInsert() {
-        super.awakeFromInsert()
-        primitiveScopeGroup = self
     }
 
     @warn_unused_result
