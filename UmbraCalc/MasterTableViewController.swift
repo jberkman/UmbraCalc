@@ -201,7 +201,7 @@ extension MasterTableViewController {
 extension MasterTableViewController: UISplitViewControllerDelegate {
 
     func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
-        return emptyDetailViewController
+        return (primaryViewController as? UINavigationController)?.viewControllers.count == 1 ? emptyDetailViewController : nil
     }
 
     func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController, ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {
