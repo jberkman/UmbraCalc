@@ -171,7 +171,7 @@ class KolonizedDetailTableViewController: UITableViewController {
             crewDetail.crew = kolonizedDataSource[indexPath] as? Crew
 
         case Part.addSegueIdentifier:
-            let filteredOutKeywords = station == nil ? [ "orbital", "oks" ] : [ "surface", "mk-v" ]
+            let filteredOutKeywords = station == nil ? [ "orbital", "oks" ] : [ "surface", "mk-v", "karibou" ]
             let navigationController = segue.destinationViewController as! UINavigationController
             let partNodeList = navigationController.viewControllers.first as! PartNodeListTableViewController
 
