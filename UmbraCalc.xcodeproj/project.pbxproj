@@ -22,6 +22,7 @@
 		1654A22D1BBE714400623F50 /* MasterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9881BB8871F00EDBCF7 /* MasterTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		1654A22F1BBE71FE00623F50 /* PartDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162EA5F41BB91A62001AFBBC /* PartDetailTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		1654A2311BBE71FE00623F50 /* PartNodeListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E99B1BB9030600EDBCF7 /* PartNodeListTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		1668BA351BD3597100386C84 /* KolonizingExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1668BA341BD3597100386C84 /* KolonizingExtensionsTests.swift */; settings = {ASSET_TAGS = (); }; };
 		166F0B2C1BC5A6F2000A4D3E /* SwiftExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B2B1BC5A6F1000A4D3E /* SwiftExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 		166F0B321BC6101E000A4D3E /* Kolonizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B311BC6101E000A4D3E /* Kolonizing.swift */; settings = {ASSET_TAGS = (); }; };
 		166F0B341BC62F78000A4D3E /* KolonizingExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B331BC62F78000A4D3E /* KolonizingExtensions.swift */; settings = {ASSET_TAGS = (); }; };
@@ -29,7 +30,6 @@
 		166F0B401BC765F7000A4D3E /* ScopedEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B3E1BC765F6000A4D3E /* ScopedEntity.swift */; settings = {ASSET_TAGS = (); }; };
 		166F0B691BC797C1000A4D3E /* ScopedDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F0B681BC797C1000A4D3E /* ScopedDataSource.swift */; settings = {ASSET_TAGS = (); }; };
 		1684F2201BCB800F002B965F /* ResourceDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1684F21F1BCB800F002B965F /* ResourceDetailTableViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		1699E9571BB6813400EDBCF7 /* VesselTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9561BB6813400EDBCF7 /* VesselTests.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9631BB7021C00EDBCF7 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E95B1BB7021C00EDBCF7 /* Station.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E9681BB7021C00EDBCF7 /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E9601BB7021C00EDBCF7 /* Base.swift */; settings = {ASSET_TAGS = (); }; };
 		1699E96B1BB708D600EDBCF7 /* CoreDataStackTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1699E96A1BB708D600EDBCF7 /* CoreDataStackTestCase.swift */; settings = {ASSET_TAGS = (); }; };
@@ -45,10 +45,7 @@
 		16B7ACFF1BB3AC51006DFA4E /* Vessel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACF91BB3AC51006DFA4E /* Vessel.swift */; settings = {ASSET_TAGS = (); }; };
 		16B7AD011BB3AC51006DFA4E /* Part.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACFB1BB3AC51006DFA4E /* Part.swift */; settings = {ASSET_TAGS = (); }; };
 		16B7AD031BB3AC51006DFA4E /* Crew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7ACFD1BB3AC51006DFA4E /* Crew.swift */; settings = {ASSET_TAGS = (); }; };
-		16B7AD051BB3BC50006DFA4E /* CrewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD041BB3BC50006DFA4E /* CrewTests.swift */; settings = {ASSET_TAGS = (); }; };
 		16B7AD071BB3BE57006DFA4E /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD061BB3BE57006DFA4E /* CoreDataStack.swift */; settings = {ASSET_TAGS = (); }; };
-		16B7AD0B1BB3CB8B006DFA4E /* PartTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD0A1BB3CB8B006DFA4E /* PartTests.swift */; settings = {ASSET_TAGS = (); }; };
-		16B7AD0D1BB3CE36006DFA4E /* PartFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD0C1BB3CE36006DFA4E /* PartFixtures.swift */; settings = {ASSET_TAGS = (); }; };
 		16B7AD191BB3E120006DFA4E /* Kolony.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD171BB3E120006DFA4E /* Kolony.swift */; settings = {ASSET_TAGS = (); }; };
 		16B7AD1F1BB5134A006DFA4E /* FoundationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD1E1BB5134A006DFA4E /* FoundationExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 		16B7AD221BB526D9006DFA4E /* ConfigNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B7AD211BB526D9006DFA4E /* ConfigNode.swift */; settings = {ASSET_TAGS = (); }; };
@@ -105,6 +102,7 @@
 		1633604E1BBCF867003A6B5D /* AproposExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AproposExtensions.swift; sourceTree = "<group>"; };
 		164E38B71BC7A1AF001DD649 /* KolonizedDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KolonizedDataSource.swift; sourceTree = "<group>"; };
 		164E38B91BC8D2C2001DD649 /* CrewSelectionDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrewSelectionDataSource.swift; sourceTree = "<group>"; };
+		1668BA341BD3597100386C84 /* KolonizingExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KolonizingExtensionsTests.swift; sourceTree = "<group>"; };
 		166F0B2B1BC5A6F1000A4D3E /* SwiftExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftExtensions.swift; sourceTree = "<group>"; };
 		166F0B311BC6101E000A4D3E /* Kolonizing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Kolonizing.swift; sourceTree = "<group>"; };
 		166F0B331BC62F78000A4D3E /* KolonizingExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KolonizingExtensions.swift; sourceTree = "<group>"; };
@@ -304,6 +302,7 @@
 		16B7ACDE1BB39066006DFA4E /* UmbraCalcTests */ = {
 			isa = PBXGroup;
 			children = (
+				1668BA341BD3597100386C84 /* KolonizingExtensionsTests.swift */,
 				1699E96A1BB708D600EDBCF7 /* CoreDataStackTestCase.swift */,
 				1699E9581BB6814300EDBCF7 /* Models */,
 				16B7ACE11BB39066006DFA4E /* Info.plist */,
@@ -554,12 +553,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				16B7AD281BB53D53006DFA4E /* PartNodeTests.swift in Sources */,
-				16B7AD0B1BB3CB8B006DFA4E /* PartTests.swift in Sources */,
-				1699E9571BB6813400EDBCF7 /* VesselTests.swift in Sources */,
 				16B7AD241BB53035006DFA4E /* ConfigNodeTests.swift in Sources */,
 				1699E96B1BB708D600EDBCF7 /* CoreDataStackTestCase.swift in Sources */,
-				16B7AD051BB3BC50006DFA4E /* CrewTests.swift in Sources */,
-				16B7AD0D1BB3CE36006DFA4E /* PartFixtures.swift in Sources */,
+				1668BA351BD3597100386C84 /* KolonizingExtensionsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

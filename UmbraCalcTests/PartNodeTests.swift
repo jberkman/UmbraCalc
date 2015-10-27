@@ -65,7 +65,7 @@ class PartNodeTests: XCTestCase {
     }
 
     func testBundledPartNames() {
-        XCTAssertEqual(NSBundle.mainBundle().partNodes.count, 67)
+        XCTAssertEqual(NSBundle.mainBundle().partNodes.count, 75)
     }
 
 }
