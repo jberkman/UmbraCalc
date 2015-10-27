@@ -103,6 +103,23 @@ class PartNodeListTableViewController: UITableViewController {
             }
         }
 
+        let efficiencyParts = Set(partNodes.flatMap {
+            $0.efficiencyParts.keys
+            })
+
+        func efficiencyPartRow(partNode: PartNode) -> PartNodeRow {
+            return PartNodeRow(partNode: partNode) { [weak self] cell, partNode in
+                cell.textLabel?.text = partNode.title
+                cell.accessoryType = self?.accessoryTypeForPartNode(partNode) ?? .None
+                guard let name = partNode.name, partNodes = self?.partNodes else { return }
+                cell.detailTextLabel?.text = "Effiency part for: " +
+                    partNodes
+                        .filter { $0.efficiencyParts.keys.contains(name) }
+                        .map { $0.title }
+                        .joinWithSeparator(", ")
+            }
+        }
+
         dataSource = StaticDataSource(sections: [
             Section(rows: partNodes
                 .filter(livingSpaceFilter)
@@ -122,7 +139,12 @@ class PartNodeListTableViewController: UITableViewController {
 
             Section(rows: partNodes
                 .filter { !$0.resourceConverters.isEmpty && !resourceFilter(["Organics", "Supplies", "ElectricCharge"])(partNode: $0) }
-                .map(resourceConvertingRow), headerTitle: "Resource Converters")
+                .map(resourceConvertingRow), headerTitle: "Resource Converters"),
+
+            Section(rows: partNodes
+                .filter { $0.name != nil && efficiencyParts.contains($0.name!) }
+                .map(efficiencyPartRow), headerTitle: "Efficiency Parts")
+
 
             ].filter { !$0.rows.isEmpty })
     }
